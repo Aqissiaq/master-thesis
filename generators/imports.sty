@@ -1,7 +1,6 @@
 \usepackage[utf8]{inputenc} % This defines the font-\usepackage[utf8]{inputenc}
 \usepackage{url}
 \def\UrlBreaks{\do\/\do-}
-\usepackage[square, numbers]{natbib}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{floatpag}
@@ -23,6 +22,9 @@
 \renewcommand{\labelenumii}{\theenumii}
 \renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
 
+\usepackage[backend=biber]{biblatex}
+\addbibresource{generators/refs.bib}
+
 \usepackage{hyperref}
 \tolerance=1000
 \usepackage{amsmath}
@@ -33,22 +35,6 @@
 \graphicspath{{figures/}}
 
 \usepackage{listings}
-\usepackage{generators/listings-golang} 	
-\lstset{
-    frame=single,
-    basicstyle=\linespread{0.8}\footnotesize\ttfamily,
-    keywordstyle=\color{red},
-    numbers=left,
-    numbersep=5pt,
-    showstringspaces=false, 
-    stringstyle=\color{blue},
-    commentstyle=\color{gray},
-    breakatwhitespace=true,
-    breaklines=true,
-    postbreak=\mbox{\textcolor{violet}{$\hookrightarrow$}\space},
-    tabsize=4,
-    language=Golang
-}
 
 \newlength\glsdescwidth
   \setlength{\glsdescwidth}{1\hsize}

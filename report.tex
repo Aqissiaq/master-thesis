@@ -15,6 +15,9 @@
 \setlength{\parskip}{0.5cm plus4mm minus3mm}  
 
 \include{chapter/introduction}
+\include{chapter/hott}
+\include{chapter/versioncontrol}
+\include{chapter/conclusion}
 
 % Include more chapters as required.
 %%=========================================
@@ -26,8 +29,7 @@
 \clearpage
 \DeclareRobustCommand{\VAN}[3]{#3}
 \addcontentsline{toc}{chapter}{Bibliography}
-\bibliographystyle{generators/myplainnat}
-\bibliography{generators/refs}
+\printbibliography{}
 \appendix
 \titleformat{\chapter}[display]
   {\normalfont\large\bfseries}% <- font for label "Appendix A", default \huge
