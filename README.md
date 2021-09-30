@@ -1,4 +1,4 @@
-# UIB LaTeX template
+# UiB LaTeX template
 
 En LaTeX template for Universitetet i Bergen (UiB).
 
@@ -7,8 +7,10 @@ Clone og kompiler med din favoritt [TeX-distribusjon](https://www.latex-project.
 
 ## Logo
 Logo for ditt fakultet?
-[UiB profilmanual](http://kapd.h.uib.no/profilmanual/99LastNed/99a_lastned.html)  
-Endre til canvas.png hvis du ønsker kun logo uten fakultet.
+
+Logoer for MatNat (det matematisk-naturvitenskapelige fakultet) ligger i [logo](figures/logo).
+
+For andre logoer og emblemer se: [UiB profilmanual](https://manual.uib.no/en/profile-components/download-uibs-logo-and-emblem/)
 
 ## Lisens  
 UiB logo: Copyright (C) tilhørende Universitetet i Bergen.  
