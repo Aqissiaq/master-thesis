@@ -1,5 +1,75 @@
 \chapter{Introduction}
 
 \section{Background}
-hmm
-\subsection{Literature Review}
+In this section we summarize some key papers and their significance to the
+project.
+
+We may also include a brief introduction to HoTT, but maybe that's better suited
+to \ref{ch/hott}.
+
+\subsection{A Categorical Theory of Patches}
+% this should maybe go in a ``related works'' section
+A Categorical Theory of Patches~\cite{Categorical2013} defines a category of
+files and patches, such that a merge is a pushout. To ensure a merge is always
+possible they first construct the category $\mathcal{L}$ of files and patches,
+and then its conservative cocompletion $\mathcal{P}$.
+
+$\mathcal{P}$ contains all finite colimits -- and in particular all pushouts --
+so the merge of a span is always defined. The paper's chief achievement is the
+explicit construction of this category and these pushouts.
+
+Interesting insights I'm not sure how to incorporate:
+\begin{itemize}
+\item the construction of $\mathcal{P}$ can be understood as the addition of \emph{partially} ordered
+  files to $\mathcal{L}$.
+\item ``flattening'' these partial orders leads to cyclic graphs. On editing
+  text~\cite{editing2014} objects, but maybe not correctly
+\item the poset structure of $\mathcal{L}$ and $\mathcal{P}$ is given explicitly
+  by $\mathcal{G}$ and the nerve functor $N_{\_}$ (!!).
+\end{itemize}
+
+(maybe some figures go here)
+
+\subsection{Patch Theory (Darcs)}
+Here we discuss several proposed formalisms for a the patch theory employed by
+Darcs~\cite{Darcs}. \cite{Lynagh2006, Sittampalam2005, Dagit2009} all attempt to
+describe Darcs' patch theory. (focus on Lynagh, I think)
+
+\subsection{Homotopical Patch Theory}
+Homotopical Patch Theory~\cite{Angiuli2016} gives a formulation of patch theory
+in homotopy type theory. A patch theory is represented by a higher
+inductive type, and its interpretation by a function out of this type.
+
+By representing repository state as points and patches as paths in a higher
+inductive type, the groupoid structure of the patch theory comes ``for free''.
+Paths come with composition, and by the groupoid laws this composition is
+associative, unital, and respects inverses. Additionally, functions (functors?)
+respect this structure so any interpretation must also validate the groupoid
+laws.
+
+Patch laws are represented by paths between paths (squares? disks?
+2D-somethings). For example we may want the application of two independent
+patches to commute -- this is done with a patch law.
+
+While the HIT formulation gives a lot ``for free'', it also has some drawbacks.
+In particular, the requirement that all patches have inverses causes some
+problems. The workaround is to ``type'' patches with the history they are
+applicable to. This allows Angiuli et al. to define a merge operation in terms
+on only the ``forward'' patches, but leads to a fairly complex theory even for
+relatively simple settings.
+
+% cut this if we don't do more work on it
+An interesting feature of Angiuli et al.'s patch theories is that the type of
+repositories must be contractible. Since patches are represented by paths, any
+point can be retracted along them. As such, all repositories are -- in a sense
+-- ``the same'' and we need better notions of
+``sub-homotopical''~\cite{Angiuli2016} computations to reason about their differences.
+
+\subsection{Path Spaces of Higher Inductive Types}
+Path Spaces of Higher Inductive Types in Homotopy Type
+Theory~\cite{kraus2019path} provides an induction principle for paths in
+coequalizers. This is extremely useful, since we want to define functions out of
+spans in HITs. ($\leftarrow$ rework this sentence)
+
+Summarizing this will be very technical, and may become its own chapter if I
+successfully formalize the proof in cubical agda. Otherwise it goes here.
