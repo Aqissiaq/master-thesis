@@ -1,2 +1,37 @@
 \chapter{Version Control Systems}
 They're not always cool.~\cite{git-inconsistent}
+
+% stolen from my own project proposal
+Version control systems are ubiquitous in software development, where they
+help facilitate cooperation and documentation of
+the development process. Their basic use is to record (\emph{commit}) changes
+to a codebase (\emph{repository}). Systems may also include ways for the
+codebase to diverge (\emph{branch}) into different versions, and ways to
+reunite (\emph{merge}) these versions.
+
+The purpose of this section is to introduce the terminology, requirements and
+hopes for models of version control systems,
+
+What do we need?
+\begin{enumerate}
+\item terms
+  \begin{itemize}
+  \item repository
+  \item patch
+  \item merge
+  \item branch?
+  \end{itemize}
+\item requirements
+  \begin{itemize}
+  \item repo - accurately represents contents
+  \item patch - applicable in a context, groupoid structure
+  \item merge - ``pushout property''/reconcile, symmetric (for distributed
+    systems), (do we need associativity as well?)
+  \end{itemize}
+\item hopes/goals
+  \begin{itemize}
+  \item repos - modular/composable, somehow polymorphic
+  \item patches - \emph{semantic} in some sense
+  \item merge - easily definable [sic.], considers semantics of patches
+  \end{itemize}
+\end{enumerate}
