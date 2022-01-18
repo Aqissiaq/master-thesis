@@ -36,6 +36,58 @@ Here we discuss several proposed formalisms for a the patch theory employed by
 Darcs~\cite{Darcs}. \cite{Lynagh2006, Sittampalam2005, Dagit2009} all attempt to
 describe Darcs' patch theory. (focus on Lynagh, I think)
 
+% Lynagh's Algebra of Patches
+\textcite{Lynagh2006} proposes an ``algebra of patches'' as a theoretical
+basis for the Darcs~\cite{Darcs} version control system.
+
+In this model a repository state is a set of updates (called \emph{patches}, but
+we want to avoid that ambiguity) and a patch is a change to this set. For
+example pulling the repository $\{c\}$ into the repository $\{a,b\}$ results in
+a new repository $\{a,b\} \cup \{c\} = \{a,b,c\}$.
+
+Patches are only applicable to one repository state, and result in a new state.
+If they are compatible, we may string them together into a \emph{patch sequence}.
+Denoting the previous example patch by $P$ and the ``do-nothing'' patch by $Id$
+we have $\{a,b\}P\{a,b,c\}Id\{a,b,c\}$ -- pulling $\{c\}$ followed by doing
+nothing. The repository state may be omitted from sequences.
+
+Finally a notion of \emph{commutation} of patches is defined. We say patches $A$
+and $B$ commute if the span $\bullet \xleftarrow{A} \bullet \xrightarrow{B}
+\bullet$ can be expanded to the following commuting square:
+
+\begin{center}
+  \begin{tikzcd}
+  \bullet \arrow[dd, "A"'] \arrow[rr, "B"] &  & \bullet \arrow[dd, "A'", dashed] \\
+   &&\\
+  \bullet \arrow[rr, "B'"', dashed]        &  & \bullet                         
+  \end{tikzcd}
+\end{center}
+
+and write $AB \comm B'A'$.
+
+We have four axioms for patches and commutation:
+\begin{enumerate}
+  \item Commutativity (lol) (3.1): $AB \comm B'A' \iff B'A' \comm AB$
+  \item Invertibility (3.2): for each $A$ there is an $A^{-1}$ s.t
+    $AA^{-1}=A^{-1}A=Id$
+  \item Inv-cong (3.3): $AB \comm B'A' \iff A^{-1}B' \comm BA'^{-1}$
+  \item Circular (3.5/6): performing all pairwise commutations in a sequence
+    gets us back to the beginning (or, a horrible equation)
+\end{enumerate}
+
+With these axioms and definitions we can merge the span $\bullet \xleftarrow{A} \bullet \xrightarrow{B}
+\bullet$ by filling in the square:
+
+\begin{center}
+\begin{tikzcd}
+\bullet \arrow[dd, "A"', bend right] \arrow[rr, "B"]&  & \bullet\\
+&&\\
+\bullet \arrow[rr, "B'"', dashed] \arrow[uu, "A^{-1}"', dashed, bend right] &  & \bullet \arrow[uu, "A^{-1}'"', dashed]
+\end{tikzcd}
+\end{center}
+We have $A^{-1}B \comm B'A^{-1}'$ and define $merge A\;B = AB'$. It is not clear
+to me from this diagram why the inverse(s) is needed
+
 \subsection{Homotopical Patch Theory}
 Homotopical Patch Theory~\cite{Angiuli2016} gives a formulation of patch theory
 in homotopy type theory. A patch theory is represented by a higher
@@ -44,7 +96,7 @@ inductive type, and its interpretation by a function out of this type.
 By representing repository state as points and patches as paths in a higher
 inductive type, the groupoid structure of the patch theory comes ``for free''.
 Paths come with composition, and by the groupoid laws this composition is
-associative, unital, and respects inverses. Additionally, functions (functors?)
+associative, unital, and respects inverses. Additionally, functions (which are functors)
 respect this structure so any interpretation must also validate the groupoid
 laws.
 
