@@ -1,0 +1,43 @@
+\section{(Dependent) Type Theory}
+\begin{enumerate}
+  \item (dependent) types in computer science
+  \item type theories in math/foundations
+  \item the formal stuff
+\end{enumerate}
+
+Types are a familiar concept to the computer scientist. We are used to working
+with data, and this data often has a \emph{data type} either explicitly or
+implicitly. For example, \texttt{42} is an \texttt{int}, \texttt{'c'} is a
+\texttt{char}, and \texttt{['a','b','c']} is a list of \texttt{char}s (henceforth
+denoted \texttt{[char]}). We call
+\texttt{int}, \texttt{char} and \texttt{[char]} \emph{types} and
+\texttt{42}, \texttt{'c'}, \texttt{['a','b','c']} \emph{terms} of those types.
+While this is a good basis for intuition, Type Theory (tm) is a bit different.
+
+However, let us stick with the programming intuition to introduce a less
+familiar concept: \emph{dependent} types. First, note that one of the types in
+the previous paragraph is a bit different than the others: \text{['a','b','c']} is a
+list \emph{of \texttt{char}s}. Similarly we could have lists of \texttt{int}s,
+lists of \texttt{float}s or even lists of lists! Clearly ``lists'' comprises
+many different types, depending on the type of their elements. We could call
+\texttt{list} a family of types \emph{parametrized} by types. Such a family is
+actually a whole collection of types -- one for each other type we can make
+lists of.
+Dependent types extend this idea by allowing families to be parametrized by
+terms. Then we can create new and exciting types like \texttt{Vec 3} and
+\texttt{Vec 4} -- the types of 3- and 4-dimensional vectors. Again \texttt{Vec} is
+actually a whole collection of types -- one for each integer!
+
+We now leave the familiar world of programming behind and venture in to the spooky
+(but exciting) world of foundational mathematics.
+\begin{equation}
+  \begin{array}{c}
+    \Gamma \vdash a : A \qquad \Gamma \vdash f : A \rightarrow B\\
+    \hline
+    \Gamma \vdash f(a) : B
+  \end{array}
+  \label{rule:example}
+  \end{equation}
+
+In this new and wondrous world, a type theory is a system of \emph{inference
+  rules} like \ref{rule:example} that can be used to make \emph{derivations}.

@@ -1,0 +1,29 @@
+\subsection{Homotopical Patch Theory}
+Homotopical Patch Theory~\cite{Angiuli2016} gives a formulation of patch theory
+in homotopy type theory. A patch theory is represented by a higher
+inductive type, and its interpretation by a function out of this type.
+
+By representing repository state as points and patches as paths in a higher
+inductive type, the groupoid structure of the patch theory comes ``for free''.
+Paths come with composition, and by the groupoid laws this composition is
+associative, unital, and respects inverses. Additionally, functions (which are functors)
+respect this structure so any interpretation must also validate the groupoid
+laws.
+
+Patch laws are represented by paths between paths (squares? disks?
+2D-somethings). For example we may want the application of two independent
+patches to commute -- this is done with a patch law.
+
+While the HIT formulation gives a lot ``for free'', it also has some drawbacks.
+In particular, the requirement that all patches have inverses causes some
+problems. The workaround is to ``type'' patches with the history they are
+applicable to. This allows Angiuli et al. to define a merge operation in terms
+on only the ``forward'' patches, but leads to a fairly complex theory even for
+relatively simple settings.
+
+% cut this if we don't do more work on it
+An interesting feature of Angiuli et al.'s patch theories is that the type of
+repositories must be contractible. Since patches are represented by paths, any
+point can be retracted along them. As such, all repositories are -- in a sense
+-- ``the same'' and we need better notions of
+``sub-homotopical''~\cite{Angiuli2016} computations to reason about their differences.

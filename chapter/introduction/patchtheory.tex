@@ -1,0 +1,95 @@
+\subsection{Patch Theory (Darcs)}
+Here we discuss several proposed formalisms for a the patch theory employed by
+Darcs~\cite{Darcs}. \cite{Lynagh2006, Sittampalam2005, Dagit2009} all attempt to
+describe Darcs' patch theory. (focus on Lynagh, I think)
+
+% Lynagh's Algebra of Patches
+\textcite{Lynagh2006} proposes an ``algebra of patches'' as a theoretical
+basis for the Darcs~\cite{Darcs} version control system.
+
+In this model a repository state is a set of updates (called \emph{patches}, but
+we want to avoid that ambiguity) and a patch is a change to this set. For
+example pulling the repository $\{c\}$ into the repository $\{a,b\}$ results in
+a new repository $\{a,b\} \cup \{c\} = \{a,b,c\}$.
+
+Patches are only applicable to one repository state, and result in a new state.
+If they are compatible, we may string them together into a \emph{patch sequence}.
+Denoting the previous example patch by $P$ and the ``do-nothing'' patch by $Id$
+we have $\{a,b\}P\{a,b,c\}Id\{a,b,c\}$ -- pulling $\{c\}$ followed by doing
+nothing. The repository state may be omitted from sequences.
+
+Finally a notion of \emph{commutation} of patches is defined. We say the patch sequence $AB$
+commute if there are patches $A'$ and $B'$ such that the following square commutes:
+
+\begin{figure}[h!]
+\begin{center}
+  \begin{tikzcd}
+  \bullet \arrow[rr, "B"] &  & \bullet \\
+   &&\\
+  \bullet \arrow[uu, "A"'] \arrow[rr, "B'"', dashed] &  & \bullet  \arrow[uu, "A'", dashed]
+  \end{tikzcd}
+\end{center}
+\caption{Commuting patches}
+\label{fig:darcs-commuting-patches}
+\end{figure}
+
+and write $AB \comm B'A'$. Note that the initial and final contexts (bottom left and top right,
+respectively) are the same, but the intermediary contexts need not be.
+
+There are four axioms for patches and commutation:
+\begin{enumerate}
+  \item Commutativity (lol) (3.1): $AB \comm B'A' \iff B'A' \comm AB$
+  \item Invertibility (3.2): for each $A$ there is an $A^{-1}$ s.t
+    $AA^{-1}=A^{-1}A=Id$
+  \item Inv-cong (3.3): $AB \comm B'A' \iff A^{-1}B' \comm BA'^{-1}$. (we can
+    start in the top left corner of \autoref{fig:darcs-commuting-patches} if we want)
+    \label{axiom:darcs-inv-cong}
+  \item Circular (3.5/6): performing all pairwise commutations in a sequence
+    gets us back to the beginning (or, a horrible equation)
+\end{enumerate}
+
+These axioms allow us to define some useful operations on repositories. For
+example, given a span $\{a\} \xleftarrow{A} \bullet \xrightarrow{B} \{b\}$ we
+may want to incorporate the results of both patches to get $\{a,b\}$. We call
+this operation ``merge'' and proceed in three steps:
+\begin{enumerate}
+\item by invertibility, we can find a patch $\{a\}A^{-1} \bullet$
+\item now that we have a sequence $A^{-1}B$, we commute it to get the sequence $B'{A^{-1}}'$
+\item define merge($A, B$) to be the sequence $AB'$.
+\end{enumerate}
+This process is shown in \autoref{fig:darcs-merge}.
+
+\begin{figure}
+\begin{center}
+\begin{tikzcd}
+\bullet \arrow[dd, "A"'] \arrow[rr, "B"]  &  & \{b\} \\
+&  & \\
+\{a\} \arrow[uu, "A^{-1}"', dashed, bend right] \arrow[rr, "B'"', dashed] & & \{a,b\} \arrow[uu, "{A^{-1}}'", dashed]
+\end{tikzcd}
+\end{center}
+\caption{Merging A and B by commutation}
+\label{fig:darcs-merge}
+\end{figure}
+
+Another useful operation on repositories is ``cherry picking''. Cherry picking
+is the act of pulling some, but not all, patches from one repository into another.
+Consider the patch sequence $\{\}A\{a\}B\{a,b\}C\{a,b,c\}$ and a repository
+$\{a\}$. We want to incorporate the changes in $C$, but not the ones in $B$, but
+naively combining applying $C$ does not work, since it is only applicable to the
+context $\{a,b\}$. The solution is to commute $BC \leftrightarrow C'B'$ (\autoref{fig:darcs-cherry-pick}) to
+obtain $C'$ with the desired endpoints.
+
+\begin{figure}
+\begin{center}
+\begin{tikzcd}
+{\{a,b\}} \arrow[rr, "C"]&  & {\{a,b,c\}}\\
+&  &\\
+\{a\} \arrow[uu, "B"] \arrow[rr, "C'"', dashed] &  & {\{a,c\}} \arrow[uu, "B'"', dashed]
+\end{tikzcd}
+\end{center}
+\caption{Commutation for cherry picking}
+\label{fig:darcs-cherry-pick}
+\end{figure}
+
+Problem: we cannot always commute patches, and Darcs does not have a great
+solution here.

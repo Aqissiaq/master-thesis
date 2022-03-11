@@ -1,0 +1,22 @@
+\subsection{A Categorical Theory of Patches}
+A Categorical Theory of Patches~\cite{Categorical2013} defines a category of
+files and patches, such that a merge is a pushout. To ensure a merge is always
+possible they first construct the category $\mathcal{L}$ of files and patches,
+and then its conservative cocompletion $\mathcal{P}$.
+
+$\mathcal{P}$ contains all finite colimits -- and in particular all pushouts --
+so the merge of a span is always defined. The paper's chief achievement is the
+explicit construction of this category and these pushouts.
+
+Interesting insights I'm not sure how to incorporate:
+\begin{itemize}
+\item the construction of $\mathcal{P}$ can be understood as the addition of \emph{partially} ordered
+  files to $\mathcal{L}$.
+\item ``flattening'' these partial orders leads to cyclic graphs. On editing
+  text~\cite{editing2014} objects, but maybe not correctly
+\item the poset structure of $\mathcal{L}$ and $\mathcal{P}$ is given explicitly
+  by $\mathcal{G}$ and the nerve functor $N_{\_}$ (!!).
+\end{itemize}
+
+(maybe mention Pijul~\cite{Pijul} (if so, figure out the relationship to ~\cite{Categorical2013}))
+(maybe some figures go here)
