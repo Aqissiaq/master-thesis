@@ -4,3 +4,57 @@
   \item implication and simple and/or ($\rightarrow, \times, +$)
   \item quantifiers and dependent types (fibers) ($\Sigma, \Pi$)
 \end{enumerate}
+
+In this section we consider an important interpretation of type theory: the
+Howard-Curry Isomorphism (which isn't an isomorphism, but we're not going into
+those details).
+
+Under this ``isomorphism'' types are identified with logical propositions, and
+terms with proofs of those propositions. The most basic example is the unit type
+$\top$. It has exactly one term, denoted $tt$, and we interpret it as ``true''.
+
+Another important type is the empty type $\bot$ which has no terms and is
+interpreted as ``false''. This might seem strange, but will make a lot of sense
+once we start using it.
+
+Let us make some more elaborate propositions. For example given the types (and
+hence propositions) $A$ and $B$ what would it mean to prove $A \land B$? Well if
+both $A$ and $B$ are true, we should be able to give a proof of $A$ \emph{and}
+and proof of $B$. But since proofs are terms of the corresponding type, this is
+the same as having terms $a : A$ and $b : B$. To keep track of both, lets form
+the ordered pair $(a, b)$. This is precisely an element of the product type $A
+\times B$! Hence this product type represents the proposition $A \land B$, since
+its terms correspond exactly to proofs of $A$ and $B$.
+
+As a sanity check, consider the truth table of $A \land B$ alongside the terms of $A
+\times B$ using $\top$ and $bottom$ to represent true and false. $A \land B$ is
+true when both $A$ and $B$ are true, and similarly $A \times B$ is inhabited
+exactly when both $A$ and $B$ are inhabited. (This doesn't really work because
+I have not given a true $\leftrightarrow$ inhabited correspondence)
+
+\begin{table}[h!]
+\centering
+\subfloat[logic]{
+\begin{tabular}{|l|l|l|}
+\hline
+$A$ & $B$ & $A \land B$ \\
+\hline
+false   & false   & false\\
+false   & true   & false\\
+true   & false   & false\\
+true   & true   & true\\   
+\hline
+\end{tabular}}%
+\hspace{.25\linewidth}
+\subfloat[types]{
+\begin{tabular}{|l|l|l|}
+\hline
+$A$ & $B$ & $A \times B$ \\
+\hline
+$\bot$   & $\bot$   & $\bot$\\
+$\bot$   & $\top$   & $\bot$\\
+$\top$   & $\bot$   & $\bot$\\
+$\top$   & $\top$   & $\top$\\       
+\hline
+\end{tabular}}
+\end{table}

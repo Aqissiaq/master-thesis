@@ -1,8 +1,8 @@
 \section{(Dependent) Type Theory}
 \begin{enumerate}
   \item (dependent) types in computer science
-  \item type theories in math/foundations
-  \item the formal stuff
+  \item type theories in math/foundations (the formal stuff)
+  \item Agda syntax?
 \end{enumerate}
 
 Types are a familiar concept to the computer scientist. We are used to working
@@ -37,7 +37,91 @@ We now leave the familiar world of programming behind and venture in to the spoo
     \Gamma \vdash f(a) : B
   \end{array}
   \label{rule:example}
-  \end{equation}
+\end{equation}
 
 In this new and wondrous world, a type theory is a system of \emph{inference
   rules} like \ref{rule:example} that can be used to make \emph{derivations}.
+
+% anatomy of an inference rule
+This particular inference rule is the elimination rule for function types. It
+says that if $a$ is a term of type $A$ and $f$ is a function from $A$ to $B$,
+then $f(a)$ is a term of type $B$. Let us take it apart.
+
+The part above the line is a list of hypotheses, and the part below is the conclusion.
+
+Each piece of the rule is called a \emph{judgement}. They consist of a
+context, some expression and a $\vdash$ separating the two. In this example our judgements are:
+\[\Gamma \vdash a : A\]
+\begin{center}
+``In any context $\Gamma$, $a$ is a term of type $A$''
+\[\Gamma \vdash f : A \rightarrow B\]
+``In any context $\Gamma$, $f$ is a function from $A$ to $B$''
+\[\Gamma \vdash f(a) : B\]
+``In any context $\Gamma$, $f(a)$ is a term of type $A$''
+\end{center}
+
+In fact these are all the same kind of judgement: a particular term ($a, f, f(a)$) is of a
+particular type ($A, A \rightarrow B, B$). There are three other kinds of
+judgements permitted in (Martin-Löf) type theory:
+\begin{center}
+  \[\Gamma \vdash A \; Type\]
+  ``$A$ is a type.''
+  \[\Gamma \vdash a \equiv b : A\]
+  ``$a$ and $b$ are judgementally equal terms of type A.''
+  \[\Gamma \vdash A \equiv B \; Type\]
+  ``$A$ and $B$ are judgementally equal types.''
+\end{center}
+
+
+When introducing a new type, we do so with a collection of rules.
+
+\begin{equation}
+  \begin{array}{c}
+    \Gamma \vdash A \; Type \qquad \Gamma \vdash B \; Type\\
+    \hline
+    \Gamma \vdash A \rightarrow B \; Type
+  \end{array}
+  \label{rule:function-intro}
+\end{equation}
+
+\begin{equation}
+  \begin{array}{c}
+    \Gamma \vdash f : A \rightarrow B\\
+    \hline
+    \Gamma, a : A \vdash f(a) : B
+  \end{array}
+  \label{rule:function-eval}
+\end{equation}
+
+\begin{equation}
+  \begin{array}{c}
+    \Gamma \vdash B \; Type \qquad \Gamma, a : A \vdash f(a) : B\\
+    \hline
+    \Gamma \vdash \lambda x . f(x) : A \rightarrow B
+  \end{array}
+  \label{rule:function-abstr}
+\end{equation}
+
+\begin{equation}
+  \begin{array}{c}
+    \Gamma \vdash f : A \rightarrow B\\
+    \hline
+    \Gamma \vdash \lambda x. f(x) \equiv f : A \rightarrow B
+  \end{array}
+  \label{rule:function-eta}
+\end{equation}
+
+\begin{equation}
+  \begin{array}{c}
+    \Gamma \vdash B \; Type \qquad \Gamma, a : A \vdash f(a) : B\\
+    \hline
+    \Gamma, a : A \vdash (\lambda y . f(y))(a) \equiv f(a) : B
+  \end{array}
+  \label{rule:function-beta}
+\end{equation}
+
+Theses are (respectively, I will find a better way to label them) an
+introduction rule, an elimination rule, lambda abstraction (what do we call this
+one in general?) and two computation rules known as $\beta$- and $\eta$-reduction.
+
+Do some dependent types here, or maybe just do the example for $\Pi$ instead.
