@@ -62,7 +62,8 @@ context, some expression and a $\vdash$ separating the two. In this example our 
 
 In fact these are all the same kind of judgement: a particular term ($a, f, f(a)$) is of a
 particular type ($A, A \rightarrow B, B$). There are three other kinds of
-judgements permitted in (Martin-Löf) type theory:
+judgements permitted in (Martin-Löf) type theory [MAYBE MOVE EQUALITY TO AN
+ID-TYPE SECTION]:
 \begin{center}
   \[\Gamma \vdash A \; Type\]
   ``$A$ is a type.''
@@ -72,8 +73,74 @@ judgements permitted in (Martin-Löf) type theory:
   ``$A$ and $B$ are judgementally equal types.''
 \end{center}
 
+The judgement form $\Gamma \vdash A \; Type$ lets us formally define lists and
+vectors. Lists are easy:
+\begin{equation*}
+  \begin{array}{c}
+    \Gamma \vdash A \; Type \\
+    \hline
+    \Gamma \vdash [A] \; Type
+  \end{array}
+  \label{rule:lists}
+\end{equation*}
 
-When introducing a new type, we do so with a collection of rules.
+This rule says ``if $A$ is a type, then lists of $A$ is a type''. Using
+$\mathbb{N}$ for the type of natural numbers, vectors are very similar:
+\begin{equation*}
+  \begin{array}{c}
+    \Gamma \vdash n : \mathbb{N} \\
+    \hline
+    \Gamma \vdash Vec (n) \; Type
+  \end{array}
+  \label{rule:lists}
+\end{equation*}
+
+Finally, we consider two important families of dependent types: $\Sigma$-types
+(sometimes called ``dependent pairs'') and $\Pi$-types (``dependent
+functions''). These are, respectively, pairs / functions where we let the
+second projection / codomain depend on the value of the first projection /
+domain. [THIS IS IMPRECISE AND USES WORDS WE HAVE NOT INTRODUCED].
+
+\[
+  \begin{array}[t]{c}
+    \Gamma \vdash A \; Type \qquad x:A \vdash B(x) \; Type\\
+    \hline
+    \Gamma \vdash \Sigma_A B \; Type\\
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    \Gamma \vdash x:A \qquad \Gamma \vdash y : B(x)\\
+    \hline
+    \Gamma \vdash (x , y) : \Sigma_A B
+  \end{array}
+\]
+
+This pair of rules (called an introduction/formation rule and an elimination(?) rule)
+tells us that
+\begin{enumerate}
+\item if $A$ is a type, and $B$ is a type family over $A$ [INTRODUCE PHRASING?],
+  then we can make the type $\Sigma_A B$ of dependent pairs
+  \item if we have a term $x$ of type $A$ and a term $y$ of $B(x)$ we can create
+    a term $(x,y)$ of type $\Sigma_A B$
+\end{enumerate}
+
+The analogous rules for dependent functions are:
+
+\[
+  \begin{array}[t]{c}
+    \Gamma \vdash A \; Type \qquad x:A \vdash B(x) \; Type\\
+    \hline
+    \Gamma \vdash \Pi_A B \; Type\\
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    x:A \vdash b(x) : B(x)\\
+    \hline
+    \Gamma \vdash \lambda x.b(x) : \Pi_A B
+  \end{array}
+\]
+When introducing a new type, we do so with a collection of rules. [NOT SURE
+ABOUT THIS BIT, MAYBE EXPLAIN WITH $\Pi$ AND/OR $\Sigma$?]
 
 \begin{equation}
   \begin{array}{c}
@@ -123,5 +190,3 @@ When introducing a new type, we do so with a collection of rules.
 Theses are (respectively, I will find a better way to label them) an
 introduction rule, an elimination rule, lambda abstraction (what do we call this
 one in general?) and two computation rules known as $\beta$- and $\eta$-reduction.
-
-Do some dependent types here, or maybe just do the example for $\Pi$ instead.

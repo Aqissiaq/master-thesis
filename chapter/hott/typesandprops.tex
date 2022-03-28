@@ -10,12 +10,19 @@ Howard-Curry Isomorphism (which isn't an isomorphism, but we're not going into
 those details).
 
 Under this ``isomorphism'' types are identified with logical propositions, and
-terms with proofs of those propositions. The most basic example is the unit type
-$\top$. It has exactly one term, denoted $tt$, and we interpret it as ``true''.
+terms with proofs of those propositions. This means we can consider a
+proposition ``true'' (or at least ``proved'') if we can construct a term of the
+corresponding type.
 
-Another important type is the empty type $\bot$ which has no terms and is
-interpreted as ``false''. This might seem strange, but will make a lot of sense
-once we start using it.
+Two very simple types are the empty type $\bot$ which has not terms, and the
+unit type $\top$ which has one term denoted by $\mathbf{1}$. [MAYBE INTRODUCE
+THE TYPES FIRST]
+
+Under the ``types as propositions'' interpretation, $\bot$ represents
+\emph{false}. The type has no terms so there are no proofs of ``false'', just
+like we would expect from a sound system. (Of course this alone does not prove
+our type theory sound.) Similarly, $\top$ represents \emph{true}. It always has
+a proof: $\mathbf{1}$.
 
 Let us make some more elaborate propositions. For example given the types (and
 hence propositions) $A$ and $B$ what would it mean to prove $A \land B$? Well if
@@ -26,11 +33,10 @@ the ordered pair $(a, b)$. This is precisely an element of the product type $A
 \times B$! Hence this product type represents the proposition $A \land B$, since
 its terms correspond exactly to proofs of $A$ and $B$.
 
-As a sanity check, consider the truth table of $A \land B$ alongside the terms of $A
-\times B$ using $\top$ and $bottom$ to represent true and false. $A \land B$ is
+As a sanity check, consider the truth table of $A \land B$~(\autoref{fig:and-truth-table}) alongside the terms of $A
+\times B$~(\autoref{fig:product-type-table}) using $\top$ and $\bot$ to represent true and false. $A \land B$ is
 true when both $A$ and $B$ are true, and similarly $A \times B$ is inhabited
-exactly when both $A$ and $B$ are inhabited. (This doesn't really work because
-I have not given a true $\leftrightarrow$ inhabited correspondence)
+exactly when both $A$ and $B$ are inhabited.
 
 \begin{table}[h!]
 \centering
@@ -44,17 +50,50 @@ false   & true   & false\\
 true   & false   & false\\
 true   & true   & true\\   
 \hline
-\end{tabular}}%
+\end{tabular}
+\label{fig:and-truth-table}}%
 \hspace{.25\linewidth}
-\subfloat[types]{
+\subfloat[types ``()'' meaning there are no terms of this type]{
 \begin{tabular}{|l|l|l|}
 \hline
 $A$ & $B$ & $A \times B$ \\
 \hline
-$\bot$   & $\bot$   & $\bot$\\
-$\bot$   & $\top$   & $\bot$\\
-$\top$   & $\bot$   & $\bot$\\
-$\top$   & $\top$   & $\top$\\       
+$\bot$   & $\bot$   & $()$\\
+$\bot$   & $\top$   & $()$\\
+$\top$   & $\bot$   & $()$\\
+$\top$   & $\top$   & $(\mathbf{1}, \mathbf{1})$\\       
 \hline
-\end{tabular}}
+\end{tabular}
+\label{fig:product-type-table}}
 \end{table}
+
+As another example, what does it mean to prove an implication $A \rightarrow B$?
+One reasonable answer is that given a proof of $A$, I can produce a proof of
+$B$. In terms of types, that means a way to produce a term of type $B$ given a
+term of type $A$, which is exactly a function from $A$ to $B$! Finally, note
+that logical ``or'' is represented by the sum type (disjoint union) $A + B$.
+
+[NOTE: this results in a \emph{constructive} logic (good)]
+
+We have the basic building blocks of propositional logic, but what about
+first-order logic with $\exists$ and $\forall$? This is where our dependent
+types come in handy.
+
+First, let us note that a predicate on a variable is a lot like a dependent
+type. If simple types can be interpreted as propositions, and a predicate on
+some variable is a proposition that \emph{depends} on a variable, then it stands
+to reason that a predicate can be represented with a dependent type. As such, we
+may view a term of the type $B(x)$ as a proof that $B$ holds for the term $x$.
+[WHATEVER THAT MEANS, LOL]
+
+Extending this thinking to quantifiers and considering what it means to provide
+a proof, a proof of $\exists x. P(x)$ should consist of some $x:A$ [CHEATING IN
+THE A] and a proof that $P$ is true of $x$. Such a pair is a term of a type we have seen
+before: the dependent pair $\Sigma_A P$. Note that this term actually contains
+\emph{more} data than just asserting $\exists x. P(x)$ -- it gives us an $x$.
+
+Similarly, a proof of $\forall x. P(x)$ can be seen as an assertion that
+whatever $x:A$ you give me, I can show that produce a proof (term) of $P(x)$. We
+use $\Pi_A P$ to represent this quantification. Note that both of these
+constructions quantify \emph{over} some base type $A$, not over ``every $x$ in
+the universe,'' whatever that means. [REVISIT]
