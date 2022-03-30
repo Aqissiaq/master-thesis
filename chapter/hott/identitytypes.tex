@@ -4,3 +4,55 @@
   \item J-rule (intuition: reflexive closure? groupoid structure?)
   \item paths in space
 \end{enumerate}
+
+Given this notion of propositions as types, one of the things we may want to
+propose (and prove) is the equality of two terms. That is, given two terms of
+some type, how do we show that they are equal? Note that this is different from
+the \emph{judgemental} equality discussed in \autoref{sec/typetheory}. [HOW EXACTLY?]
+
+Since propositions are types and ``x is equal to y'' is a proposition, there
+should be a corresponding type. Also, the truth of this proposition depends on
+$x$ and $y$ (clearly ``2 is equal to 2'' should be different from ``2 is equal
+to 3'') so the type should depend on $x$ and $y$ as well. But how should this
+type be constructed? What are the terms of such a type?
+
+The solution, proposed by Per Martin-Löf~\cite{MLTT72}, is an inductive family of dependent
+types called the \emph{identity type}. For each type $A$ and pair of terms
+$x,y:A$ we construct the identity type $x =_A y$ (the subscript may be dropped
+when the type of $x$ and $y$ is clear). It has the following formation and introduction
+rules~\cite{Rijke2019}:
+
+\[
+  \begin{array}[t]{c}
+    \Gamma \vdash a:A\\
+    \hline
+    \Gamma, x:A \vdash a =_A x \; Type\\
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    \Gamma \vdash a:A\\
+    \hline
+    \Gamma \vdash refl_a : a =_A a
+  \end{array}
+\]
+and an induction principle given by:
+\[
+  \begin{array}{c}
+    \Gamma \vdash a:A \qquad \Gamma, x:A, p:a =_A x \vdash P (x,p) Type\\
+    \hline
+    \Gamma \vdash J_a : P (a, refl_a) \rightarrow \Pi_{x:A}\Pi_{p:a=_Ax}P
+    (x, p)
+  \end{array}
+\]
+
+This is astonishingly simple! The identity type has one constructor: $refl_{\_}$,
+and in order to use its terms it is enough to know how to use $refl$.
+
+[MAYBE SOMETHING ABOUT THE GROUPOID STRUCTURE AND UIP]
+
+One way to make sense of identity types is through the homotopy theory. With
+this interpretation a term of $x =_A y$ is like a path in $A$ from $x$ to $y$.
+In fact the collection of all such paths is itself a space (and thus a type):
+the path space. Additionally there may be paths between paths, paths between
+paths between paths and so on. These higher paths are the eponymous
+``homotopies'' and provide a rich field of study on their own. [REVISIT]

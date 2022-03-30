@@ -1,9 +1,97 @@
 \section{Higher Inductive Types}
 \begin{enumerate}
   \item inductive types: base case(s) and point generator(s)
-  \item example: $A + B, \mathbb{N}$
+  \item example(s)
   \item HIGHER inductive types: terms and identities
   \item ie. points and paths between points (and paths between paths (and
     paths between paths between paths))
+  \item example(s)
   \item elimination rules? they need to go somewhere, but this might not be it
 \end{enumerate}
+
+\subsection{Inductive Types}
+One way to construct more elaborate types is by induction. An inductive type is
+defined by a number of constructors, which can be either constant terms or
+functions. Let us return to the type of lists. It can be constructed from the
+empty list and the function \texttt{cons} which takes an element and affixes it
+to the start of a list. Using $[]$ for the empty list and $::$ for the (infix)
+cons function we have a pair of introduction rules:
+
+\[
+  \begin{array}[t]{c}
+    \Gamma \vdash A \; Type\\
+    \hline
+    \Gamma \vdash [] : [A]\\
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    \Gamma \vdash a:A \qquad \Gamma \vdash as:[A] \\
+    \hline
+    \Gamma \vdash ( a :: as ) : [A]
+  \end{array}
+\]
+
+From these we can construct arbitrarily long lists by starting with the empty
+list and affixing new terms of $A$ to obtain $[]$, $(a::[])$, $(a'::(a::[]))$ etc.
+
+In order to use this type, we also need an elimination rule (or
+recursion principle in the non-dependent case). The recursion principle tells us
+how to use terms of the type by defining functions out of it and will be
+familiar to anyone who has written a recursive function on lists.
+
+\[
+  \begin{array}{c}
+    \Gamma \vdash b_0:B\\
+    \Gamma \vdash b_{cons}: A \times [A] \rightarrow B\\
+    \hline
+    \Gamma \vdash rec_{[A]} (b_0, b_{cons}) : [A] \rightarrow B
+  \end{array}
+\]
+
+In words, this rule states that you can construct a function from $[A]$ to $B$
+if you have a term $b_0$ and a function that takes a pair of an $A$ and a list
+to produce a $B$. As one might expect, the resulting function maps $[]$ to $b_0$
+and $(a::as)$ to $b_{cons}(a,as)$. (By a computation rule that we also need to
+specify).
+
+[MAYBE GIVE A MORE GENERAL TREATMENT LIKE IN~\cite{Rijke2019} (4.1)]
+
+\subsection{Higher Inductive Types}
+This doesn't really make sense without the interpretation of types as spaces, huh..
+\begin{enumerate}
+\item motivation: ``natural'' (sic) extension, synthetic topology
+\item example: the circle
+\item cubical and non-cubical elimination
+\end{enumerate}
+
+When constructing ever more complicated types, it would be nice to have some
+control over which terms are identified. [Examples? Just quotients, maybe?]
+
+One way to do this is \emph{Higher Inductive Types}. Like inductive types, HITs
+are constructed from generators, but while the generators of an inductive type
+may only generate terms, the generators of a HIT may also generate paths.
+
+[ELIMINATION RULES. ``VARY CONTINUOUSLY'']
+
+[SYNTHETIC TOPOLOGY TIME]
+
+The prototypical example of a HIT is the circle $S^1$, because it is very simple
+comprising only a single point and one path. Its introduction and formation
+rules are:
+\begin{equation}
+  \label{eq:circle}
+  \begin{array}[t]{c}
+    \hline
+    \Gamma \vdash S^1 \; Type\\
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    \hline
+    \Gamma \vdash base : S^1\\
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    \hline
+    \Gamma \vdash loop : base =_{S^1} base
+  \end{array}
+\end{equation}
