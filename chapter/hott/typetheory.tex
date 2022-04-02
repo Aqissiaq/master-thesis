@@ -16,7 +16,7 @@ While this is a good basis for intuition, Type Theory (tm) is a bit different.
 
 However, let us stick with the programming intuition to introduce a less
 familiar concept: \emph{dependent} types. First, note that one of the types in
-the previous paragraph is a bit different than the others: \text{['a','b','c']} is a
+the previous paragraph is a bit different from the others: \text{['a','b','c']} is a
 list \emph{of \texttt{char}s}. Similarly we could have lists of \texttt{int}s,
 lists of \texttt{float}s or even lists of lists! Clearly ``lists'' comprises
 many different types, depending on the type of their elements. We could call
@@ -26,7 +26,10 @@ lists of.
 Dependent types extend this idea by allowing families to be parametrized by
 terms. Then we can create new and exciting types like \texttt{Vec 3} and
 \texttt{Vec 4} -- the types of 3- and 4-dimensional vectors. Again \texttt{Vec} is
-actually a whole collection of types -- one for each integer!
+actually a whole collection of types -- one for each integer.
+
+We can think of \texttt{Vec} as a function that assigns a type to each integer,
+and may refer to it as ``a (type) family over \texttt{Int}''.
 
 We now leave the familiar world of programming behind and venture in to the spooky
 (but exciting) world of foundational mathematics.
@@ -57,12 +60,12 @@ context, some expression and a $\vdash$ separating the two. In this example our 
 \[\Gamma \vdash f : A \rightarrow B\]
 ``In any context $\Gamma$, $f$ is a function from $A$ to $B$''
 \[\Gamma \vdash f(a) : B\]
-``In any context $\Gamma$, $f(a)$ is a term of type $A$''
+``In any context $\Gamma$, $f(a)$ is a term of type $B$''
 \end{center}
 
-In fact these are all the same kind of judgement: a particular term ($a, f, f(a)$) is of a
-particular type ($A, A \rightarrow B, B$). There are three other kinds of
-judgements permitted in (Martin-Löf) type theory [NOTE: THESE ARE JUDGEMENTAL
+In fact these are all the same kind of judgement: a particular term (resp. $a, f,
+f(a)$) is of a particular type (resp. $A, A \rightarrow B, B$). There are three
+other kinds of judgements permitted in (Martin-Löf) type theory [NOTE: THESE ARE JUDGEMENTAL
 EQUALITIES, DISTINCT FROM IDENTITY TYPES. MAKE CLEAR AND SETTLE ON SYNTAX]:
 \begin{center}
   \[\Gamma \vdash A \; Type\]
@@ -95,52 +98,14 @@ $\mathbb{N}$ for the type of natural numbers, vectors are very similar:
   \label{rule:lists}
 \end{equation*}
 
-Finally, we consider two important families of dependent types: $\Sigma$-types
-(sometimes called ``dependent pairs'') and $\Pi$-types (``dependent
-functions''). These are, respectively, pairs / functions where we let the
-second projection / codomain depend on the value of the first projection /
-domain. [THIS IS IMPRECISE AND USES WORDS WE HAVE NOT INTRODUCED].
+The preceding introductions of lists and vectors are clearly not complete specifications
+of the types. They do not tell us how to create new terms, nor how to use those
+terms in other expressions. In order to give a complete description we will need
+need more rules. This pattern and terminology will be used to introduce new
+types, so we elucidate it with a well-known example: the type of (non-dependent)
+functions.
 
-\[
-  \begin{array}[t]{c}
-    \Gamma \vdash A \; Type \qquad x:A \vdash B(x) \; Type\\
-    \hline
-    \Gamma \vdash \Sigma_A B \; Type\\
-  \end{array}
-  \qquad
-  \begin{array}[t]{c}
-    \Gamma \vdash x:A \qquad \Gamma \vdash y : B(x)\\
-    \hline
-    \Gamma \vdash (x , y) : \Sigma_A B
-  \end{array}
-\]
-
-This pair of rules (called an introduction/formation rule and an elimination(?) rule)
-tells us that
-\begin{enumerate}
-\item if $A$ is a type, and $B$ is a type family over $A$ [INTRODUCE PHRASING?],
-  then we can make the type $\Sigma_A B$ of dependent pairs
-  \item if we have a term $x$ of type $A$ and a term $y$ of $B(x)$ we can create
-    a term $(x,y)$ of type $\Sigma_A B$
-\end{enumerate}
-
-The analogous rules for dependent functions are:
-
-\[
-  \begin{array}[t]{c}
-    \Gamma \vdash A \; Type \qquad x:A \vdash B(x) \; Type\\
-    \hline
-    \Gamma \vdash \Pi_A B \; Type\\
-  \end{array}
-  \qquad
-  \begin{array}[t]{c}
-    x:A \vdash b(x) : B(x)\\
-    \hline
-    \Gamma \vdash \lambda x.b(x) : \Pi_A B
-  \end{array}
-\]
-When introducing a new type, we do so with a collection of rules. [NOT SURE
-ABOUT THIS BIT, MAYBE EXPLAIN WITH $\Pi$ AND/OR $\Sigma$?]
+[NOT SURE ABOUT THIS BIT, MAYBE EXPLAIN WITH $\Pi$ AND/OR $\Sigma$?]
 
 \begin{equation}
   \begin{array}{c}
@@ -151,6 +116,25 @@ ABOUT THIS BIT, MAYBE EXPLAIN WITH $\Pi$ AND/OR $\Sigma$?]
   \label{rule:function-intro}
 \end{equation}
 
+An \emph{introduction rule}~(\ref{rule:function-intro}) tells us how to construct
+the type. In this case, if $A$ and $B$ are types, then functions between them is
+also a type.
+
+\begin{equation}
+  \begin{array}{c}
+    \Gamma, a : A \vdash f(a) : B\\
+    \hline
+    \Gamma \vdash \lambda x . f(x) : A \rightarrow B
+  \end{array}
+  \label{rule:function-abstr}
+\end{equation}
+
+A \emph{formation rule}~(\ref{rule:function-abstr}) tells us how to construct a
+\emph{term} of the type. In the case of functions, terms are constructed by
+lambda abstraction -- if for each $a:A$ we have term $b:B$, we can make a
+function that maps $a$ to $b$. The result is denoted $f(a)$ to emphasize its
+dependence on $a$.
+
 \begin{equation}
   \begin{array}{c}
     \Gamma \vdash f : A \rightarrow B\\
@@ -160,14 +144,9 @@ ABOUT THIS BIT, MAYBE EXPLAIN WITH $\Pi$ AND/OR $\Sigma$?]
   \label{rule:function-eval}
 \end{equation}
 
-\begin{equation}
-  \begin{array}{c}
-    \Gamma \vdash B \; Type \qquad \Gamma, a : A \vdash f(a) : B\\
-    \hline
-    \Gamma \vdash \lambda x . f(x) : A \rightarrow B
-  \end{array}
-  \label{rule:function-abstr}
-\end{equation}
+An \emph{elimination rule}~(\ref{rule:function-eval}) describes how a term is
+used. In the case of functions, we may evaluate them with an argument in the
+domain to obtain a term in the codomain.
 
 \begin{equation}
   \begin{array}{c}
@@ -177,16 +156,87 @@ ABOUT THIS BIT, MAYBE EXPLAIN WITH $\Pi$ AND/OR $\Sigma$?]
   \end{array}
   \label{rule:function-eta}
 \end{equation}
-
 \begin{equation}
   \begin{array}{c}
-    \Gamma \vdash B \; Type \qquad \Gamma, a : A \vdash f(a) : B\\
+    \Gamma, a : A \vdash f(a) : B\\
     \hline
     \Gamma, a : A \vdash (\lambda y . f(y))(a) \equiv f(a) : B
   \end{array}
   \label{rule:function-beta}
 \end{equation}
 
-Theses are (respectively, I will find a better way to label them) an
-introduction rule, an elimination rule, lambda abstraction (what do we call this
-one in general?) and two computation rules known as $\beta$- and $\eta$-reduction.
+\emph{Computation rules} postulate when two terms are judgementally equal. In
+the case of functions we have two: $\eta$-reduction~(\ref{rule:function-eta})
+and $\beta$-reduction~(\ref{rule:function-beta}). Taken together, they imply that
+function evaluation and lambda abstraction are mutual inverses~\cite{Rijke2019}.
+
+Finally, we consider two important families of dependent types: $\Sigma$-types
+(sometimes called ``dependent pairs'') and $\Pi$-types (``dependent
+functions''). Intuitively, $\Sigma$-types consist of pairs $(x,y)$ where the
+type of $y$ is allowed to depend on $x$, and terms of $\Pi$-types are functions
+$\lambda x . y$ where the type of $y$ may depend on $x$. If the type of $y$
+happens to be constant, $\Sigma_A B$ is the cartesian product $A \times B$ and
+$\Pi_A B$ is the type of non-dependent functions $A \rightarrow B$.
+
+\begin{equation*}
+  \begin{array}[t]{c}
+    \Gamma \vdash A \; Type \qquad \Gamma, x:A \vdash B(x) \; Type\\
+    \hline
+    \Gamma \vdash \Sigma_A B \; Type\\
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    \Gamma \vdash x:A \qquad \Gamma \vdash y : B(x)\\
+    \hline
+    \Gamma \vdash (x , y) : \Sigma_A B
+  \end{array}
+\end{equation*}
+
+The introduction and formation rules tell use that: 
+\begin{enumerate}
+\item if $A$ is a type, and $B$ is a type family over $A$,
+  then we can make the type $\Sigma_A B$ of dependent pairs
+\item if we have a term $x$ of type $A$ and a term $y$ of $B(x)$ we can create
+    a term $(x,y)$ of type $\Sigma_A B$
+\end{enumerate}
+
+Additionally we have elimination rules (where $\pi_1, \pi_2$ denote the first
+and second projection):
+
+\begin{equation*}
+  \begin{array}[t]{c}
+    \Gamma \vdash x : \Sigma_A B\\
+    \hline
+    \Gamma \vdash \pi_1(x) : A\\
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    \Gamma \vdash x : \Sigma_A B\\
+    \hline
+    \Gamma \vdash \pi_2(x) : B(\pi_1(x))
+  \end{array}
+\end{equation*}
+
+[COMPUTATION RULES? THEY'RE PRETTY BORING]
+
+The analogous rules for dependent functions are:
+
+\begin{equation*}
+  \begin{array}[t]{c}
+    \Gamma \vdash A \; Type \qquad \Gamma, x:A \vdash B(x) \; Type\\
+    \hline
+    \Gamma \vdash \Pi_A B \; Type\\
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    \Gamma, a:A \vdash b(a) : B(a)\\
+    \hline
+    \Gamma \vdash \lambda x.b(x) : \Pi_A B
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    \Gamma \vdash f : \Pi_A B \\
+    \hline
+    \Gamma, x:A \vdash f(x) : B(x)
+  \end{array}
+\end{equation*}
