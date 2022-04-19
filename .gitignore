@@ -41,6 +41,9 @@
 *.synctex.gz(busy)
 *.pdfsync
 
+## Temporary Agda stuff
+*.agdai
+
 ## Build tool directories for auxiliary files
 # latexrun
 latex.out/
