@@ -85,21 +85,40 @@ _++_ : {A : Set} {n m : ℕ} → Vec A n → Vec A m → Vec A (n + m)
 In addition to being a dependently typed functional programming language
 (or perhaps more accurately, \emph{by} being a dependently typed programming language)
 Agda is a proof assistant. By making use of "propositions as types" as well as Martin-Löf style
-identity types.
+identity types, proofs and programs are the same thing.
 Note that the Agda type \texttt{\_≡\_} is \emph{not} the same as the judgemental equality from \autoref{sec/typetheory}.
 Rather, it is the identity type described in \autoref{sec/identitytypes}.
 
-
-Extremely simple examples:
+The most basic proofs are simply \texttt{refl}. We can use refl to prove that one plus one is two,
+or that zero is the left unit of addition.
 \begin{code}
-_ : suc zero ≡ suc zero
-_ = refl
-
+-- 1 + 1 = 2
 _ : (suc zero) + (suc zero) ≡ suc (suc zero)
 _ = refl
-\end{code}
 
-Induction (and ≡-Reasoning)
+-- zero is the left unit for addition
++-lunit : ∀ {n} → zero + n ≡ n
++-lunit = refl
+\end{code}
+Of course, not all proofs are so simple. In fact, proving that zero is also the \emph{right} unit takes some work.
+This is because addition is defined by induction on the left argument, so \texttt{+-lunit} is simply the base case.
+
+\begin{code}
+-- zero is the right unit for addition
++-runit : ∀ {n} → n + zero ≡ n
++-runit {zero} = refl
++-runit {suc n} = cong suc +-runit
+\end{code}
+For \texttt{+-runit} we need a proof by induction. The base case (0 + 0 = 0) is proved by \texttt{refl}
+like before, but the induction step requires slightly more work.
+Luckily the term we need has type \texttt{(suc n + zero) ≡ suc n} and the left-hand side computes to \texttt{suc (n + zero)}.
+Now we have \texttt{suc} applied to both sides of an instance of \texttt{+-runit} so we can use the induction hypothesis with \texttt{cong : (f : X → Y) → x ≡ y → (f x) ≡ (f y)}.
+(Also note the pattern matching on an implicit argument.)
+
+Another useful tool, mainly to make complicated proofs easier to follow, is \texttt{≡-Reasoning},
+which introduces \texttt{\_≡⟨\_⟩\_} and \texttt{\_∎}.
+These let the programmer write out the steps of a proof, like the inductive case of the proof below,
+such that \texttt{x ≡⟨ p ⟩ y} means "x is equal to y by p".
 \begin{code}
 open ≡-Reasoning
 concat-map : {A B : Set} {n m : ℕ} → (f : A → B) (v : Vec A n) (w : Vec A m)
@@ -108,5 +127,6 @@ concat-map f [] w = refl
 concat-map f (x :: v) w = map f ((x :: v) ++ w)
   ≡⟨ refl ⟩ map f (x :: (v ++ w))
   ≡⟨ refl ⟩ f x :: map f (v ++ w)
-  ≡⟨ cong (f x ::_) (concat-map f v w) ⟩ (map f (x :: v) ++ map f w) ∎
+  ≡⟨ cong (f x ::_) (concat-map f v w) ⟩
+    (map f (x :: v) ++ map f w) ∎
 \end{code}

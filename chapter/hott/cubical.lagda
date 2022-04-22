@@ -104,10 +104,10 @@ As one might expect, \texttt{refl} is the constant path
 refl : {x : A} → x ≡ x
 refl {x = x} = λ i → x
 \end{code}
-and symmetry (denoted by $\_^{-1}$) is defined using $\sim\_$:
+and symmetry is defined using $\sim\_$:
 \begin{code}
-_⁻¹ : {x y : A} → x ≡ y → y ≡ x
-p ⁻¹ = λ i → p (~ i)
+sym : {x y : A} → x ≡ y → y ≡ x
+sym p = λ i → p (~ i)
 \end{code}
 
 Higher inductive types are defined by their point and path constructors. As an
@@ -155,24 +155,35 @@ In cubical type theory (and in particular in Cubical Agda) these are not axioms
 at all, but provable theorems. Function extensionality is especially
 straightforward: given two (possibly dependent) functions $f,g : A \ra B$ and a
 family of paths $p : \Pi_{(x:A)}~f(x)~=_B~g(x)$, the proof simply swaps the
-arguments to $p$:
-\[funExt~p~i~x = p~x~i\]
+order of operations.
+\begin{code}
+funExt : {A B : Type} {f g : A → B} (p : (x : A) → f x ≡ g x) → f ≡ g
+funExt p i x = p x i
+\end{code}
 
 Univalence is also provable in the sense that a term of the type
-\[\forall{\ell}{A B : Type \ell} \ra (A \equiv B) \simeq (A \simeq B)\]
+\begin{code}[hide]
+postulate
+  univalence :
+\end{code}
+\begin{code}
+    {A B : Type} → (A ≡ B) ≃ (A ≃ B)
+\end{code}
 can be constructed. For our purposes we actually only need half of this
 equivalence: the very helpful
-\[ua : {A B : Type} \ra A \simeq B \ra A \equiv B\]
+\begin{code}
+  ua : {A B : Type} → A ≃ B → A ≡ B
+\end{code}
 
 Additionally, Cubical Agda's support for HITs and pattern matching on their
 constructors will be very useful.
 
-The benefit of all this is canonicity. Since $ua$ and HITs are non-axiomatic,
+The benefit of all this is canonicity. Since \texttt{ua} and HITs are non-axiomatic,
 terms constructed by their use actually compute to a value. This means our
 formalization actually computes the result of applying patches. Sadly, however,
 this is not entirely true. There are two exceptions to this canonicity at the
 time of writing:
 \begin{enumerate}
-\item $transp$ over indexed families, and
-\item $hcomp$ over indexed families.
+\item \texttt{transp} over indexed families, and
+\item \texttt{hcomp} over indexed families.
 \end{enumerate}
