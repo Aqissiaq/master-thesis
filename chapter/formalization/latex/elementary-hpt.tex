@@ -417,19 +417,17 @@ but in order to prove its properties we require a "detour" into the integers.
 With the commutativity of patches established, reconcile follows easily:
 
 \begin{code}%
-\>[0]\AgdaFunction{reconcile}\AgdaSpace{}%
-\AgdaSymbol{:}%
-\>[223I]\AgdaSymbol{\{}\AgdaSpace{}%
-\AgdaBound{f1}\AgdaSpace{}%
+\>[0]\AgdaFunction{reconcile}%
+\>[222I]\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaBound{f1}\AgdaSpace{}%
 \AgdaBound{f2}\AgdaSpace{}%
 \AgdaBound{g1}\AgdaSpace{}%
 \AgdaBound{g2}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
-\AgdaFunction{Patch}\AgdaSpace{}%
-\AgdaSymbol{\}}\<%
+\AgdaFunction{Patch}\AgdaSymbol{\}}\<%
 \\
-\>[.][@{}l@{}]\<[223I]%
-\>[12]\AgdaSymbol{→}\AgdaSpace{}%
+\>[.][@{}l@{}]\<[222I]%
+\>[10]\AgdaSymbol{→}\AgdaSpace{}%
 \AgdaFunction{merge}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{f1}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
@@ -455,13 +453,13 @@ With the commutativity of patches established, reconcile follows easily:
 \AgdaBound{p}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaKeyword{let}%
-\>[254I]\AgdaBound{f1=g2}\AgdaSpace{}%
+\>[252I]\AgdaBound{f1=g2}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaFunction{cong}\AgdaSpace{}%
 \AgdaField{snd}\AgdaSpace{}%
 \AgdaBound{p}\<%
 \\
-\>[.][@{}l@{}]\<[254I]%
+\>[.][@{}l@{}]\<[252I]%
 \>[38]\AgdaBound{g1=f2}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaFunction{cong}\AgdaSpace{}%
@@ -474,7 +472,7 @@ With the commutativity of patches established, reconcile follows easily:
 \>[2]\AgdaBound{f1}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
 \AgdaBound{g1}%
-\>[267I]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
+\>[265I]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{cong₂}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{\AgdaUnderscore{}∙\AgdaUnderscore{}}}\AgdaSpace{}%
 \AgdaBound{f1=g2}\AgdaSpace{}%
@@ -484,7 +482,7 @@ With the commutativity of patches established, reconcile follows easily:
 \AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
 \AgdaBound{f2}\<%
 \\
-\>[.][@{}l@{}]\<[267I]%
+\>[.][@{}l@{}]\<[265I]%
 \>[10]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{patch-comm}\AgdaSpace{}%
 \AgdaBound{g2}\AgdaSpace{}%

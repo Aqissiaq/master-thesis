@@ -117,8 +117,8 @@ patch-comm p q = let (n , p-is-n) = intLoop-sur p
 With the commutativity of patches established, reconcile follows easily:
 
 \begin{code}
-reconcile : { f1 f2 g1 g2 : Patch }
-            → merge (f1 , f2) ≡ (g1 , g2) → f1 ∙ g1 ≡ f2 ∙ g2
+reconcile : {f1 f2 g1 g2 : Patch}
+          → merge (f1 , f2) ≡ (g1 , g2) → f1 ∙ g1 ≡ f2 ∙ g2
 reconcile {f1} {f2} {g1} {g2} p = let f1=g2 = cong snd p
                                       g1=f2 = cong fst (sym p) in
   f1 ∙ g1 ≡⟨ cong₂ _∙_ f1=g2 g1=f2 ⟩ g2 ∙ f2
