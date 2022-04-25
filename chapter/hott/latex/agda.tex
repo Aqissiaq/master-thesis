@@ -203,6 +203,57 @@ be inferred from the provided function and vector.
 \AgdaBound{v}\AgdaSymbol{)}\<%
 \end{code}
 
+Of course, map would work equally well for the non-dependent type of lists.
+To make use of this additional power we can define \texttt{map-pointwise}
+which safely applies a different function to each element.
+\begin{code}%
+\>[0]\AgdaFunction{map-pointwise}\AgdaSpace{}%
+\AgdaSymbol{:}%
+\>[111I]\AgdaSymbol{\{}\AgdaBound{A}\AgdaSpace{}%
+\AgdaBound{B}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaPrimitive{Set}\AgdaSymbol{\}\{}\AgdaBound{n}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaDatatype{ℕ}\AgdaSymbol{\}}\AgdaSpace{}%
+\AgdaSymbol{→}\<%
+\\
+\>[.][@{}l@{}]\<[111I]%
+\>[16]\AgdaDatatype{Vec}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{A}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaBound{B}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaBound{n}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaDatatype{Vec}\AgdaSpace{}%
+\AgdaBound{A}\AgdaSpace{}%
+\AgdaBound{n}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaDatatype{Vec}\AgdaSpace{}%
+\AgdaBound{B}\AgdaSpace{}%
+\AgdaBound{n}\<%
+\\
+\>[0]\AgdaFunction{map-pointwise}\AgdaSpace{}%
+\AgdaInductiveConstructor{[]}\AgdaSpace{}%
+\AgdaInductiveConstructor{[]}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaInductiveConstructor{[]}\<%
+\\
+\>[0]\AgdaFunction{map-pointwise}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{f}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
+\AgdaBound{fs}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{x}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
+\AgdaBound{xs}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaBound{f}\AgdaSpace{}%
+\AgdaBound{x}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
+\AgdaFunction{map-pointwise}\AgdaSpace{}%
+\AgdaBound{fs}\AgdaSpace{}%
+\AgdaBound{xs}\<%
+\end{code}
+
 Concatenation is the binary operation that adjoins one vector to the end of another.
 This has the effect of adding their lengths, evidenced by the resulting type \texttt{Vec A (n + m)}.
 Note that we only pattern match on the left vector. This is actually important, since \texttt{\_+\_} is defined
@@ -344,7 +395,7 @@ such that \texttt{x ≡⟨ p ⟩ y} means "x is equal to y by p".
 \\
 \>[0]\AgdaFunction{concat-map}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[189I]\AgdaSymbol{\{}\AgdaBound{A}\AgdaSpace{}%
+\>[226I]\AgdaSymbol{\{}\AgdaBound{A}\AgdaSpace{}%
 \AgdaBound{B}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaPrimitive{Set}\AgdaSymbol{\}}\AgdaSpace{}%
@@ -369,7 +420,7 @@ such that \texttt{x ≡⟨ p ⟩ y} means "x is equal to y by p".
 \AgdaBound{A}\AgdaSpace{}%
 \AgdaBound{m}\AgdaSymbol{)}\<%
 \\
-\>[.][@{}l@{}]\<[189I]%
+\>[.][@{}l@{}]\<[226I]%
 \>[13]\AgdaSymbol{→}\AgdaSpace{}%
 \AgdaFunction{map}\AgdaSpace{}%
 \AgdaBound{f}\AgdaSpace{}%

@@ -72,6 +72,16 @@ map _ [] = []
 map f (x :: v) = (f x) :: (map f v)
 \end{code}
 
+Of course, map would work equally well for the non-dependent type of lists.
+To make use of this additional power we can define \texttt{map-pointwise}
+which safely applies a different function to each element.
+\begin{code}
+map-pointwise : {A B : Set}{n : ℕ} →
+                Vec (A → B) n → Vec A n → Vec B n
+map-pointwise [] [] = []
+map-pointwise (f :: fs) (x :: xs) = f x :: map-pointwise fs xs
+\end{code}
+
 Concatenation is the binary operation that adjoins one vector to the end of another.
 This has the effect of adding their lengths, evidenced by the resulting type \texttt{Vec A (n + m)}.
 Note that we only pattern match on the left vector. This is actually important, since \texttt{\_+\_} is defined

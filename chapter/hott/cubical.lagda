@@ -8,14 +8,6 @@ implementations of univalence and higher inductive types~\cite{coquand2018higher
 introduces the basic concepts of cubical type theory, Cubical Agda and the
 Cubical library.
 
-\subsection{The Interval Type}\label{sec:interval-type}
-\begin{enumerate}
-  \item the interval type as a HIT
-  \item operations on the interval type (free de morgan algebra)
-  \item paths
-  \item the eponymous cubes
-\end{enumerate}
-
 The main ingredient of cubical type theory is the interval type. It represents
 the closed interval $[0,1]$ in and we can think of it as a HIT with two points
 and an equality between them. Denote the interval by $\I$ and its two
@@ -85,6 +77,8 @@ $i1$ and the operations by $\_\land\_, \_\lor\_, \sim\_$. The most basic notion
 of a path is actually the heterogenous/dependent path type:
 \begin{code}[hide]
 open import Cubical.Core.Everything
+  hiding(lineToEquiv)
+open import Cubical.Data.Int
 variable
   A : Type
 postulate
@@ -120,18 +114,38 @@ data S¹ : Type where
 \end{code}
 
 Defining functions out of HITs is done by pattern matching. Notice the variable
-$i:\I$ which represents ``varying along the path''.
+\texttt{i:\I} which represents ``varying along the path''.
+This is the function from the circle to itself which reverses the direction of the loop.
 
 \begin{code}
-backwards : S¹ → S¹
-backwards base = base
-backwards (loop i) = loop (~ i)
+reverse : S¹ → S¹
+reverse base = base
+reverse (loop i) = loop (~ i)
 \end{code}
 
-[FUNCTION EXAMPLE GOES HERE]
+[MORE EXAMPLES? ENCODE/DECODE FOR WINDING?]
 
-Note that the endpoints of a path must align with the mapping of points, and
-this alignment must be \emph{definitional}. [EXPLICIT EXAMPLE]
+%Explain this when its needed in the formalization
+%Note that the endpoints of a path must align with the mapping of points, and
+%this alignment must be \emph{judgemental}.
+%
+%As a (somewhat contrived) examples consider a type just like the circle, except
+%its loop is indexed by a boolean.
+%\begin{code}
+%data IndexedS¹ : Type where
+  %baseI : IndexedS¹
+  %loopI : Bool → baseI ≡ baseI
+%
+%-- this will not work because "true != if x then true else true of type Bool"
+  %-- constTrue' : IndexedS¹ → Bool
+  %-- constTrue' baseI = true
+  %-- constTrue' (loopI b i) = if b then true else true
+%constTrue' : IndexedS¹ → Bool
+%constTrue' baseI = true
+%constTrue' (loopI false i) = true
+%constTrue' (loopI true i) = true
+%\end{code}
+
 
 In addition to the cubical mode, Vezzosi, M\"ortberg and Cavallo develop and
 maintain a cubical standard library~\footnote[1]{A standard library for Cubical
@@ -147,7 +161,7 @@ functions and proofs.
 \end{enumerate}
 
 The main benefit of cubical type theories is that they make it possible to prove
-several useful results that are usually only axiomatically defined. Two
+useful results that are usually only axiomatically defined. Two
 prominent examples are function extensionality and Voevodsky's univalence
 axiom~\cite{voevodsky2014}.
 
@@ -169,10 +183,12 @@ postulate
 \begin{code}
     {A B : Type} → (A ≡ B) ≃ (A ≃ B)
 \end{code}
-can be constructed. For our purposes we actually only need half of this
-equivalence: the very helpful
+can be constructed.
+It is often useful to have only one direction of the equivalence.
+The cubical standard library provides both in:
 \begin{code}
-  ua : {A B : Type} → A ≃ B → A ≡ B
+  ua          : {A B : Type} → A ≃ B → A ≡ B
+  lineToEquiv : {A B : Type} → A ≡ B → A ≃ B
 \end{code}
 
 Additionally, Cubical Agda's support for HITs and pattern matching on their
@@ -180,10 +196,14 @@ constructors will be very useful.
 
 The benefit of all this is canonicity. Since \texttt{ua} and HITs are non-axiomatic,
 terms constructed by their use actually compute to a value. This means our
-formalization actually computes the result of applying patches. Sadly, however,
-this is not entirely true. There are two exceptions to this canonicity at the
-time of writing:
+formalization actually computes the result of applying patches.
+
+Sadly, however, this is not entirely true.
+There are two exceptions to canonicity at the time of writing:
 \begin{enumerate}
-\item \texttt{transp} over indexed families, and
-\item \texttt{hcomp} over indexed families.
+  \item \texttt{transp} over indexed families, and
+  \item \texttt{hcomp} over indexed families.
 \end{enumerate}
+
+Regrettably we require both in order to realize repositories as vectors of strings
+(an indexed family).
