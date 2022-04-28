@@ -60,7 +60,8 @@ size = 8
 \subsection{The Patch Theory}
 
 In this patch theory we consider repositories consisting of a single file with lines of text.
-There is one type of patch which permutes the line at a given index.
+There is one type of patch which permutes the line at a given index. Let \texttt{Patch} denote the type
+\texttt{doc ≡ doc}.
 
 Additionally we enforce patch \emph{laws} with the \texttt{noop} constructor which states that
 swapping a string for itself is the same as doing nothing.
@@ -73,7 +74,10 @@ data R : Type₀ where
   _↔_AT_ : (s1 s2 : String) (i : Fin size) → (doc ≡ doc)
   noop : (s : String) (i : Fin size) → s ↔ s AT i ≡ refl
 \end{code}
-
+\begin{code}[hide]
+Patch : Type₀
+Patch = doc ≡ doc
+\end{code}
 \begin{code}[hide]
 postulate
 \end{code}
@@ -123,11 +127,11 @@ First we show that updating at the same index twice is equal to updating once wi
 composition of the functions.
 \begin{code}
 []%=twice : ∀ {n} {A : Type₀} (f : A → A) (v : Vec A n) (i : Fin n)
-            → v [ i ]%= f [ i ]%= f ≡ v [ i ]%= f ∘ f
+            → (v [ i ]%= f [ i ]%= f) ≡ (v [ i ]%= f ∘ f)
 \end{code}
 \begin{code}[hide]
 []%=twice f (x ∷ xs) zero = refl
-[]%=twice f (x ∷ xs) (suc i) = cong (λ v → x ∷ v) ([]%=twice f xs i)
+[]%=twice f (x ∷ xs) (suc i) = cong (x ∷_) ([]%=twice f xs i)
 \end{code}
 Then we show that updating by the identity function does not change the vector.
 \begin{code}
@@ -135,8 +139,11 @@ Then we show that updating by the identity function does not change the vector.
 \end{code}
 \begin{code}[hide]
 []%=id {n} {x ∷ xs} {zero}  = refl
-[]%=id {n} {x ∷ xs} {suc j} = cong (λ tail → x ∷ tail) []%=id
+[]%=id {n} {x ∷ _} {suc j} = cong (x ∷_) []%=id
 \end{code}
+
+Both are proven by induction on the index.
+
 \begin{code}[hide]
 permuteTwice' : {s1 s2 : String} → (s : String)
                 → permute (s1 , s2) (permute (s1 , s2) s) ≡ id s
@@ -217,66 +224,150 @@ I doc = repoType
 I ((s1 ↔ s2 AT j) i) = ua (swapat (s1 , s2) j) i
 I (noop s j i i') = (cong ua (swapatIsId {s} {j}) ∙ uaIdEquiv) i i'
 
-interp : (doc ≡ doc) → repoType ≃ repoType
+interp : Patch → repoType ≃ repoType
 interp p = pathToEquiv (cong I p)
 
-apply : (doc ≡ doc) → repoType → repoType
+apply : Patch → repoType → repoType
 apply p = equivFun (interp p)
 \end{code}
 
 \subsection{A Patch Optimizer}
+
+With the patch theory above it is possible to implement a patch optimizer --
+a function that takes a patch and produces a new (hopefully smaller) patch
+with the same effect. The development makes use of the \texttt{noop} patch law.
+
+Specifically we implement the \emph{program and prove} approach from section 5.3 of HPT~\cite{Angiuli2016}.
+With this approach we produce a function of type \texttt{(p : Patch) → $\Sigma_\texttt{(q : Patch)}$ p ≡ q}.
+The result is a patch \texttt{q}, along with a proof that \texttt{q} is equal to the original patch.
+
+We proceed in two steps. First creating a function
 \begin{code}
-noop-helper : {j : Fin size} {s1 s2 : String} → s1 ≡ s2
-              → (s1 ↔ s2 AT j) ≡ refl
-noop-helper {j} {s1} {s2} s1=s2 = cong (λ s → s ↔ s2 AT j) (s1=s2) ∙ noop s2 j
-
-result-contractible : {X : Type} → (x : X) → isContr (Σ[ y ∈ X ] y ≡ x)
-result-contractible x = (x , refl) , λ (y , p) → ΣPathP (sym p , λ i j → p (~ i ∨ j))
-
-result-isSet : (x : R) → isSet (Σ[ y ∈ R ] y ≡ x)
-result-isSet = isProp→isSet ∘ isContr→isProp ∘ result-contractible
-
 opt : (x : R) → Σ[ y ∈ R ] y ≡ x
+\end{code}
+that performs the desired optimization on points, and then applying it along
+a patch with \texttt{cong}.
+\begin{code}[hide]
+result-contractible : {X : Type} → (x : X) → isContr (Σ[ y ∈ X ] y ≡ x)
+result-contractible x = (x , refl) , λ (_ , p) → ΣPathP (sym p , λ i j → p (~ i ∨ j))
+\end{code}
+The point constructor \texttt{doc} gets mapped to itself along with \texttt{refl}.
+This is natural since we want to optimize patches and leave the repositories unchanged.
+[MORE EXPLANATION/JUSTIFICATION?]
+\begin{code}
 opt doc = (doc , refl)
+\end{code}
+
+The path constructor \texttt{s1 ↔ s2 AT j} is where we implement our optimization.
+If the two strings are different, we do nothing. Note that \texttt{x} here captures the
+interval paramter, and so "varies along the path" as required.
+
+If the strings \emph{are} equal we replace the patch with \texttt{refl$_\texttt{doc}$} by
+mapping to \texttt{doc} regardless of the interval parameter. Now, our result type also requires
+a proof that \texttt{refl} is in fact equal to permuting two equal strings and we have exactly
+what we need: it's \texttt{noop}!
+
+There are two complications:
+\begin{enumerate}
+  \item \texttt{noop} requires the strings to be the same, not just equal.
+        Luckily we can use the proof that they are equal to get a patch of the correct type
+  \item the \texttt{noop} square goes the wrong way, but this is easily fixed by inverting one
+        interval argument.
+\end{enumerate}
+\begin{code}
 opt x@((s1 ↔ s2 AT j) i) with s1 =? s2
-...                       | yes s1=s2 = refl {x = doc} i , λ k → noop-helper {j} (ptoc s1=s2) (~ k) i
+...                       | yes s1=s2 = doc
+                                      , λ k → ((cong (_↔ s2 AT j) (ptoc s1=s2) ∙ noop s2 j) (~ k) i)
 ...                       | no _ = x , refl
-opt (noop s j i k) = isOfHLevel→isOfHLevelDep 2 result-isSet
+\end{code}
+
+\begin{enumerate}
+  \item what is happening here?
+  \item refer to truncations
+  \item this is why we forgot about indep
+\end{enumerate}
+
+\begin{code}
+opt (noop s j i k) = isOfHLevel→isOfHLevelDep 2 (isProp→isSet ∘ isContr→isProp ∘ result-contractible)
   (doc , refl) (doc , refl) (cong opt (s ↔ s AT j)) (cong opt refl) (noop s j) i k
+\end{code}
 
+There is one additional complication: The result of \texttt{cong opt p} for some patch \texttt{p}
+is actually of type \texttt{Pathover (λ x → $\Sigma_\texttt{(y : R)}$ y ≡ x) p (doc,refl) (doc,refl)}.
+Luckily this type is equivalent to our desired target type by:
+\begin{code}
+e : {p : Patch} →
+    (PathP (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl) (doc , refl))
+    ≡ (Σ[ q ∈ Patch ] p ≡ q)
+\end{code}
+\begin{code}[hide]
+e {p} =
+\end{code}
+[SHOULD THIS JUST BE PRESENTED AS A PROPOSITION/PROOF?]
 
-optimize : (p : doc ≡ doc) → Σ[ q ∈ (doc ≡ doc) ] p ≡ q
-optimize p = transport e (cong opt p)
+By the characterizations of paths over constant families and paths in $\Sigma$-types this [WHAT?]
+is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x ≡ \texttt{doc})}$ p) ≡ refl}.
+
+[USING BOOK SYNTAX I HAVE NOT INTRODUCED..]
+\begin{code}
+  (PathP (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl) (doc , refl))
+    ≡⟨ PathP≡Path (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl) (doc , refl) ⟩
+  Path (Σ[ y ∈ R ] y ≡ doc) (transport (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl)) (doc , refl)
+    ≡⟨ cong (λ x → Path (Σ[ y ∈ R ] y ≡ doc) x (doc , refl)) (ΣPathP (refl , sym (lUnit p))) ⟩
+  Path (Σ[ y ∈ R ] y ≡ doc) (doc , p) (doc , refl)
+    ≡⟨ sym ΣPath≡PathΣ ⟩
+  (Σ[ q ∈ Patch ] (PathP (λ i → q i ≡ doc) p refl))
+    ≡⟨ Σ-cong-snd (λ q → PathP≡Path (λ i → q i ≡ doc) p refl) ⟩
+  (Σ[ q ∈ Patch ] (transport (λ i → q i ≡ doc) p) ≡ refl)
+\end{code}
+Then we apply lemma 2.11.2 from the book
+\footnote{For the category theorist: this is the functorial action of the contravariant hom-functor~\cite{hottbook}}
+to obtain the $\Sigma$-type of patches \texttt{q} and proofs that $q^{-1} \cdot p \equiv \texttt{refl}$.
+\begin{code}[hide]
+    ≡⟨ refl ⟩
+\end{code}
+\begin{code}
+  (Σ[ q ∈ Patch ] (transport (λ i → q i ≡ doc) p) ≡ refl)
+    ≡⟨ Σ-cong-snd (λ q → cong (_≡ refl) (path-transport-lemma q p)) ⟩
+  (Σ[ q ∈ Patch ] (sym q ∙ p) ≡ refl)
+\end{code}
+\begin{code}[hide]
+    ≡⟨ refl ⟩
+\end{code}
+Finally, we reach the desired type by the groupoid properties of path composition.
+\begin{code}
+  (Σ[ q ∈ Patch ] (sym q ∙ p) ≡ refl)
+    ≡⟨ Σ-cong-snd (λ q → invLUnique q p) ⟩
+  (Σ[ q ∈ Patch ] p ≡ q) ∎
+\end{code}
+\begin{code}[hide]
   where
-  e : (PathP (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl) (doc , refl))
-      ≡ (Σ[ q ∈ doc ≡ doc ] p ≡ q)
-  e = (PathP (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl) (doc , refl))
-      ≡⟨ PathP≡Path (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl) (doc , refl) ⟩
-        Path (Σ[ y ∈ R ] y ≡ doc) (transport (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl)) (doc , refl)
-      ≡⟨ cong (λ x → Path (Σ[ y ∈ R ] y ≡ doc) x (doc , refl)) (ΣPathP (refl , sym (lUnit p))) ⟩
-        Path (Σ[ y ∈ R ] y ≡ doc) (doc , p) (doc , refl)
-      ≡⟨ sym ΣPath≡PathΣ ⟩
-        (Σ[ q ∈ doc ≡ doc ] (PathP (λ i → q i ≡ doc) p refl))
-      ≡⟨ Σ-cong-snd (λ q → PathP≡Path (λ i → q i ≡ doc) p refl) ⟩
-        (Σ[ q ∈ doc ≡ doc ] (transport (λ i → q i ≡ doc) p) ≡ refl)
-      ≡⟨ Σ-cong-snd (λ q → cong (λ x → x ≡ refl) (path-transport-lemma q p)) ⟩
-        (Σ[ q ∈ doc ≡ doc ] (sym q ∙ p) ≡ refl)
-      ≡⟨ Σ-cong-snd (λ q → lemma q p) ⟩
-        (Σ[ q ∈ doc ≡ doc ] p ≡ q) ∎
-    where
-    lemma : {X : Type} {x y : X} →
-            (f g : x ≡ y) →
-            (sym f ∙ g ≡ refl) ≡ (g ≡ f)
-    lemma f g = sym f ∙ g ≡ refl
-      ≡⟨ cong (λ x → (sym f ∙ g) ≡ x) (sym (lCancel f)) ⟩
-        (sym f) ∙ g ≡ (sym f) ∙ f
-      -- this is the key step: the rest is just groupoidLaw shuffling
-      ≡⟨ ua (compl≡Equiv f (sym f ∙ g) (sym f ∙ f)) ⟩
-        (f ∙ (sym f ∙ g)) ≡ f ∙ (sym f ∙ f)
-      ≡⟨ cong₂ (λ a b → a ≡ b) (assoc f (sym f) g) (assoc f (sym f) f) ⟩
-        (f ∙ sym f) ∙ g ≡ (f ∙ sym f) ∙ f
-      ≡⟨ cong₂ (λ a b → (a ∙ g) ≡ b ∙ f) (rCancel f) (rCancel f) ⟩
-        refl ∙ g ≡ refl ∙ f
-      ≡⟨ cong₂ (λ a b → a ≡ b) (sym (lUnit g)) (sym (lUnit f)) ⟩
-        g ≡ f ∎
+\end{code}
+In particular $p^{-1} \cdot q \equiv \texttt{refl}$ is equivalent to $q \equiv p$.
+This is, in fact, an equivalence since it relies on
+\texttt{compl≡Equiv : ∀ p q r → (q ≡ r) ≃ (p ∙ q ≡ p ∙ r)}, which is made into a
+path with \texttt{ua}.
+\begin{code}
+  invLUnique : {X : Type} {x y : X} →
+               (p q : x ≡ y) → (sym p ∙ q ≡ refl) ≡ (q ≡ p)
+\end{code}
+\begin{code}[hide]
+  invLUnique p q = sym p ∙ q ≡ refl
+    ≡⟨ cong ((sym p ∙ q) ≡_) (sym (lCancel p)) ⟩
+      (sym p) ∙ q ≡ (sym p) ∙ p
+    -- this is the key step: the rest is just groupoidLaw shuffling
+    ≡⟨ ua (compl≡Equiv p (sym p ∙ q) (sym p ∙ p)) ⟩
+      (p ∙ (sym p ∙ q)) ≡ p ∙ (sym p ∙ p)
+    ≡⟨ cong₂ _≡_ (assoc p (sym p) q) (assoc p (sym p) p) ⟩
+      (p ∙ sym p) ∙ q ≡ (p ∙ sym p) ∙ p
+    ≡⟨ cong₂ (λ a b → (a ∙ q) ≡ b ∙ p) (rCancel p) (rCancel p) ⟩
+      refl ∙ q ≡ refl ∙ p
+    ≡⟨ cong₂ _≡_ (sym (lUnit q)) (sym (lUnit p)) ⟩
+      q ≡ p ∎
+\end{code}
+Finally, \texttt{optimize} can be implemented as discussed -- by applying \texttt{opt} and
+transporting along the equivalence \texttt{e}.
+\begin{code}
+optimize : (p : Patch) → Σ[ q ∈ Patch ] p ≡ q
+optimize p = transport e (cong opt p)
 \end{code}
