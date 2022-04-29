@@ -1,7 +1,13 @@
 \section{A Patch Theory With Laws}\label{sec/laws-noTrunc-noIndep}
 
-\begin{code}[hide]
+In this section we explore a formalization of HPTs section 5: \textbf{A Patch Theory with Laws}.
+This is a more complicated patch theory in which the type \texttt{R} has not only repositories
+and patches, but also patch \emph{laws} represented by squares (paths between paths).
 
+We start by implementing the patch theory, followed by a "patch optimizer" that computes
+smaller patches with the same effect. This optimizer makes crucial use of the patch law.
+
+\begin{code}[hide]
 {-# OPTIONS --cubical --rewriting #-}
 
 module laws-hpt-noTrunc-noIndep where
@@ -68,6 +74,7 @@ swapping a string for itself is the same as doing nothing.
 
 In the geometric interpretation of HITs this is a space with one point, loops for each choice of
 \texttt{(s1, s2, i)} and a square between each loop where \texttt{s1 == s2} and the constant path.
+
 \begin{code}
 data R : Type₀ where
   doc : R
@@ -87,8 +94,9 @@ Angiuli et al's original definition also includes an additional law:
           (s ↔ t AT i) ∙ (u ↔ v AT j)
         ≡ (u ↔ v AT j) ∙ (s ↔ t AT i)
 \end{code}
+
 This law states that swapping strings commutes as long as the indices are different.
-We do not include this law as it leads to some problems later. [SEE WHEREVER WE DISCUSS THAT]
+We do not include this law as it leads to some problems later. See \autoref{subsec/opt}.
 
 In order to interpret this model in the universe of types we will need three things:
 \begin{enumerate}
@@ -99,6 +107,7 @@ In order to interpret this model in the universe of types we will need three thi
 \end{enumerate}
 
 The type of repositories will be realized by vectors of strings of a fixed size.
+
 \begin{code}
 repoType : Type₀
 repoType = Vec String size
@@ -110,6 +119,7 @@ bijection, and then use \texttt{ua} to make a path in the universe.
 Semantically, our patch should swap the line at index \texttt{j} if it is equal to either \texttt{s1}
 or \texttt{s2} and otherwise leave it alone. This behavior is encoded in \texttt{permute} and \texttt{permuteAt}
 applies it to the appropriate index.
+
 \begin{code}
 permute : (String × String) → String → String
 permute (s1 , s2) s with s =? s1 | s =? s2
@@ -120,11 +130,13 @@ permute (s1 , s2) s with s =? s1 | s =? s2
 permuteAt : String → String → Fin size → repoType → repoType
 permuteAt s t j = _[ j ]%= (permute (s , t))
 \end{code}
+
 To show that \texttt{permuteAt} is a bijection (and hence an equivalence) we need
 some additional results.
 
 First we show that updating at the same index twice is equal to updating once with the
 composition of the functions.
+
 \begin{code}
 []%=twice : ∀ {n} {A : Type₀} (f : A → A) (v : Vec A n) (i : Fin n)
             → (v [ i ]%= f [ i ]%= f) ≡ (v [ i ]%= f ∘ f)
@@ -168,6 +180,7 @@ Finally, permuting twice is equivalent to the identity function.
 The pointwise result \texttt{permuteTwice' : ∀ x → permute (s , t) (permute (s , t) x) ≡ id x}
 is straightforwardly (but laboriously) proven by case analysis, from which the full result follows
 by function extensionality.
+
 \begin{code}
 permuteTwice : ∀ {s t} → (permute (s , t) ∘ permute (s , t)) ≡ id
 permuteTwice = funExt permuteTwice'
@@ -192,6 +205,7 @@ For the \texttt{noop} law we need to show that \texttt{swapat} respects it.
 We proceed in two steps. First \texttt{swassId} shows that the underlying function of the equivalence
 \texttt{swapat (s , s) j} is the identity function. Then, since two equivalences are equal if their
 underlying functions are equal we get an identification of \texttt{swapat (s , s) j} and the identity equivalence.
+
 \begin{code}
 permuteId : {s : String} → (t : String) → permute (s , s) t ≡ id t
 permuteId {s} t with t =? s | t =? s
@@ -218,6 +232,7 @@ With these pieces we are ready to interpret the repository HIT.
 \texttt{uaIdEquiv} which the path identifying \texttt{ua (idEquiv \_)} and \texttt{refl}.
 
 Then we can interpret and apply patches like before.
+
 \begin{code}
 I : R → Type₀
 I doc = repoType
@@ -231,7 +246,7 @@ apply : Patch → repoType → repoType
 apply p = equivFun (interp p)
 \end{code}
 
-\subsection{A Patch Optimizer}
+\subsection{A Patch Optimizer}\label{subsec/opt}
 
 With the patch theory above it is possible to implement a patch optimizer --
 a function that takes a patch and produces a new (hopefully smaller) patch
@@ -274,6 +289,7 @@ There are two complications:
   \item the \texttt{noop} square goes the wrong way, but this is easily fixed by inverting one
         interval argument.
 \end{enumerate}
+
 \begin{code}
 opt x@((s1 ↔ s2 AT j) i) with s1 =? s2
 ...                       | yes s1=s2 = doc
@@ -281,20 +297,32 @@ opt x@((s1 ↔ s2 AT j) i) with s1 =? s2
 ...                       | no _ = x , refl
 \end{code}
 
-\begin{enumerate}
-  \item what is happening here?
-  \item refer to truncations
-  \item this is why we forgot about indep
-\end{enumerate}
+For the \texttt{noop} constructor we make use of the fact that our codomain is
+contractible. Since we are mapping into a contractible type (and hence a Set) we know
+that all paths are equal, and can construct a square with sides matching the paths above.
+
+However, since the sides must be \emph{definitionally} equal in Cubical Agda we employ
+a trick from the set-truncation HIT elimination rule in the Cubical library. \texttt{isOfHLevelDep 2}
+is the dependent version of \texttt{isSet}. We can then provide the sides
+\texttt{cong opt (s ↔ s AT j)} and \texttt{refl} (or really \texttt{cong opt refl}). Since we are
+constructing a \emph{dependent} square we also need a family of types \texttt{I → I → Type}, but this
+is exactly what \texttt{noop s j} is!
 
 \begin{code}
-opt (noop s j i k) = isOfHLevel→isOfHLevelDep 2 (isProp→isSet ∘ isContr→isProp ∘ result-contractible)
-  (doc , refl) (doc , refl) (cong opt (s ↔ s AT j)) (cong opt refl) (noop s j) i k
+opt (noop s j i k) = isOfHLevel→isOfHLevelDep 2
+  (isProp→isSet ∘ isContr→isProp ∘ result-contractible)
+  _ _ (cong opt (s ↔ s AT j)) refl (noop s j) i k
 \end{code}
+
+This trick is the reason \texttt{indep} was left out. Because we need to apply \texttt{opt} to
+the paths to compute the sides of the square it would not terminate, instead constructing squares
+back and forth between \texttt{(s ↔ t AT i) ∙ (u ↔ v AT j)} and \texttt{(u ↔ v AT j) ∙ (s ↔ t AT i)}
+for eternity.
 
 There is one additional complication: The result of \texttt{cong opt p} for some patch \texttt{p}
 is actually of type \texttt{Pathover (λ x → $\Sigma_\texttt{(y : R)}$ y ≡ x) p (doc,refl) (doc,refl)}.
 Luckily this type is equivalent to our desired target type by:
+
 \begin{code}
 e : {p : Patch} →
     (PathP (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl) (doc , refl))
@@ -323,6 +351,7 @@ is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x 
 Then we apply lemma 2.11.2 from the book
 \footnote{For the category theorist: this is the functorial action of the contravariant hom-functor~\cite{hottbook}}
 to obtain the $\Sigma$-type of patches \texttt{q} and proofs that $q^{-1} \cdot p \equiv \texttt{refl}$.
+[THIS PROOF IS A (SMALL, BUT) GENUINE CONTRIBUTION. NOTE?]
 \begin{code}[hide]
     ≡⟨ refl ⟩
 \end{code}
@@ -344,13 +373,13 @@ Finally, we reach the desired type by the groupoid properties of path compositio
   where
 \end{code}
 In particular $p^{-1} \cdot q \equiv \texttt{refl}$ is equivalent to $q \equiv p$.
-This is, in fact, an equivalence since it relies on
-\texttt{compl≡Equiv : ∀ p q r → (q ≡ r) ≃ (p ∙ q ≡ p ∙ r)}, which is made into a
-path with \texttt{ua}.
 \begin{code}
   invLUnique : {X : Type} {x y : X} →
                (p q : x ≡ y) → (sym p ∙ q ≡ refl) ≡ (q ≡ p)
 \end{code}
+This is, in fact, an equivalence since it relies on
+\texttt{compl≡Equiv : ∀ p q r → (q ≡ r) ≃ (p ∙ q ≡ p ∙ r)}, which is made into a
+path with \texttt{ua}.
 \begin{code}[hide]
   invLUnique p q = sym p ∙ q ≡ refl
     ≡⟨ cong ((sym p ∙ q) ≡_) (sym (lCancel p)) ⟩
@@ -365,8 +394,10 @@ path with \texttt{ua}.
     ≡⟨ cong₂ _≡_ (sym (lUnit q)) (sym (lUnit p)) ⟩
       q ≡ p ∎
 \end{code}
+
 Finally, \texttt{optimize} can be implemented as discussed -- by applying \texttt{opt} and
-transporting along the equivalence \texttt{e}.
+transporting along \texttt{e}.
+
 \begin{code}
 optimize : (p : Patch) → Σ[ q ∈ Patch ] p ≡ q
 optimize p = transport e (cong opt p)
