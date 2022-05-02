@@ -1,9 +1,4 @@
 \section{Propositions as Types}
-\begin{enumerate}
-  \item types represent propositions (and spaces)
-  \item implication and simple and/or ($\rightarrow, \times, +$)
-  \item quantifiers and dependent types (fibers) ($\Sigma, \Pi$)
-\end{enumerate}
 
 In this section we consider an important interpretation of type theory: the
 Howard-Curry Isomorphism (which isn't an isomorphism, but we're not going into
@@ -93,7 +88,9 @@ before: the dependent pair $\Sigma_A P$. Note that this term actually contains
 \emph{more} data than just asserting $\exists x. P(x)$ -- it gives us an $x$.
 
 Similarly, a proof of $\forall x. P(x)$ can be seen as an assertion that
-whatever $x:A$ you give me, I can show that produce a proof (term) of $P(x)$. We
-use $\Pi_A P$ to represent this quantification. Note that both of these
-constructions quantify over some base type $A$, not over ``every $x$ in
-the universe,'' whatever that means. [REVISIT]
+whatever $x:A$ you give me, I can produce a proof (term) of $P(x)$. This is
+exactly a function from $x:A$ to $P(x)$ so we use $\Pi_A P$ to represent this
+quantification.
+
+Note that both of these constructions quantify over some base type $A$, so ``for
+all $x$'' necessarily becomes ``for all $x$ of type $A$''.

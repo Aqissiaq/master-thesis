@@ -1,0 +1,45 @@
+\section{Another Type-Theoretic Approach}
+
+In this section we explain a different approach to modeling VCSs in homotopy
+type theory based on a specific class of HITs called co-equalizers.
+
+The author has not succeeded in implementing this approach, but here it is
+anyway [LOL].
+
+\subsection{Approach}
+Basically:
+\begin{enumerate}
+\item requirements
+  \begin{itemize}
+  \item repo - accurately represents contents
+  \item patch - applicable in a context, groupoid structure
+  \item merge - ``pushout property''/reconcile, symmetric (for distributed
+    systems), (do we need associativity as well?)
+  \end{itemize}
+\item hopes/goals
+  \begin{itemize}
+  \item repos - modular/composable, somehow polymorphic
+  \item patches - \emph{semantic} in some sense
+  \item merge - easily definable [sic.], considers semantics of patches
+  \end{itemize}
+\end{enumerate}
+
+\subsection{Results}
+\begin{enumerate}
+\item the idea
+  \begin{itemize}
+  \item index patches by endpoints
+  \item define merges by Kraus \& Co's elimination rule
+  \item ... profit?
+  \end{itemize}
+\item the result
+  \begin{itemize}
+  \item doesn't really work out (maybe some agda code here?)
+  \item hard to say what the elimination principle actually says
+  \item equivalences of equivalences is rough
+  \end{itemize}
+\end{enumerate}
+This section describes our solution and why it doesn't work.
+
+Basically: equivalences of equivalences is complicated, maybe hpt had a point
+about reversibility

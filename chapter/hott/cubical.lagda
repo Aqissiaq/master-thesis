@@ -151,14 +151,7 @@ In addition to the cubical mode, Vezzosi, M\"ortberg and Cavallo develop and
 maintain a cubical standard library~\footnote[1]{A standard library for Cubical
   Agda: \url{https://github.com/agda/cubical}} containing useful data types,
 functions and proofs.
-
 \subsection{Why Cubical Type Theory?}
-\begin{enumerate}
-  \item function extensionality
-  \item univalence (Glue types?)
-  \item HITs
-  \item all of the above with canonicity (with two very annoying exceptions)
-\end{enumerate}
 
 The main benefit of cubical type theories is that they make it possible to prove
 useful results that are usually only axiomatically defined. Two
@@ -207,3 +200,5 @@ There are two exceptions to canonicity at the time of writing:
 
 Regrettably we require both in order to realize repositories as vectors of strings
 (an indexed family).
+
+[THE STATE OF AFFAIRS? OR LEAVE FOR CONCLUSION — MAYBE BOTH?]

@@ -8,15 +8,15 @@ We start by implementing the patch theory, followed by a "patch optimizer" that 
 smaller patches with the same effect. This optimizer makes crucial use of the patch law.
 
 \begin{code}[hide]
-{-# OPTIONS --cubical --rewriting #-}
+{-# OPTIONS --cubical #-}
 
 module laws-hpt-noTrunc-noIndep where
 
-open import Data.Fin
+open import Data.Fin public
   using(Fin  ; #_ ; zero ; suc)
 open import Data.String
   using(String ; _≟_ ; _==_)
-open import Data.Vec
+open import Data.Vec public
   using(Vec ; [] ; _∷_ ; _[_]%=_ ; updateAt)
 open import Data.Empty
   using(⊥ ; ⊥-elim)
@@ -60,7 +60,7 @@ _=?_ : Decidable _≡p_
 _=?_ = _≟_
 
 size : ℕ
-size = 8
+size = 2
 \end{code}
 
 \subsection{The Patch Theory}
@@ -198,7 +198,8 @@ permuteAtTwice s t j v = permuteAt s t j (permuteAt s t j v)
         ≡⟨ []%=id ⟩ v ∎
 
 swapat : (String × String) → Fin size → repoType ≃ repoType
-swapat (s , t) j = isoToEquiv (iso (permuteAt s t j) (permuteAt s t j) (permuteAtTwice s t j) (permuteAtTwice s t j))
+swapat (s , t) j = isoToEquiv
+  (iso (permuteAt s t j) (permuteAt s t j) (permuteAtTwice s t j) (permuteAtTwice s t j))
 \end{code}
 
 For the \texttt{noop} law we need to show that \texttt{swapat} respects it.
@@ -206,21 +207,27 @@ We proceed in two steps. First \texttt{swassId} shows that the underlying functi
 \texttt{swapat (s , s) j} is the identity function. Then, since two equivalences are equal if their
 underlying functions are equal we get an identification of \texttt{swapat (s , s) j} and the identity equivalence.
 
-\begin{code}
-permuteId : {s : String} → (t : String) → permute (s , s) t ≡ id t
-permuteId {s} t with t =? s | t =? s
+\begin{code}[hide]
+permuteId' : {s : String} → (t : String) → permute (s , s) t ≡ id t
+permuteId' {s} t with t =? s | t =? s
 ...               | yes t=s | yes _   = sym (ptoc t=s)
 ...               | yes _   | no _    = refl
 ...               | no t≠s  | yes t=s = ⊥-elim (t≠s t=s)
 ...               | no _    | no _  = refl
 
+permuteId : {s : String} → permute (s , s) ≡ id
+permuteId {s} = funExt (permuteId' {s})
+\end{code}
+\begin{code}
 swapssId : {s : String} {j : Fin size} → equivFun (swapat (s , s) j) ≡ idfun (repoType)
 swapssId {s} {j} = funExt pointwise
   where
     pointwise : (r : repoType) → equivFun (swapat (s , s) j) r ≡ idfun repoType r
     pointwise r = equivFun (swapat (s , s) j) r
-                ≡⟨ cong (λ x → r [ j ]%= id x) (funExt permuteId) ⟩ r [ j ]%= id
-                ≡⟨ []%=id ⟩ id r ∎
+                ≡⟨ cong (λ x → r [ j ]%= id x) permuteId ⟩
+                  r [ j ]%= id
+                ≡⟨ []%=id ⟩
+                  id r ∎
 
 swapatIsId : {s : String} {j : Fin size} → swapat (s , s) j ≡ idEquiv repoType
 swapatIsId = equivEq swapssId

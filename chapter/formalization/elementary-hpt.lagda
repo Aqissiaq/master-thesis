@@ -3,7 +3,7 @@
 This section discusses the implementation of a very simple language of patches,
 described in~\cite{Angiuli2016, section 4}.
 \begin{code}[hide]
-{-# OPTIONS --cubical --rewriting #-}
+{-# OPTIONS --cubical #-}
 
 module elementary-hpt where
 
@@ -13,7 +13,7 @@ open import Cubical.Data.Int
 
 open import Cubical.Core.Everything
   hiding (I)
-open import Cubical.Foundations.Prelude
+open import Cubical.Foundations.Prelude public
   using (
     _≡_
   ; refl
@@ -46,7 +46,7 @@ types of repositories. Concretely \texttt{helix} maps \texttt{base} to the integ
 to \texttt{ua} of the equivalence \texttt{ℤ ≃ ℤ} induced by \texttt{suc}.
 
 \begin{code}
-open import Cubical.HITs.S1.Base
+open import Cubical.HITs.S1.Base public
   renaming(
     S¹ to R
   ; base to num

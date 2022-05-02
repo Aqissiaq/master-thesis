@@ -14,14 +14,12 @@ private
     ℓ ℓ' : Level
 
 module _ {A B : Type ℓ} {a a' : A} where
-
-  -- Lemma 2.3.10
-  transport-comp : (f : A → B) → (P : B → Type ℓ') → (p : a ≡ a') → (u : P (f a)) →
-    subst (P ∘ f) p u ≡ subst P (cong f p) u
-  transport-comp f P p u = refl
-  -- J-rule style proof, which I guess was good practice lol
-  -- J (λ x q → (subst (P ∘ f) q u) ≡ (subst P (cong f q) u))
-  --   (substRefl {B = P ∘ f} u ∙ sym (substRefl {B = P} u)) p
+  transport-comp : {A B C : Type} {a : A} → (p : A ≡ B) → (q : B ≡ C) →
+    transport (p ∙ q) a ≡ transport q (transport p a)
+  transport-comp {a = a} p = J (λ x q → transport (p ∙ q) a ≡ transport q (transport p a)) q=refl
+    where
+    q=refl : transport (p ∙ refl) a ≡ transport refl (transport p a)
+    q=refl = cong (λ p' → transport p' a) (sym (rUnit p)) ∙ sym (transportRefl _)
 
   -- Theorem 2.11.3
   transport-in-paths : (f g : A → B) → (p : a ≡ a') (q : f a ≡ g a) →

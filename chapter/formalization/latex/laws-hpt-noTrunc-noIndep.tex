@@ -960,8 +960,10 @@ an equivalence \texttt{swapat} can be constructed from this isomorphism.
 \AgdaBound{t}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaBound{j}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
-\AgdaFunction{isoToEquiv}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaInductiveConstructor{iso}\AgdaSpace{}%
+\AgdaFunction{isoToEquiv}\<%
+\\
+\>[0][@{}l@{\AgdaIndent{0}}]%
+\>[2]\AgdaSymbol{(}\AgdaInductiveConstructor{iso}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{permuteAt}\AgdaSpace{}%
 \AgdaBound{s}\AgdaSpace{}%
 \AgdaBound{t}\AgdaSpace{}%
@@ -985,8 +987,8 @@ We proceed in two steps. First \texttt{swassId} shows that the underlying functi
 \texttt{swapat (s , s) j} is the identity function. Then, since two equivalences are equal if their
 underlying functions are equal we get an identification of \texttt{swapat (s , s) j} and the identity equivalence.
 
-\begin{code}%
-\>[0]\AgdaFunction{permuteId}\AgdaSpace{}%
+\begin{code}[hide]%
+\>[0]\AgdaFunction{permuteId'}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{s}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -1005,7 +1007,7 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 \AgdaFunction{id}\AgdaSpace{}%
 \AgdaBound{t}\<%
 \\
-\>[0]\AgdaFunction{permuteId}\AgdaSpace{}%
+\>[0]\AgdaFunction{permuteId'}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{s}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaBound{t}\AgdaSpace{}%
 \AgdaKeyword{with}\AgdaSpace{}%
@@ -1063,6 +1065,27 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 \\
 %
 \\[\AgdaEmptyExtraSkip]%
+\>[0]\AgdaFunction{permuteId}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaBound{s}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaPostulate{String}\AgdaSymbol{\}}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaFunction{permute}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{s}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
+\AgdaBound{s}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaFunction{id}\<%
+\\
+\>[0]\AgdaFunction{permuteId}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaBound{s}\AgdaSymbol{\}}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{funExt}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{permuteId'}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaBound{s}\AgdaSymbol{\})}\<%
+\end{code}
+\begin{code}%
 \>[0]\AgdaFunction{swapssId}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{s}\AgdaSpace{}%
@@ -1115,7 +1138,7 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 %
 \>[4]\AgdaFunction{pointwise}\AgdaSpace{}%
 \AgdaBound{r}%
-\>[710I]\AgdaSymbol{=}\AgdaSpace{}%
+\>[725I]\AgdaSymbol{=}\AgdaSpace{}%
 \AgdaFunction{equivFun}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{swapat}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{s}\AgdaSpace{}%
@@ -1124,7 +1147,7 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 \AgdaBound{j}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaBound{r}\<%
 \\
-\>[.][@{}l@{}]\<[710I]%
+\>[.][@{}l@{}]\<[725I]%
 \>[16]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{cong}\AgdaSpace{}%
 \AgdaSymbol{(λ}\AgdaSpace{}%
@@ -1136,10 +1159,11 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 \AgdaOperator{\AgdaFunction{]\%=}}\AgdaSpace{}%
 \AgdaFunction{id}\AgdaSpace{}%
 \AgdaBound{x}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{funExt}\AgdaSpace{}%
-\AgdaFunction{permuteId}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{⟩}}\AgdaSpace{}%
-\AgdaBound{r}\AgdaSpace{}%
+\AgdaFunction{permuteId}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{⟩}}\<%
+\\
+\>[16][@{}l@{\AgdaIndent{0}}]%
+\>[18]\AgdaBound{r}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{[}}\AgdaSpace{}%
 \AgdaBound{j}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{]\%=}}\AgdaSpace{}%
@@ -1148,8 +1172,10 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 %
 \>[16]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{[]\%=id}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{⟩}}\AgdaSpace{}%
-\AgdaFunction{id}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{⟩}}\<%
+\\
+\>[16][@{}l@{\AgdaIndent{0}}]%
+\>[18]\AgdaFunction{id}\AgdaSpace{}%
 \AgdaBound{r}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∎}}\<%
 \\
@@ -1390,10 +1416,10 @@ There are two complications:
 \>[26]\AgdaSymbol{|}\AgdaSpace{}%
 \AgdaInductiveConstructor{yes}\AgdaSpace{}%
 \AgdaBound{s1=s2}%
-\>[892I]\AgdaSymbol{=}\AgdaSpace{}%
+\>[904I]\AgdaSymbol{=}\AgdaSpace{}%
 \AgdaInductiveConstructor{doc}\<%
 \\
-\>[.][@{}l@{}]\<[892I]%
+\>[.][@{}l@{}]\<[904I]%
 \>[38]\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaSymbol{λ}\AgdaSpace{}%
 \AgdaBound{k}\AgdaSpace{}%
@@ -1482,12 +1508,12 @@ Luckily this type is equivalent to our desired target type by:
 \begin{code}%
 \>[0]\AgdaFunction{e}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[944I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSpace{}%
+\>[956I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaFunction{Patch}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{→}\<%
 \\
-\>[.][@{}l@{}]\<[944I]%
+\>[.][@{}l@{}]\<[956I]%
 \>[4]\AgdaSymbol{(}\AgdaPostulate{PathP}\AgdaSpace{}%
 \AgdaSymbol{(λ}\AgdaSpace{}%
 \AgdaBound{i}\AgdaSpace{}%
@@ -1521,7 +1547,7 @@ Luckily this type is equivalent to our desired target type by:
 \end{code}
 \begin{code}[hide]%
 \>[0]\AgdaFunction{e}%
-\>[974I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSymbol{\}}\AgdaSpace{}%
+\>[986I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{=}\<%
 \end{code}
 [SHOULD THIS JUST BE PRESENTED AS A PROPOSITION/PROOF?]
@@ -1531,7 +1557,7 @@ is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x 
 
 [USING BOOK SYNTAX I HAVE NOT INTRODUCED..]
 \begin{code}%
-\>[.][@{}l@{}]\<[974I]%
+\>[.][@{}l@{}]\<[986I]%
 \>[2]\AgdaSymbol{(}\AgdaPostulate{PathP}\AgdaSpace{}%
 \AgdaSymbol{(λ}\AgdaSpace{}%
 \AgdaBound{i}\AgdaSpace{}%
@@ -1816,7 +1842,7 @@ In particular $p^{-1} \cdot q \equiv \texttt{refl}$ is equivalent to $q \equiv p
 %
 \>[2]\AgdaFunction{invLUnique}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[1193I]\AgdaSymbol{\{}\AgdaBound{X}\AgdaSpace{}%
+\>[1205I]\AgdaSymbol{\{}\AgdaBound{X}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaPrimitive{Type}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{x}\AgdaSpace{}%
@@ -1825,7 +1851,7 @@ In particular $p^{-1} \cdot q \equiv \texttt{refl}$ is equivalent to $q \equiv p
 \AgdaBound{X}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{→}\<%
 \\
-\>[.][@{}l@{}]\<[1193I]%
+\>[.][@{}l@{}]\<[1205I]%
 \>[15]\AgdaSymbol{(}\AgdaBound{p}\AgdaSpace{}%
 \AgdaBound{q}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
