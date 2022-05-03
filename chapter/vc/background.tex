@@ -1,17 +1,89 @@
 \section{Background}
 
 This section introduces the terminology and overall structure of version control
-systems for use in the ensuing work.
+systems for use in the ensuing work. We focus on a patch-theoretic view in the
+style of Darcs~\cite{Darcs, Lynagh2006, Sittampalam2005,
+  jacobson2009formalization} with groupoid properties as in Homotopical Patch
+Theory~\cite{Angiuli2016}.
 
-At the very least we need to define:
-\begin{itemize}
-  \item repository
-  \item patch
-  \item merge
-\end{itemize}
+\subsection{Basic Ingredients}
+%repos and patches
+Version control systems keep track of \emph{data}. In the most common use case this is
+one or more files containing lines of text, but we do not need to specialize.
+The basic ingredients of a VCS are \emph{repositories} and \emph{patches}. A
+repository contains the data we are keeping track of, and a patch records a
+change made to the repository.
 
-Might also be nice:
-\begin{itemize}
-  \item branch?
-  \item cherry pick?
-\end{itemize}
+\subsection{(Groupoid) Properties of Patches}
+In Patch Theory a repository is a collection of patches, from which the
+data can be reconstructed. At any given time the specific collection of patches
+describe a \emph{repository state}.
+
+A patch records a change like ``add the line $l$ to the file $f$''. This
+patch is nonsensical if there is no file $f$, so each patch has a domain
+\emph{context} in which it can be applied. The context is a repository state,
+and a patch can be \emph{applied} to a repository in the appropriate state.
+Each patch also has codomain context which is the state it leaves the repository
+in. In this section we denote a patch $P$ with domain $x$ and codomain $y$ by
+$_xP_y$. We may leave out the contexts if they are not important.
+
+For the theory to be useful we should be able to apply more than one patch to a
+repository. For this purpose there is patch composition. Given two patches
+$_xP_y$ and $_yQ_z$ with matching contexts there is a composite patch $_xP \cdot
+Q_z$ which is meant to represent ``apply $P$ and then apply $Q$''.
+
+In any given patch theory~\footnote{While Patch Theory refers to the study of
+VCS as repositories characterized by collections of patches, \emph{a} patch
+theory denotes a specific collection of patches and laws they obey.} we have
+some collection of possible patches and laws they must obey. In the context of
+this work we assume a few basic laws for all patch theories:
+
+\begin{enumerate}
+\item For each context $x$ there exists a ``do-nothing'' patch $_xN_x$ such that
+  for any patches $_xP_y$:
+  \[_xN \cdot P_y \,=\, _xP_y \, =\, _xP \cdot N_y\]
+  ie. $R$ is both a left and right unit for composition.
+\item Associativity of patch composition. Given patches $_xP_y$, $_yQ_z$ and
+  $_zR_w$:
+  \[_x(P \cdot Q) \cdot R_w \, = \, _xP \cdot (Q \cdot R)_w\]
+\item For each patch $_xP_y$ there exists an inverse $_yP^{-1}_x$ such that:
+  \[_xP \cdot P^{-1}_x \,=\, _xN_x\]
+\end{enumerate}
+
+These laws are not arbitrary. In fact they express the assumption that a the
+repository states and patches between them form a \emph{groupoid}. This will be
+especially important for \autoref{subsec:hpt} and the following implementation
+in \autoref{ch/formalization}.
+
+\subsection{Merging}
+
+Another common feature of VCSs is \emph{branching}. Branching occurs in
+distributed systems when two users of the repository have different repository
+states. If the users wish to reconcile their states, they perform a
+\emph{merge}.
+
+In our setting merge is a function that takes a span of patches $(_0P_x,
+_0Q_y)$ (here $0$ is some shared base context) and produces a cospan $(_xP'_z ,
+_yQ'_z)$ (\autoref{fig:merge}). 
+
+\begin{figure}
+\begin{centering}
+\begin{tikzcd}
+                            & 0 \arrow[ld, "P"'] \arrow[rd, "Q"] &                            \\
+x \arrow[rd, "P'"', dashed] &                                    & y \arrow[ld, "Q'", dashed] \\
+                            & z                                  &                           
+\end{tikzcd}
+\caption{Merging $(P,Q)$}
+\label{fig:merge}
+\end{centering}
+\end{figure}
+
+For merge to be well behaved we might also want some other properties. Say merge
+is \emph{symmetric} if \[merge(P,Q) = (P', Q') \implies merge(Q, P) = (Q', P')\]
+and that merge is \emph{reconciling} if \[merge(P,Q) = (P',Q') \implies P \cdot
+P' = Q \cdot Q'\]
+
+Note that the groupoid laws imply that there always exists a merge of two
+patches which is both symmetric and reconciling: take $z = 0$, $P' = P^{-1}$ and
+$Q' = Q^{-1}$. This is the cospan that simply undoes the changes in both users' repositories and it
+is not very interesting. We call this the \emph{trivial merge}.

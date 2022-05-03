@@ -1,31 +1,24 @@
 \chapter{Version Control Systems}
 
-[PLAN. REMOVE THIS]
-\begin{enumerate}
-\item what even is a vcs?
-\item approaches to vcs
-  \begin{enumerate}
-  \item git?
-  \item darcs
-  \item pijul/categorical
-  \item hpt
-  \end{enumerate}
-\item a HoTT alternative
-  \begin{enumerate}
-  \item idea
-  \item implementatoin
-  \item ``result''
-  \end{enumerate}
-\end{enumerate}
-% They're not always cool.~\cite{git-inconsistent}
+% They're not always cool.~\cite{git-inconsistent, badmerge}
+A version control system (VCS) is a software development tool commonly used to keep track of
+changes to a code base. With large projects, distributed teams and complex
+dependencies between version this can be a challenge and a plethora of different
+tools with a variety of theoretical approaches exist.
 
-% stolen from my own project proposal
-Version control systems are ubiquitous in software development, where they
-help facilitate cooperation and documentation of
-the development process. Their basic use is to record (\emph{commit}) changes
-to a codebase (\emph{repository}). Systems may also include ways for the
-codebase to diverge (\emph{branch}) into different versions, and ways to
-reunite (\emph{merge}) these versions.
+[NOT HAPPY WITH THIS]
+By far the most common tool is the distributed git~\cite{Git} which employs
+\emph{snapshot}-model in which the repository state is saved and changes are
+recorded by storing the line-by-line difference with previous snapshots.
+The distributed Mercurial~\cite{Mercurial} and centralized
+Subversion~\cite{Subversion} work by similar models. These tools are fast, but
+often poorly understood and have some un-intuitive
+behavior~\cite{git-inconsistent, badmerge}.
+
+An alternative to snapshot-models is a \emph{patch}-model in which the VCS
+instead stores the changes and computes the repository state from them. The most
+prominent example of such a system is Darcs~\cite{Darcs} with its ``algebra of
+patches'', but we also mention Pijul~\cite{Pijul} which takes a more categorical approach.
 
 In this chapter we introduce the basic concepts and terminology, investigate some
 theoretical approaches to version control -- including Homotopical Patch Theory,
