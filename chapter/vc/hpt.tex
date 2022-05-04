@@ -1,29 +1,155 @@
 \subsection{Homotopical Patch Theory}\label{subsec:hpt}
-Homotopical Patch Theory~\cite{Angiuli2016} gives a formulation of patch theory
-in homotopy type theory. A patch theory is represented by a higher
-inductive type, and its interpretation by a function out of this type.
 
-By representing repository state as points and patches as paths in a higher
-inductive type, the groupoid structure of the patch theory comes ``for free''.
-Paths come with composition, and by the groupoid laws this composition is
-associative, unital, and respects inverses. Additionally, functions (which are functors)
-respect this structure so any interpretation must also validate the groupoid
-laws.
+Homotopical Patch Theory~\cite{Angiuli2016} (HPT) gives a way to formulate patch
+theories in homotopy type theory. The formulation makes intrinsic use of higher
+inductive types (HITs) and a univalent universe to encode relationships between
+patches and models of a theory.
 
-Patch laws are represented by paths between paths (squares? disks?
-2D-somethings). For example we may want the application of two independent
-patches to commute -- this is done with a patch law.
+HPT takes advantage of the inherent groupoid structure of types to encode the
+groupoid structure of patch theories ``for free''. A patch theory is given as a
+higher inductive type \texttt{R} with points representing patch contexts and
+paths representing patches between them. Paths come with units (\texttt{refl}),
+inverses (\texttt{sym} [OR MAYBE $^{-1}$]) and composition (\texttt{$\cdot$}),
+and by the groupoid laws this composition is associative, unital, and respects
+inverses.
 
-While the HIT formulation gives a lot ``for free'', it also has some drawbacks.
-In particular, the requirement that all patches have inverses causes some
-problems. The workaround is to ``type'' patches with the history they are
-applicable to. This allows Angiuli et al. to define a merge operation in terms
-on only the ``forward'' patches, but leads to a fairly complex theory even for
-relatively simple settings.
+Patch laws can be given by paths between paths (squares). For example we may
+want the application of two independent patches $P$ and $Q$ to commute -- this is done with
+a square whose left- and right-sides are $P \cdot Q$ and $Q \cdot P$.
 
-% cut this if we don't do more work on it
-An interesting feature of Angiuli et al.'s patch theories is that the type of
-repositories must be contractible. Since patches are represented by paths, any
-point can be retracted along them. As such, all repositories are -- in a sense
--- ``the same'' and we need better notions of
-``sub-homotopical''~\cite{Angiuli2016} computations to reason about their differences.
+\emph{Models} of a patch theory are given by a function \texttt{I : R
+  $\rightarrow$ Type} from the HIT to the universe of types. Each repository
+state (point) is mapped to a type, and each patch is mapped to a path in the
+universe. By univalence such paths can be given by equivalences between types,
+and each patch $P : x \equiv y$ gives rise to a function \texttt{interp P : I(x)
+$\rightarrow$ I(y)} by \texttt{transport}. The functoriality of \texttt{I}
+ensures that such a model validates all the patch laws of \texttt{R}.
+
+Angiuli et al. present three example patch theories in order of increasing
+complexity. Implementations in Cubical Agda are explored in more depth in
+\autoref{ch/formalization}, but we give a brief overview here.
+
+\subsubsection{An Elementary Patch Theory}
+
+An elementary patch theory describes a VCS with one context \texttt{num}, and
+one patch \texttt{add1 : num $\equiv$ num}. Being a HIT\footnote{This HIT with one point and
+one non-identity loop may seem familiar. It is a renaming of the circle $S^1$!},
+the theory automatically includes identity patches, composition and even inverses.
+
+The intended interpretation of the theory is a repository consisting of a single
+integer where applying \texttt{add1} adds 1 to it. However, there is nothing
+stopping us from giving a different interpretation. [MAYBE DO THAT? LATER?]
+
+This example illustrates two important points. Firstly, that paths can carry
+computational content (in this case the successor function and its inverse)
+revealed by mapping into the universe of types; and secondly that a
+patch theory may permit multiple models.
+
+\subsubsection{A Patch Theory with Laws}
+
+In \textbf{a patch theory with laws} we see an example of patch laws -- squares
+in the higher inductive type. Again the theory has one point and one constructor
+path, but the path \texttt{s $\leftrightarrow$ t @ i} depends on two
+strings \texttt{s,t} and an index \texttt{i}.
+
+The theory also includes two patch laws. \texttt{indep} asserts that two patches
+with different indexes commute, while \texttt{noop} asserts that a patch where
+$s = t$ is the same as \texttt{refl} - doing nothing.
+
+The intended model for this theory is a fixed-length vector of strings where the
+patch \texttt{s $\leftrightarrow$ t @ i} swaps the strings \texttt{s} and
+\texttt{t} at index \texttt{i}. In order to define this interpretation it is
+also necessary to give squares showing that it respects the patch laws.
+
+The use of patch laws is illustrated by a \textbf{patch optimizer}. This is a
+function that takes a patch and produces a smaller patch with the same effect.
+The key idea is to take advantage of \texttt{noop} to replace instances of
+\texttt{s $\leftrightarrow$ t @ i} with \texttt{refl} when \texttt{s} and
+\texttt{t} are equal.
+
+Angiuli et al. give two ways to write the optimizer. In the \textbf{program then
+  prove} approach they construct a function \texttt{opt1 : R $\rightarrow$ R}
+and then prove \texttt{$\forall$ x $\rightarrow$ x $\equiv$ opt1 x}. This
+requires set-truncation of \texttt{R}.
+
+The \textbf{program and prove} approach avoids truncation by instead
+constructing a function \texttt{opt : (x : R) $\rightarrow$ $\Sigma_\texttt{(y :
+    R)}$ y $\equiv$ x} which produces both a new point \emph{and} and proof that
+it is equal to the original. Since the resulting type is contractible, the
+squares witnessing the patch laws become trivial.
+
+In both cases the actual \emph{patch} optimizer is obtained by applying
+\texttt{opt} along a path.
+
+\subsubsection{A Patch Theory with Richer Contexts} 
+
+The previous two examples show the utility of a patch theory as a HIT,
+but they do not capture the importance of contexts. In both, there is only one
+context and every patch is applicable to that context.
+
+\textbf{A patch theory with richer contexts} has contexts \texttt{doc h} indexed by a
+\emph{history} \texttt{h}, and the two kinds of patches \texttt{add s i} and
+\texttt{rm i} are only applicable to appropriate histories. In particular, a
+history has a ``length'' \texttt{n} and patches are only applicable when their
+index \texttt{i} is smaller than \texttt{n}.
+
+This patch theory also has patch laws describing the relationships between
+adding and removing lines in different orders. We leave out the details of these
+laws for now, but note that the histories must also respect patch laws.
+
+The interpretation of \texttt{doc h} for a history of length \texttt{n} is a
+single file containing \texttt{n} lines of text. What about patches? The
+\texttt{rm} patch should be a path between files of length \texttt{n} and files
+of length \texttt{n-1} but these types are not bijective. To solve this we
+compute the unique result of applying a history and map \texttt{doc h} to the
+singleton type of the result. Now a bijection can be obtained, since all
+singleton types are in bijection with each other.
+
+Angiuli et al. then illustrates an interesting use of models as functions by
+defining two different models for this theory. The first model computes the
+resulting file as a vector of strings, while the second instead produces a log
+of all the patches that have been applied.
+
+Merging in this richer theory is reduced to a function on histories from the
+empty file. This ensures that only patches in the ``forward direction'' are
+merged, and since histories respect patch laws so does their merge.
+
+\subsubsection{Computational Content of Paths}
+
+In all three examples, the models of patch theories make crucial use of
+different paths. In an elementary patch theory \texttt{refl}, \texttt{add1} and
+\texttt{add1 $\cdot$ add1} all have the same endpoints, but their effects as
+patches are very different. Therefore making use of this formulation requires a
+type theory where paths (and in particular paths between types provided by univalence) carry
+computational meaning, such as Cubical Agda.
+
+Additionally, the optimizer for a patch theory with laws maps into a
+contractible type in a non-trivial way. This may seem pointless, since all the
+elements in such a type are in a sense the same\footnote{In fact any
+  function of the type \texttt{(x : R) $\rightarrow$ $\Sigma_\texttt{(y:R)}$ x
+  $\equiv$ y} is homotopic to the ``identity function'' that maps x to (x ,
+refl).~\cite{Angiuli2016}}, but nevertheless we expect it to compute the correct
+patch. In practice we require some notion of ``sub-homotopical'' computation.
+
+For these reasons it is worthwhile to implement the models cubically to gain a
+better understanding both of homotopical patch theories and cubical
+equality~\cite{vezzosi2021cubical, Angiuli2016}.
+
+%% Below are some paragraphs from an earlier version
+%% not sure if/when they will be useful
+
+
+% While the HIT formulation gives a lot ``for free'', it also has some drawbacks.
+% In particular, the requirement that all patches have inverses causes some
+% problems. The workaround is to ``type'' patches with the history they are
+% applicable to. This allows Angiuli et al. to define a merge operation in terms
+% on only the ``forward'' patches, but leads to a fairly complex theory even for
+% relatively simple settings.
+
+% % cut this if we don't do more work on it
+% % this also isn't quite true, and the sub-homotopical part refers to opt
+% An interesting feature of Angiuli et al.'s patch theories is that the type of
+% repositories must be contractible. Since patches are represented by paths, any
+% point can be retracted along them. As such, all repositories are -- in a sense
+% -- ``the same'' and we need better notions of
+% ``sub-homotopical''~\cite{Angiuli2016} computations to reason about their differences.

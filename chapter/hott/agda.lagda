@@ -28,6 +28,14 @@ open import Relation.Binary.PropositionalEquality
 We can now define vectors as a family of types indexed by a type and a natural number.
 Vectors also have two constructors. The empy vector \texttt{[]} has length zero, and a vector of any length can be extended by adding a new element to the start.
 The implicit argument \texttt{\{n~:~ℕ\}} should be read as "for all natural numbers n..." (and in fact we could write \texttt{∀~\{n\}} since Agda can easily infer that n must be a natural number).
+\begin{code}
+data Vec (A : Set) : ℕ → Set where
+  [] : Vec A zero
+  _::_ : {n : ℕ} → A → Vec A n → Vec A (suc n)
+\end{code}
+
+Note that the data declaration has \texttt{A} before the colon, but \texttt{ℕ} after.
+This is because \texttt{A} stays constant over the two constructors, while the natural number varies.
 
 The cons function (\texttt{\_::\_}) shows two important features of Agda's syntax: infix notation and currying.
 Infix functions can be used between its arguments, in this case \texttt{x :: xs} would be a vector,
@@ -43,13 +51,6 @@ arrows (associating to the right).
 
 [FOOTNOTE?] mixfix operators and currying interact wonderfully with partial application. \texttt{x ::\_} is the
 function that takes a vector and conses x onto it.
-\begin{code}
-data Vec (A : Set) : ℕ → Set where
-  [] : Vec A zero
-  _::_ : {n : ℕ} → A → Vec A n → Vec A (suc n)
-\end{code}
-Note that the first line has \texttt{A} before the colon, but \texttt{ℕ} after.
-This is because \texttt{A} stays constant over the two constructors, while the natural number varies.
 
 Now we can construct terms of this new type.
 For example, here is the 3-vector of natural numbers [1,2,3]:
@@ -60,6 +61,8 @@ one-two-three = suc zero
     :: (suc (suc (suc zero))
       :: []))
 \end{code}
+Clearly this way to write out natural numbers is pretty verbose.
+Agda's builtin type of naturals lets us write \texttt{3} instead of \texttt{suc (suc (suc zero))}.
 
 We can also define convenient functions on vectors, like \texttt{map} and concatenation.
 Here \texttt{map} is defined by pattern matching on the vector. It applies a given function f to each element

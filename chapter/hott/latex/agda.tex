@@ -66,21 +66,6 @@ It has two constructors: \texttt{zero} and \texttt{suc}.
 We can now define vectors as a family of types indexed by a type and a natural number.
 Vectors also have two constructors. The empy vector \texttt{[]} has length zero, and a vector of any length can be extended by adding a new element to the start.
 The implicit argument \texttt{\{n~:~ℕ\}} should be read as "for all natural numbers n..." (and in fact we could write \texttt{∀~\{n\}} since Agda can easily infer that n must be a natural number).
-
-The cons function (\texttt{\_::\_}) shows two important features of Agda's syntax: infix notation and currying.
-Infix functions can be used between its arguments, in this case \texttt{x :: xs} would be a vector,
-and are denoted by underscores. Each underscore in the name represents a position in which we may place
-the corresponding argument.
-
-Currying (Named after Haskell Curry [CITATION?]) is a way to describe functions with multiple arguments
-by making use of the product~$\dashv$~exponentiation adjunction.
-This adjunction gives a bijection between $(A \times B) \rightarrow C$ and $A \rightarrow (B \rightarrow C)$
-for all objects A, B and C [I CANNOT DO THIS WITHOUT INTRODUCING MORE CATEORY THEORY. FOOTNOTE? Maclane IV.6: CCC's] which
-means we can write the type of a function which takes multiple arguments as a sequence of types with right
-arrows (associating to the right).
-
-[FOOTNOTE?] mixfix operators and currying interact wonderfully with partial application. \texttt{x ::\_} is the
-function that takes a vector and conses x onto it.
 \begin{code}%
 \>[0]\AgdaKeyword{data}\AgdaSpace{}%
 \AgdaDatatype{Vec}\AgdaSpace{}%
@@ -118,8 +103,24 @@ function that takes a vector and conses x onto it.
 \AgdaSymbol{(}\AgdaInductiveConstructor{suc}\AgdaSpace{}%
 \AgdaBound{n}\AgdaSymbol{)}\<%
 \end{code}
-Note that the first line has \texttt{A} before the colon, but \texttt{ℕ} after.
+
+Note that the data declaration has \texttt{A} before the colon, but \texttt{ℕ} after.
 This is because \texttt{A} stays constant over the two constructors, while the natural number varies.
+
+The cons function (\texttt{\_::\_}) shows two important features of Agda's syntax: infix notation and currying.
+Infix functions can be used between its arguments, in this case \texttt{x :: xs} would be a vector,
+and are denoted by underscores. Each underscore in the name represents a position in which we may place
+the corresponding argument.
+
+Currying (Named after Haskell Curry [CITATION?]) is a way to describe functions with multiple arguments
+by making use of the product~$\dashv$~exponentiation adjunction.
+This adjunction gives a bijection between $(A \times B) \rightarrow C$ and $A \rightarrow (B \rightarrow C)$
+for all objects A, B and C [I CANNOT DO THIS WITHOUT INTRODUCING MORE CATEORY THEORY. FOOTNOTE? Maclane IV.6: CCC's] which
+means we can write the type of a function which takes multiple arguments as a sequence of types with right
+arrows (associating to the right).
+
+[FOOTNOTE?] mixfix operators and currying interact wonderfully with partial application. \texttt{x ::\_} is the
+function that takes a vector and conses x onto it.
 
 Now we can construct terms of this new type.
 For example, here is the 3-vector of natural numbers [1,2,3]:
@@ -155,6 +156,8 @@ For example, here is the 3-vector of natural numbers [1,2,3]:
 \>[6]\AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
 \AgdaInductiveConstructor{[]}\AgdaSymbol{))}\<%
 \end{code}
+Clearly this way to write out natural numbers is pretty verbose.
+Agda's builtin type of naturals lets us write \texttt{3} instead of \texttt{suc (suc (suc zero))}.
 
 We can also define convenient functions on vectors, like \texttt{map} and concatenation.
 Here \texttt{map} is defined by pattern matching on the vector. It applies a given function f to each element
