@@ -1,10 +1,13 @@
 \section{Spaces as Types}\label{sec:spaces}
-Another important model of types are as spaces. Pioneered by Voevodsky
-[CITATION? Mention the book?], his model views types as topological spaces and
-terms as points in those spaces. This view sheds a new light on identity types.
-A term in $x \equiv_A y$  is a path from $x$ to $y$ and the identity type is
-path space. Higher identity types also gain new meaning: paths between two
-paths are precisely the eponymous ``homotopies''! Geometrically we visualize
-them as ``filling in'' the space between paths.
 
-[WHAT MORE?]
+Another (related) way to make sense of identity types is through homotopy theory. With
+this interpretation pioneered by Voevodsky~\cite{voevodsky2014} and the HoTT
+program~\cite{hottbook}, a term of $x =_A y$ is like a path in $A$ from $x$ to
+$y$.
+In fact the collection of all such paths is itself a space (and thus a type):
+the path space. Additionally there may be paths between paths, paths between
+paths between paths and so on. These higher paths are the eponymous
+``homotopies'' and provide a rich field of study on their own.
+Geometrically we visualize them as ``filling in'' the space between paths.
+
+[MORE? FUNDAMENTAL GROUPOIDS?]
