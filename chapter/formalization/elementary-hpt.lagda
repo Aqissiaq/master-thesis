@@ -43,7 +43,7 @@ In fact this implementation comes with a proof that the fundamental group of $S^
 which contains many of the ingredients we will need. Specifically the loop space $ΩS^1$ is the type
 of patches, and \texttt{helix : S¹ → Type} is precisely the interpretation of points in \texttt{R} as
 types of repositories. Concretely \texttt{helix} maps \texttt{base} to the integers, and \texttt{loop}
-to \texttt{ua} of the equivalence \texttt{ℤ ≃ ℤ} induced by \texttt{suc}.
+to \texttt{ua} of the equivalence \texttt{ℤ ≃ ℤ} induced by the successor function.
 
 \begin{code}
 open import Cubical.HITs.S1.Base public
@@ -106,11 +106,11 @@ intLoop-sur p = apply p 0 , sym (decodeEncode num p)
 patch-comm : (p q : Patch) → p ∙ q ≡ q ∙ p
 patch-comm p q = let (n , p-is-n) = intLoop-sur p
                      (m , q-is-m) = intLoop-sur q in
-  p ∙ q ≡⟨ cong₂ _∙_ p-is-n q-is-m ⟩  intLoop n ∙ intLoop m
-        ≡⟨ intLoop-hom n m ⟩          intLoop (n + m)
-        ≡⟨ cong intLoop (+Comm n m) ⟩ intLoop (m + n)
-        ≡⟨ sym (intLoop-hom m n) ⟩    intLoop m ∙ intLoop n
-        ≡⟨ cong₂ _∙_ (sym q-is-m) (sym p-is-n) ⟩
+  p ∙ q ≡⟨ cong₂ _∙_ p-is-n q-is-m ⟩
+  intLoop n ∙ intLoop m ≡⟨ intLoop-hom n m ⟩
+  intLoop (n + m) ≡⟨ cong intLoop (+Comm n m) ⟩
+  intLoop (m + n) ≡⟨ sym (intLoop-hom m n) ⟩
+  intLoop m ∙ intLoop n ≡⟨ cong₂ _∙_ (sym q-is-m) (sym p-is-n) ⟩
   q ∙ p ∎
 \end{code}
 
@@ -119,9 +119,7 @@ With the commutativity of patches established, reconcile follows easily:
 \begin{code}
 reconcile : {f1 f2 g1 g2 : Patch}
           → merge (f1 , f2) ≡ (g1 , g2) → f1 ∙ g1 ≡ f2 ∙ g2
-reconcile {f1} {f2} {g1} {g2} p = let f1=g2 = cong snd p
-                                      g1=f2 = cong fst (sym p) in
-  f1 ∙ g1 ≡⟨ cong₂ _∙_ f1=g2 g1=f2 ⟩ g2 ∙ f2
-          ≡⟨ patch-comm g2 f2 ⟩
-  f2 ∙ g2 ∎
+reconcile p = let f1=g2 = cong snd p
+                  g1=f2 = cong fst (sym p) in
+  (cong₂ _∙_ f1=g2 g1=f2) ∙ (patch-comm _ _)
 \end{code}
