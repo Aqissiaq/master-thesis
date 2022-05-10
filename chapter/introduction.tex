@@ -1,5 +1,29 @@
 \chapter{Introduction}
 
-\section{Related works}
-In this section we summarize some key papers and their significance to the
-project.
+\begin{enumerate}
+\item version control
+\item (homotopy) type theory
+\item formalization + ``computational content''?
+\item related work?
+\end{enumerate}
+
+\ChRef{ch/hott} contains an introduction to the Homotopy Type Theory (HoTT)
+setting, a cubical interpretation of this type theory, and an introduction to
+the syntax and workings of the Agda programming language~\cite{Agda} in general and Cubical
+Agda~\cite{vezzosi2021cubical} in particular.
+
+\ChRef{ch/vc} gives and exposition of Version Control Systems (VCS) and some
+approaches to a theory of such systems. We give an account of
+Darcs'~\cite{Darcs} ``Algebra of Patches'' as described by
+Lynagh~\cite{Lynagh2006}, an approach based on category theory by Mimram and Di
+Giusto~\cite{Categorical2013}, and Angiuli et al.'s ``Homotopical Patch
+Theory''~\cite{Angiuli2016} which utilizes HoTT. Finally we present another
+HoTT approach attempted by the author, which has not proven fruitful.
+
+\ChRef{ch/formalization} describes the main contribution of this thesis: an
+implementation of Homotopical Patch Theory in Cubical Agda. Following Angiuli et
+al. we implement three [TWO?] patch theories of increasing complexity. In
+\autoref{sec:results} we examine the implementations by testing them on simple
+examples. We conclude that the theories and models behave as expected, but are
+severely limited by the current limitations of Cubical Agda -- in particular
+that \texttt{transp} and \texttt{hcomp} do not compute over indexed families.

@@ -1,4 +1,4 @@
-\section{Another Type-Theoretic Approach}
+\section{Another Type-Theoretic Approach}\label{sec:attempt}
 
 In this section we explain a different approach to modeling VCSs in homotopy
 type theory based on a specific class of HITs called coequalizers. The basic

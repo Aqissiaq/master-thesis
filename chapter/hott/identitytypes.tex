@@ -79,8 +79,8 @@ properties we have already seen, they show that composition is associative and
 respects units and inverses. That is, for proofs $p : x = y$, $q : y = z$, $r :
 z = w$ the following types are all inhabited:
 \[(p \cdot q) \cdot r =_{x = w} p \cdot (q \cdot r)\]
-\[p \cdot refl_y = p\]
-\[refl_x \cdot p = p\]
+\[p \cdot refl_y =_{x = y} p\]
+\[refl_x \cdot p_{x = y} = p\]
 \[p \cdot p^{-1} =_{x = x} refl_x\]
 \[p^{-1} \cdot p =_{y = y} refl_y\]
 

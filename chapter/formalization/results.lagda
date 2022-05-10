@@ -1,4 +1,4 @@
-\section{Computational Results}
+\section{Computational Results}\label{sec:results}
 
 Having implemented several patch theories we can have a look at what they actually do.
 In this section we do exactly that, considering some concrete examples of repositories,

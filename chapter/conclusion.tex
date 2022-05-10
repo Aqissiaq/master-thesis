@@ -1,2 +1,45 @@
 \chapter{Conclusion}
-We did some things and they worked out --- or maybe they didn't.
+
+In this thesis we have constructed and outlined an implementation of homotopical
+patch theory in Cubical Agda. The implementation makes use of higher inductive
+types and univalence, and since the cubical model imbues univalence with
+computational meaning we are able to show that models of the theory behave as
+expected -- at least for simple examples.
+
+A full exploration of the behavior is (at the time of writing) limited by two
+factors: the efficiency of typechecking for complicated terms, and the fact that
+Cubical Agda does not fully reduce \texttt{transp} and \texttt{hcomp} for
+indexed families of types.
+
+The former means that it is computationally expensive (and time consuming) to
+verify the behavior of the implementation, while the latter makes it impossible
+to compute results for the more complicated models. In particular for
+compositions of patches (using \texttt{hcomp}) when modeling the repository as a
+vector of strings (and indexed family of types).
+
+Additionally, the first chapter contains an exposition of HoTT and (cubical)
+Agda and the second a survey of some approaches to a theory of VCS.
+
+\section{Future Work}
+
+There are two main avenues for future work. Firstly on the formalization of HPT
+and secondly on other type-theoretic approaches like the one discussed in
+\autoref{sec:attempt}.
+
+The HPT formalization also permits two directions of further inquiry. One is to
+implement more of the original paper. In particular the \texttt{indep} law for
+the patch theory with laws and all patch laws for the theory in section 6 are
+missing. Their inclusion would require a different way to map higher-dimensional
+paths into the universe which is guaranteed to terminate. The other is to work
+towards more computational results. Specifically we are limited by indexed
+families, and further work in Cubical Agda's normalization would lead to more
+results ``for free''. It would also be interesting to look at the computation of
+\texttt{opt}, as it requires some notions of sub-singletons~\cite{Angiuli2016}.
+
+Other type theoretic approaches could also be investigated. While HPT provides
+an elegant encapsulation of groupoid properties and separation of theories from
+models, it does not provide tools to reason about the semantics of patches and
+operations on them. In particular, a formal theory could incorporate merging and
+its properties. Another direction for expansion would be a more modular theory
+in which different patch theories (e.g for text files and integers) could be
+combined in a principled way to form something like a directory.
