@@ -203,7 +203,7 @@ swapat (s , t) j = isoToEquiv
 \end{code}
 
 For the \texttt{noop} law we need to show that \texttt{swapat} respects it.
-We proceed in two steps. First \texttt{swassId} shows that the underlying function of the equivalence
+We proceed in two steps. First \texttt{swapssId} shows that the underlying function of the equivalence
 \texttt{swapat (s , s) j} is the identity function. Then, since two equivalences are equal if their
 underlying functions are equal we get an identification of \texttt{swapat (s , s) j} and the identity equivalence.
 
@@ -384,9 +384,6 @@ In particular $p^{-1} \cdot q \equiv \texttt{refl}$ is equivalent to $q \equiv p
   invLUnique : {X : Type} {x y : X} →
                (p q : x ≡ y) → (sym p ∙ q ≡ refl) ≡ (q ≡ p)
 \end{code}
-This is, in fact, an equivalence since it relies on
-\texttt{compl≡Equiv : ∀ p q r → (q ≡ r) ≃ (p ∙ q ≡ p ∙ r)}, which is made into a
-path with \texttt{ua}.
 \begin{code}[hide]
   invLUnique p q = sym p ∙ q ≡ refl
     ≡⟨ cong ((sym p ∙ q) ≡_) (sym (lCancel p)) ⟩

@@ -11,7 +11,6 @@ smaller patches with the same effect. This optimizer makes crucial use of the pa
 \>[0]\AgdaSymbol{\{-\#}\AgdaSpace{}%
 \AgdaKeyword{OPTIONS}\AgdaSpace{}%
 \AgdaPragma{--cubical}\AgdaSpace{}%
-\AgdaPragma{--rewriting}\AgdaSpace{}%
 \AgdaSymbol{\#-\}}\<%
 \\
 %
@@ -24,7 +23,8 @@ smaller patches with the same effect. This optimizer makes crucial use of the pa
 \\[\AgdaEmptyExtraSkip]%
 \>[0]\AgdaKeyword{open}\AgdaSpace{}%
 \AgdaKeyword{import}\AgdaSpace{}%
-\AgdaModule{Data.Fin}\<%
+\AgdaModule{Data.Fin}\AgdaSpace{}%
+\AgdaKeyword{public}\<%
 \\
 \>[0][@{}l@{\AgdaIndent{0}}]%
 \>[2]\AgdaKeyword{using}\AgdaSymbol{(}\AgdaDatatype{Fin}%
@@ -48,7 +48,8 @@ smaller patches with the same effect. This optimizer makes crucial use of the pa
 \\
 \>[0]\AgdaKeyword{open}\AgdaSpace{}%
 \AgdaKeyword{import}\AgdaSpace{}%
-\AgdaModule{Data.Vec}\<%
+\AgdaModule{Data.Vec}\AgdaSpace{}%
+\AgdaKeyword{public}\<%
 \\
 \>[0][@{}l@{\AgdaIndent{0}}]%
 \>[2]\AgdaKeyword{using}\AgdaSymbol{(}\AgdaDatatype{Vec}\AgdaSpace{}%
@@ -211,7 +212,7 @@ smaller patches with the same effect. This optimizer makes crucial use of the pa
 \\[\AgdaEmptyExtraSkip]%
 \>[0]\AgdaFunction{sym≢}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[99I]\AgdaSymbol{∀}\AgdaSpace{}%
+\>[100I]\AgdaSymbol{∀}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{ℓ}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{A}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -223,7 +224,7 @@ smaller patches with the same effect. This optimizer makes crucial use of the pa
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaBound{A}\AgdaSymbol{\}}\<%
 \\
-\>[.][@{}l@{}]\<[99I]%
+\>[.][@{}l@{}]\<[100I]%
 \>[7]\AgdaSymbol{→}\AgdaSpace{}%
 \AgdaBound{x}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{≢}}\AgdaSpace{}%
@@ -261,7 +262,7 @@ smaller patches with the same effect. This optimizer makes crucial use of the pa
 \\
 \>[0]\AgdaFunction{size}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
-\AgdaNumber{8}\<%
+\AgdaNumber{2}\<%
 \end{code}
 
 \subsection{The Patch Theory}
@@ -341,8 +342,8 @@ Angiuli et al's original definition also includes an additional law:
 \begin{code}%
 \>[0][@{}l@{\AgdaIndent{1}}]%
 \>[2]\AgdaPostulate{indep}%
-\>[174I]\AgdaSymbol{:}%
-\>[175I]\AgdaSymbol{(}\AgdaBound{s}\AgdaSpace{}%
+\>[175I]\AgdaSymbol{:}%
+\>[176I]\AgdaSymbol{(}\AgdaBound{s}\AgdaSpace{}%
 \AgdaBound{t}\AgdaSpace{}%
 \AgdaBound{u}\AgdaSpace{}%
 \AgdaBound{v}\AgdaSpace{}%
@@ -359,7 +360,7 @@ Angiuli et al's original definition also includes an additional law:
 \AgdaBound{j}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaSymbol{→}\<%
 \\
-\>[.][@{}l@{}]\<[175I]%
+\>[.][@{}l@{}]\<[176I]%
 \>[10]\AgdaSymbol{(}\AgdaBound{s}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{↔}}\AgdaSpace{}%
 \AgdaBound{t}\AgdaSpace{}%
@@ -372,7 +373,7 @@ Angiuli et al's original definition also includes an additional law:
 \AgdaOperator{\AgdaInductiveConstructor{AT}}\AgdaSpace{}%
 \AgdaBound{j}\AgdaSymbol{)}\<%
 \\
-\>[.][@{}l@{}]\<[174I]%
+\>[.][@{}l@{}]\<[175I]%
 \>[8]\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{u}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{↔}}\AgdaSpace{}%
@@ -511,7 +512,7 @@ composition of the functions.
 \begin{code}%
 \>[0]\AgdaFunction{[]\%=twice}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[276I]\AgdaSymbol{∀}\AgdaSpace{}%
+\>[277I]\AgdaSymbol{∀}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{n}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{A}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -531,7 +532,7 @@ composition of the functions.
 \AgdaDatatype{Fin}\AgdaSpace{}%
 \AgdaBound{n}\AgdaSymbol{)}\<%
 \\
-\>[.][@{}l@{}]\<[276I]%
+\>[.][@{}l@{}]\<[277I]%
 \>[12]\AgdaSymbol{→}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{v}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{[}}\AgdaSpace{}%
@@ -630,7 +631,7 @@ Both are proven by induction on the index.
 \begin{code}[hide]%
 \>[0]\AgdaFunction{permuteTwice'}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[371I]\AgdaSymbol{\{}\AgdaBound{s1}\AgdaSpace{}%
+\>[372I]\AgdaSymbol{\{}\AgdaBound{s1}\AgdaSpace{}%
 \AgdaBound{s2}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaPostulate{String}\AgdaSymbol{\}}\AgdaSpace{}%
@@ -639,7 +640,7 @@ Both are proven by induction on the index.
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaPostulate{String}\AgdaSymbol{)}\<%
 \\
-\>[.][@{}l@{}]\<[371I]%
+\>[.][@{}l@{}]\<[372I]%
 \>[16]\AgdaSymbol{→}\AgdaSpace{}%
 \AgdaFunction{permute}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{s1}\AgdaSpace{}%
@@ -669,12 +670,12 @@ Both are proven by induction on the index.
 \\
 \>[0]\AgdaSymbol{...}%
 \>[26]\AgdaSymbol{|}%
-\>[402I]\AgdaInductiveConstructor{yes}\AgdaSpace{}%
+\>[403I]\AgdaInductiveConstructor{yes}\AgdaSpace{}%
 \AgdaBound{s=s1}\AgdaSpace{}%
 \AgdaSymbol{|}\AgdaSpace{}%
 \AgdaSymbol{\AgdaUnderscore{}}\<%
 \\
-\>[.][@{}l@{}]\<[402I]%
+\>[.][@{}l@{}]\<[403I]%
 \>[28]\AgdaKeyword{with}\AgdaSpace{}%
 \AgdaBound{s2}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{=?}}\AgdaSpace{}%
@@ -727,13 +728,13 @@ Both are proven by induction on the index.
 \AgdaSymbol{\{}\AgdaBound{s2}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaBound{s}\AgdaSpace{}%
 \AgdaSymbol{|}%
-\>[441I]\AgdaInductiveConstructor{no}\AgdaSpace{}%
+\>[442I]\AgdaInductiveConstructor{no}\AgdaSpace{}%
 \AgdaSymbol{\AgdaUnderscore{}}\AgdaSpace{}%
 \AgdaSymbol{|}\AgdaSpace{}%
 \AgdaInductiveConstructor{yes}\AgdaSpace{}%
 \AgdaBound{s=s2}\<%
 \\
-\>[.][@{}l@{}]\<[441I]%
+\>[.][@{}l@{}]\<[442I]%
 \>[28]\AgdaKeyword{with}\AgdaSpace{}%
 \AgdaBound{s1}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{=?}}\AgdaSpace{}%
@@ -770,13 +771,13 @@ Both are proven by induction on the index.
 \AgdaSymbol{\{}\AgdaBound{s2}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaBound{s}\AgdaSpace{}%
 \AgdaSymbol{|}%
-\>[469I]\AgdaInductiveConstructor{no}\AgdaSpace{}%
+\>[470I]\AgdaInductiveConstructor{no}\AgdaSpace{}%
 \AgdaBound{s≠s1}\AgdaSpace{}%
 \AgdaSymbol{|}\AgdaSpace{}%
 \AgdaInductiveConstructor{no}\AgdaSpace{}%
 \AgdaBound{s≠s2}\<%
 \\
-\>[.][@{}l@{}]\<[469I]%
+\>[.][@{}l@{}]\<[470I]%
 \>[28]\AgdaKeyword{with}\AgdaSpace{}%
 \AgdaBound{s}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{=?}}\AgdaSpace{}%
@@ -983,7 +984,7 @@ an equivalence \texttt{swapat} can be constructed from this isomorphism.
 \end{code}
 
 For the \texttt{noop} law we need to show that \texttt{swapat} respects it.
-We proceed in two steps. First \texttt{swassId} shows that the underlying function of the equivalence
+We proceed in two steps. First \texttt{swapssId} shows that the underlying function of the equivalence
 \texttt{swapat (s , s) j} is the identity function. Then, since two equivalences are equal if their
 underlying functions are equal we get an identification of \texttt{swapat (s , s) j} and the identity equivalence.
 
@@ -1138,7 +1139,7 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 %
 \>[4]\AgdaFunction{pointwise}\AgdaSpace{}%
 \AgdaBound{r}%
-\>[725I]\AgdaSymbol{=}\AgdaSpace{}%
+\>[726I]\AgdaSymbol{=}\AgdaSpace{}%
 \AgdaFunction{equivFun}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{swapat}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{s}\AgdaSpace{}%
@@ -1147,7 +1148,7 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 \AgdaBound{j}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaBound{r}\<%
 \\
-\>[.][@{}l@{}]\<[725I]%
+\>[.][@{}l@{}]\<[726I]%
 \>[16]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{cong}\AgdaSpace{}%
 \AgdaSymbol{(λ}\AgdaSpace{}%
@@ -1416,10 +1417,10 @@ There are two complications:
 \>[26]\AgdaSymbol{|}\AgdaSpace{}%
 \AgdaInductiveConstructor{yes}\AgdaSpace{}%
 \AgdaBound{s1=s2}%
-\>[904I]\AgdaSymbol{=}\AgdaSpace{}%
+\>[905I]\AgdaSymbol{=}\AgdaSpace{}%
 \AgdaInductiveConstructor{doc}\<%
 \\
-\>[.][@{}l@{}]\<[904I]%
+\>[.][@{}l@{}]\<[905I]%
 \>[38]\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaSymbol{λ}\AgdaSpace{}%
 \AgdaBound{k}\AgdaSpace{}%
@@ -1508,12 +1509,12 @@ Luckily this type is equivalent to our desired target type by:
 \begin{code}%
 \>[0]\AgdaFunction{e}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[956I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSpace{}%
+\>[957I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaFunction{Patch}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{→}\<%
 \\
-\>[.][@{}l@{}]\<[956I]%
+\>[.][@{}l@{}]\<[957I]%
 \>[4]\AgdaSymbol{(}\AgdaPostulate{PathP}\AgdaSpace{}%
 \AgdaSymbol{(λ}\AgdaSpace{}%
 \AgdaBound{i}\AgdaSpace{}%
@@ -1547,7 +1548,7 @@ Luckily this type is equivalent to our desired target type by:
 \end{code}
 \begin{code}[hide]%
 \>[0]\AgdaFunction{e}%
-\>[986I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSymbol{\}}\AgdaSpace{}%
+\>[987I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{=}\<%
 \end{code}
 [SHOULD THIS JUST BE PRESENTED AS A PROPOSITION/PROOF?]
@@ -1557,7 +1558,7 @@ is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x 
 
 [USING BOOK SYNTAX I HAVE NOT INTRODUCED..]
 \begin{code}%
-\>[.][@{}l@{}]\<[986I]%
+\>[.][@{}l@{}]\<[987I]%
 \>[2]\AgdaSymbol{(}\AgdaPostulate{PathP}\AgdaSpace{}%
 \AgdaSymbol{(λ}\AgdaSpace{}%
 \AgdaBound{i}\AgdaSpace{}%
@@ -1842,7 +1843,7 @@ In particular $p^{-1} \cdot q \equiv \texttt{refl}$ is equivalent to $q \equiv p
 %
 \>[2]\AgdaFunction{invLUnique}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[1205I]\AgdaSymbol{\{}\AgdaBound{X}\AgdaSpace{}%
+\>[1206I]\AgdaSymbol{\{}\AgdaBound{X}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaPrimitive{Type}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{x}\AgdaSpace{}%
@@ -1851,7 +1852,7 @@ In particular $p^{-1} \cdot q \equiv \texttt{refl}$ is equivalent to $q \equiv p
 \AgdaBound{X}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{→}\<%
 \\
-\>[.][@{}l@{}]\<[1205I]%
+\>[.][@{}l@{}]\<[1206I]%
 \>[15]\AgdaSymbol{(}\AgdaBound{p}\AgdaSpace{}%
 \AgdaBound{q}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -1870,9 +1871,6 @@ In particular $p^{-1} \cdot q \equiv \texttt{refl}$ is equivalent to $q \equiv p
 \AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
 \AgdaBound{p}\AgdaSymbol{)}\<%
 \end{code}
-This is, in fact, an equivalence since it relies on
-\texttt{compl≡Equiv : ∀ p q r → (q ≡ r) ≃ (p ∙ q ≡ p ∙ r)}, which is made into a
-path with \texttt{ua}.
 \begin{code}[hide]%
 %
 \>[2]\AgdaFunction{invLUnique}\AgdaSpace{}%

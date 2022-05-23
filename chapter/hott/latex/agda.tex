@@ -115,11 +115,11 @@ the corresponding argument.
 Currying (Named after Haskell Curry [CITATION?]) is a way to describe functions with multiple arguments
 by making use of the product~$\dashv$~exponentiation adjunction.
 This adjunction gives a bijection between $(A \times B) \rightarrow C$ and $A \rightarrow (B \rightarrow C)$
-for all objects A, B and C [I CANNOT DO THIS WITHOUT INTRODUCING MORE CATEORY THEORY. FOOTNOTE? Maclane IV.6: CCC's] which
-means we can write the type of a function which takes multiple arguments as a sequence of types with right
-arrows (associating to the right).
+for all objects A, B and C~\footnote{For more on adjunctions in general, and this adjunction in particular see
+IV.6: Cartesian Closed Categories in~\cite{maclane1998}} which means we can write the type of a function which
+takes multiple arguments as a sequence of types with right arrows (associating to the right).
 
-[FOOTNOTE?] mixfix operators and currying interact wonderfully with partial application. \texttt{x ::\_} is the
+[FOOTNOTE?] Mixfix operators and currying interact wonderfully with partial application. \texttt{x ::\_} is the
 function that takes a vector and conses x onto it.
 
 Now we can construct terms of this new type.

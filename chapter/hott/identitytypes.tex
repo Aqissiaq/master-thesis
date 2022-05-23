@@ -41,7 +41,7 @@ and an induction principle given by:
 \]
 
 This is astonishingly simple! The identity type has one constructor: $refl_{\_}$,
-and in order to use its terms $p : x =_A y$ it is enough to know the case when $
+and in order to use its terms $p : x =_A y$ it is enough to know the case when $x
 \equiv y$ and $p \equiv refl$.
 
 Despite the few ingredients, identity types exhibit a great deal of (admittedly
@@ -49,7 +49,7 @@ expected) structure. For example, the identity type $=_A$ on some type $A$ is an
 equivalence relation. [TYPE THEORETICALLY? WHAT DO WE CALL THIS?] It is clearly
 reflexive ($x =_A x$ is inhabited by $refl_x$), but it is also symmetric and
 transitive. Given proofs $p : x = y$ and $q : y = z$, let us denote the
-symmetric proof by $p^{-1} : y = x$ and the result of transitivity $p \dot q : x
+symmetric proof by $p^{-1} : y = x$ and the result of transitivity $p \cdot q : x
 = z$.
 
 Given a term $a:A$ the J-rule lets us inhabit a type $P(x,p)$ by providing a

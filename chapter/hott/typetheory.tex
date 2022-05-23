@@ -1,10 +1,4 @@
 \section{(Dependent) Type Theory}\label{sec/typetheory}
-\begin{enumerate}
-  \item (dependent) types in computer science
-  \item type theories in math/foundations (the formal stuff)
-  \item Agda syntax?
-\end{enumerate}
-
 Types are a familiar concept to the computer scientist. We are used to working
 with data, and this data often has a \emph{data type} either explicitly or
 implicitly. For example, \texttt{42} is an \texttt{int}, \texttt{'c'} is a
@@ -12,7 +6,7 @@ implicitly. For example, \texttt{42} is an \texttt{int}, \texttt{'c'} is a
 denoted \texttt{[char]}). We call
 \texttt{int}, \texttt{char} and \texttt{[char]} \emph{types} and
 \texttt{42}, \texttt{'c'}, \texttt{['a','b','c']} \emph{terms} of those types.
-While this is a good basis for intuition, Type Theory (tm) is a bit different.
+While this is a good basis for intuition, the Type Theory we consider is a bit different.
 
 However, let us stick with the programming intuition to introduce a less
 familiar concept: \emph{dependent} types. First, note that one of the types in
@@ -65,8 +59,7 @@ context, some expression and a $\vdash$ separating the two. In this example our 
 
 In fact these are all the same kind of judgement: a particular term (resp. $a, f,
 f(a)$) is of a particular type (resp. $A, A \rightarrow B, B$). There are three
-other kinds of judgements permitted in (Martin-Löf) type theory [NOTE: THESE ARE JUDGEMENTAL
-EQUALITIES, DISTINCT FROM IDENTITY TYPES. MAKE CLEAR AND SETTLE ON SYNTAX]:
+other kinds of judgements permitted in (Martin-Löf) type theory:
 \begin{center}
   \[\Gamma \vdash A \; Type\]
   ``$A$ is a type.''
