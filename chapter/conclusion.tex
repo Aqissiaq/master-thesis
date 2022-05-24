@@ -30,11 +30,25 @@ The HPT formalization also permits two directions of further inquiry. One is to
 implement more of the original paper. In particular the \texttt{indep} law for
 the patch theory with laws and all patch laws for the theory in section 6 are
 missing. Their inclusion would require a different way to map higher-dimensional
-paths into the universe which is guaranteed to terminate. The other is to work
-towards more computational results. Specifically we are limited by indexed
-families, and further work in Cubical Agda's normalization would lead to more
-results ``for free''. It would also be interesting to look at the computation of
-\texttt{opt}, as it requires some notions of sub-singletons~\cite{Angiuli2016}.
+paths into the universe which is guaranteed to terminate.
+
+The other is to work towards more computational results.
+Specifically we are limited by indexed families, and further work in Cubical
+Agda's normalization would lead to more results ``for free''. It would also be
+interesting to look at the computation of \texttt{opt}, as it requires some
+notions of sub-singletons~\cite{Angiuli2016} and is very time consuming at the
+time of writing.
+
+Additionally, it might be possible to obtain more results by writing a more
+direct implementation. In May of 2022 M\"ortberg and Ljungstr\"om succeeded in
+computing the Brunerie number in Cubical Agda in a matter of seconds [cite
+axel's blog post when it shows up?] - where previous attempts had resulted in
+programs that ran for over 90 hours without a result~\cite{mortberg2018}. The
+new proof achieves this by providing a more direct construction [citation
+needed] and avoiding computationally expensive equivalences (in particular $S^3
+\simeq S^1 \ast S^1$). Their development suggests that more results may be
+achieved by identifying the computationally expensive aspects of the current
+construction, and avoiding these with more direct alternatives.
 
 Other type theoretic approaches could also be investigated. While HPT provides
 an elegant encapsulation of groupoid properties and separation of theories from
