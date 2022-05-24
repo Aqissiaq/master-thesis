@@ -61,21 +61,21 @@ In fact these are all the same kind of judgement: a particular term (resp. $a, f
 f(a)$) is of a particular type (resp. $A, A \rightarrow B, B$). There are three
 other kinds of judgements permitted in (Martin-Löf) type theory:
 \begin{center}
-  \[\Gamma \vdash A \; Type\]
+  \[\Gamma \vdash A \; \Type\]
   ``$A$ is a type.''
   \[\Gamma \vdash a \equiv b : A\]
-  ``$a$ and $b$ are judgementally equal terms of type A.''
-  \[\Gamma \vdash A \equiv B \; Type\]
+  ``$a$ and $b$ are judgementally equal terms of type A,'' and
+  \[\Gamma \vdash A \equiv B \; \Type\]
   ``$A$ and $B$ are judgementally equal types.''
 \end{center}
 
-The judgement form $\Gamma \vdash A \; Type$ lets us formally define lists and
+The judgement form $\Gamma \vdash A \; \Type$ lets us formally define lists and
 vectors. Lists are easy:
 \begin{equation*}
   \begin{array}{c}
-    \Gamma \vdash A \; Type \\
+    \Gamma \vdash A \; \Type \\
     \hline
-    \Gamma \vdash [A] \; Type
+    \Gamma \vdash [A] \; \Type
   \end{array}
   \label{rule:lists}
 \end{equation*}
@@ -86,7 +86,7 @@ $\mathbb{N}$ for the type of natural numbers, vectors are very similar:
   \begin{array}{c}
     \Gamma \vdash n : \mathbb{N} \\
     \hline
-    \Gamma \vdash Vec (n) \; Type
+    \Gamma \vdash Vec (n) \; \Type
   \end{array}
   \label{rule:lists}
 \end{equation*}
@@ -98,13 +98,11 @@ need more rules. This pattern and terminology will be used to introduce new
 types, so we elucidate it with a well-known example: the type of (non-dependent)
 functions.
 
-[NOT SURE ABOUT THIS BIT, MAYBE EXPLAIN WITH $\Pi$ AND/OR $\Sigma$?]
-
 \begin{equation}
   \begin{array}{c}
-    \Gamma \vdash A \; Type \qquad \Gamma \vdash B \; Type\\
+    \Gamma \vdash A \; \Type \qquad \Gamma \vdash B \; \Type\\
     \hline
-    \Gamma \vdash A \rightarrow B \; Type
+    \Gamma \vdash A \rightarrow B \; \Type
   \end{array}
   \label{rule:function-intro}
 \end{equation}
@@ -143,24 +141,25 @@ domain to obtain a term in the codomain.
 
 \begin{equation}
   \begin{array}{c}
-    \Gamma \vdash f : A \rightarrow B\\
-    \hline
-    \Gamma \vdash \lambda x. f(x) \equiv f : A \rightarrow B
-  \end{array}
-  \label{rule:function-eta}
-\end{equation}
-\begin{equation}
-  \begin{array}{c}
     \Gamma, a : A \vdash f(a) : B\\
     \hline
     \Gamma, a : A \vdash (\lambda y . f(y))(a) \equiv f(a) : B
   \end{array}
   \label{rule:function-beta}
 \end{equation}
+\begin{equation}
+  \begin{array}{c}
+    \Gamma \vdash f : A \rightarrow B\\
+    \hline
+    \Gamma \vdash \lambda x. f(x) \equiv f : A \rightarrow B
+  \end{array}
+  \label{rule:function-eta}
+\end{equation}
 
 \emph{Computation rules} postulate when two terms are judgementally equal. In
-the case of functions we have two: $\eta$-reduction~(\ref{rule:function-eta})
-and $\beta$-reduction~(\ref{rule:function-beta}). Taken together, they imply that
+the case of functions we have two: $\beta$-reduction~(\ref{rule:function-beta})
+and $\eta$-reduction~(\ref{rule:function-eta}). Taken together (and eliding any
+complications of variable substitution), they show that
 function evaluation and lambda abstraction are mutual inverses~\cite{Rijke2019}.
 
 Finally, we consider two important families of dependent types: $\Sigma$-types
@@ -173,9 +172,9 @@ $\Pi_A B$ is the type of non-dependent functions $A \rightarrow B$.
 
 \begin{equation*}
   \begin{array}[t]{c}
-    \Gamma \vdash A \; Type \qquad \Gamma, x:A \vdash B(x) \; Type\\
+    \Gamma \vdash A \; \Type \qquad \Gamma, x:A \vdash B(x) \; \Type\\
     \hline
-    \Gamma \vdash \Sigma_A B \; Type\\
+    \Gamma \vdash \Sigma_A B \; \Type\\
   \end{array}
   \qquad
   \begin{array}[t]{c}
@@ -193,43 +192,57 @@ The introduction and formation rules tell use that:
     a term $(x,y)$ of type $\Sigma_A B$
 \end{enumerate}
 
-Additionally we have elimination rules (where $\pi_1, \pi_2$ denote the first
-and second projection):
+In a dependent setting we call the most general elimination rule an ``induction
+principle''. Such a principle describes how to construct a terms in a family
+over the type we are interested in. For dependent pairs, it looks like this:
 
 \begin{equation*}
-  \begin{array}[t]{c}
-    \Gamma \vdash x : \Sigma_A B\\
+  \begin{array}[t]{l}
+    \Gamma, x : \Sigma_A B \vdash P \; \Type\\
+    \Gamma, a : A, b : B~a \vdash p_{a,b} : P (a,b)\\
     \hline
-    \Gamma \vdash \pi_1(x) : A\\
-  \end{array}
-  \qquad
-  \begin{array}[t]{c}
-    \Gamma \vdash x : \Sigma_A B\\
-    \hline
-    \Gamma \vdash \pi_2(x) : B(\pi_1(x))
+    \Gamma, x : \Sigma_A B \vdash \operatorname{ind}~p~x : P~x
   \end{array}
 \end{equation*}
 
-[COMPUTATION RULES? THEY'RE PRETTY BORING]
+In words: if, given an $a : A$ and $b : B (a)$ we have a term of type $P~(a,b)$,
+then given an $x$ in $\Sigma_A B$ we can construct a term of type $P~x$. Note
+that the term $p_{a,b}$ depends on the given $a$ and $b$, and $\operatorname{ind}~p~x$
+depends on both $p$ and $x$.
 
-The analogous rules for dependent functions are:
+The computational rule associated with the above induction principle postulate
+that the result applying the induction rule to a pair $(a,b)$ is the dependent
+term $p_{a,b}$.
 
 \begin{equation*}
-  \begin{array}[t]{c}
-    \Gamma \vdash A \; Type \qquad \Gamma, x:A \vdash B(x) \; Type\\
+  \begin{array}[t]{l}
+    \Gamma, x : \Sigma_A B \vdash P \; \Type\\
+    \Gamma, a : A, b : B~a \vdash p_{a,b} : P (a,b)\\
     \hline
-    \Gamma \vdash \Pi_A B \; Type\\
-  \end{array}
-  \qquad
-  \begin{array}[t]{c}
-    \Gamma, a:A \vdash b(a) : B(a)\\
-    \hline
-    \Gamma \vdash \lambda x.b(x) : \Pi_A B
-  \end{array}
-  \qquad
-  \begin{array}[t]{c}
-    \Gamma \vdash f : \Pi_A B \\
-    \hline
-    \Gamma, x:A \vdash f(x) : B(x)
+    \Gamma, a : A, b : B~a \vdash \operatorname{ind}~p~(a,b) \equiv p_{a,b}
   \end{array}
 \end{equation*}
+
+% The analogous rules for dependent functions are:
+
+% \begin{equation*}
+%   \begin{array}[t]{c}
+%     \Gamma \vdash A \; \Type \qquad \Gamma, x:A \vdash B(x) \; \Type\\
+%     \hline
+%     \Gamma \vdash \Pi_A B \; \Type\\
+%   \end{array}
+% \end{equation*}
+% \begin{equation*}
+%   \begin{array}[t]{c}
+%     \Gamma, a:A \vdash b(a) : B(a)\\
+%     \hline
+%     \Gamma \vdash \lambda x.b(x) : \Pi_A B
+%   \end{array}
+% \end{equation*}
+% \begin{equation*}
+%   \begin{array}[t]{c}
+%     \Gamma \vdash f : \Pi_A B \\
+%     \hline
+%     \Gamma, x:A \vdash f(x) : B(x)
+%   \end{array}
+% \end{equation*}

@@ -1,17 +1,22 @@
 \section{Higher Inductive Types}\label{sec:HITs}
+
+Now that we have several useful interpretations of types, we need some ways to
+construct more complex types to study. In this section we look at one such way:
+Higher Inductive Types (HITs).
+
 \subsection{Inductive Types}
 One way to construct more elaborate types is by induction. An inductive type is
 defined by a number of constructors, which can be either constant terms or
 functions. Let us return to the type of lists. It can be constructed from the
 empty list and the function \texttt{cons} which takes an element and affixes it
-to the start of a list. Using $[]$ for the empty list and $::$ for the (infix)
+to the start of a list. Using $[~]$ for the empty list and $::$ for the (infix)
 cons function we have a pair of introduction rules:
 
 \[
   \begin{array}[t]{c}
-    \Gamma \vdash A \; Type\\
+    \Gamma \vdash A \; \Type\\
     \hline
-    \Gamma \vdash [] : [A]\\
+    \Gamma \vdash [~] : [A]\\
   \end{array}
   \qquad
   \begin{array}[t]{c}
@@ -22,60 +27,159 @@ cons function we have a pair of introduction rules:
 \]
 
 From these we can construct arbitrarily long lists by starting with the empty
-list and affixing new terms of $A$ to obtain $[]$, $(a::[])$, $(a'::(a::[]))$ etc.
+list and affixing new terms of $A$ to obtain $[~]$, $(a::[~])$, $(a'::(a::[~]))$
+etc. For this reason we may refer to the introduction rules as ``constructors''
+of $[A]$.
 
-In order to use this type, we also need an elimination rule (or
-recursion principle in the non-dependent case). The recursion principle tells us
-how to use terms of the type by defining functions out of it and will be
-familiar to anyone who has written a recursive function on lists.
+In order to use this type, we also need an induction principle. The
+induction principle tells us how to use terms of the type by defining functions
+into a family over it. If the family is constant (i.e. the function is
+non-dependent) we call such a rule a ``recursion principle''.
 
 \[
-  \begin{array}{c}
-    \Gamma \vdash b_0:B\\
-    \Gamma \vdash b_{cons}: A \times [A] \rightarrow B\\
+  \begin{array}{l}
+    \Gamma, as : [A] \vdash P~as \; \Type\\
+    \Gamma \vdash p_{[~]} : P~[~]\\
+    \Gamma \vdash p_{::}: \Pi_{a:A} \Pi_{as:[A]} P~(a :: as)\\
     \hline
-    \Gamma \vdash rec_{[A]} (b_0, b_{cons}) : [A] \rightarrow B
+    \Gamma \vdash ind_{[A]}~p_{[~]}~p_{::} : \Pi_{[A]} P
   \end{array}
 \]
 
-In words, this rule states that you can construct a function from $[A]$ to $B$
-if you have a term $b_0$ and a function that takes a pair of an $A$ and a list
-to produce a $B$. As one might expect, the resulting function maps $[]$ to $b_0$
-and $(a::as)$ to $b_{cons}(a,as)$. (By a computation rule that we also need to
-specify).
+This rule states that a dependent function out of $[A]$ can be constructed by
+knowing what it does on the empty list, and -- given an $a:A$ and a list $as:[A]$ -- what
+it does on $(a :: as)$. It is not a coincidence that we require two terms --
+they correspond precisely to the two constructors.
 
-[MAYBE GIVE A MORE GENERAL TREATMENT LIKE IN~\cite{Rijke2019} (4.1)]
+The resulting function maps the empty list to $p_{[~]}$ and any arbitrary list
+$(a::as)$ to $p_{cons}$ by the computation rules:
+\[
+  \begin{array}{c}
+    \hline
+    \Gamma \vdash ind_{[A]}~p_{[~]}~p_{::}~[~] \equiv p_{[~]}
+  \end{array}
+  \\
+  \begin{array}{c}
+    \hline
+    \Gamma, a:A, as:[A] \vdash ind_{[A]}~p_{[~]}~p_{::}~(a::as) \equiv p_{::}~a~as
+  \end{array}
+\]
 
 \subsection{Higher Inductive Types}
 
-When constructing ever more complicated types, it would be nice to have some
-control over which terms are identified. [Examples? Just quotients, maybe?]
+When constructing ever more complicated types, it is useful to have some
+control over which terms are identified. For example we might want to construct
+a quotient $A/_\sim$ where related terms are identified.
 
 One way to do this is \emph{Higher Inductive Types}. Like inductive types, HITs
 are constructed from generators, but while the generators of an inductive type
-may only generate terms, the generators of a HIT may also generate paths.
+may only generate terms, the generators of a HIT may also generate identity
+proofs. We will often use the language of Homotopy Theory and refer to the terms
+and identity proofs in a HIT as ``points'' and ``paths'' respectively.
 
-[ELIMINATION RULES. ``VARY CONTINUOUSLY'']
+There is no reason to stop there! We could apply the same idea to give
+generators for paths between paths, paths between paths between
+paths and so on.
 
-[SYNTHETIC TOPOLOGY?]
+\subsubsection{The Circle}
 
-The prototypical example of a HIT is the circle $S^1$, because it is very simple
-comprising only a single point and one path. Its introduction and formation
-rules are:
-\begin{equation}
-  \label{eq:circle}
+Utilizing the language of spaces we introduce a very simple HIT: the circle
+$S^1$. This is a HIT with one point constructor $\base$ and one path constructor
+$\sloop$. Its introduction and formation rules are:
+\begin{equation*}
   \begin{array}[t]{c}
     \hline
-    \Gamma \vdash S^1 \; Type\\
+    \Gamma \vdash S^1 \; \Type\\
   \end{array}
   \qquad
   \begin{array}[t]{c}
     \hline
-    \Gamma \vdash base : S^1\\
+    \Gamma \vdash \base : S^1\\
   \end{array}
   \qquad
   \begin{array}[t]{c}
     \hline
-    \Gamma \vdash loop : base =_{S^1} base
+    \Gamma \vdash \sloop : \base =_{S^1} \base
   \end{array}
-\end{equation}
+\end{equation*}
+
+The circle also comes with a recursion principle~\footnote{The fully general
+  induction principle requires a notion of dependent paths ``over'' $\sloop$. See section 6.2 in
+  The Book~\cite{hottbook}}. Like the induction principle for lists,
+a function out of the circle requires one term for each constructor. A point $p$
+for the base, and a path from $p$ to itself for the loop.
+
+\begin{equation*}
+  \begin{array}[t]{c}
+    \Gamma \vdash b : B \qquad \Gamma \vdash l : b =_B b\\
+    \hline
+    \Gamma \vdash rec_{S^1}~b~l : S^1 \ra B
+  \end{array}
+\end{equation*}
+
+The computation rules postulate that the resulting function maps $\base$ to $b$
+and applying it around $\sloop$ gives $l$.
+\begin{equation*}
+  \begin{array}[t]{c}
+    \Gamma \vdash b : B \qquad \Gamma \vdash l : b =_B b\\
+    \hline
+    \Gamma \vdash rec_{S^1}~b~l \base \equiv b
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    \Gamma \vdash b : B \qquad \Gamma \vdash l : b =_B b\\
+    \hline
+    \Gamma \vdash \operatorname{cong} (rec_{S^1}~b~l) \sloop \equiv l
+  \end{array}
+\end{equation*}
+
+\subsubsection{Synthetic Homotopy Theory}
+
+An important use of HITs is synthetic homotopy theory~\cite{mortberg2020cubical,
+  licata2015cubical}. By constructing spaces (or, more precisely cell
+complexes) as HITs it is possible to formalize results of homotopy theory very
+directly.
+
+Here we recount a proof that the fundamental group of the circle is $\mathbb{Z}$
+originally given by Licata and Shulman~\cite{licata2013circle} and by M\"ortberg
+and Pujet~\cite{mortberg2020cubical}. [REWRITE] This showcases the use of circle
+recursion and also proves useful in \autoref{sec/elementary-hpt}.
+
+The fundamental group of a space $X$ (with base point $x_0$) $pi_1(X, x_0)$ is
+the group whose elements are loops at $x_0$ and whose operation is path
+concatenation. In type theoretic terms we define the loop space (at $x_0$) $\Omega X$ as the
+identity type $x_0 =_X x_0$. Path concatenation is simply the transitive
+property of identity proofs.
+
+The proof that $\pi_1(S^1, \base)$ has four parts:
+\begin{enumerate}
+  \item a function winding $: \Omega S^1 \ra \mathbb{Z}$
+  \item a function intLoop $: \mathbb{Z} \ra \Omega S^1$
+  \item a proof that winding and intLoop are mutual inverses
+  \item a proof that either winding or intLoop is a group homomorphism (it
+    suffices to show one direction)
+\end{enumerate}
+We limit ourselves to (1) and (2) to showcase circle recursion, but the full
+details are spelled out section 8.1 of The Book~\cite{hottbook}.
+
+Since we cannot do recursion directly on $\Omega S^1$ we first construct the
+covering space of the circle $\operatorname{helix}$. This is a family over $S^1$
+which can be viewed as a function from $S^1$ to the universe, so we use circle
+recursion to define:
+\[
+  \operatorname{helix} := rec_{S^1} ~ \mathbb{Z} ~ (\ua \operatorname{succEquiv})
+\]
+Where succEquiv is the equivalence $\mathbb{Z} \simeq \mathbb{Z}$ induced by the
+successor function.
+
+The winding number is computed by transporting in the helix.
+\[
+  \operatorname{winding}(p) := \operatorname{transport}~\helix~p~0
+\]
+
+By [WHAT EXACTLY?] transporting along $\sloop$ in helix is equivalent to
+transporting along $\apcong \helix \sloop$ in the identity family, which by the
+computation rule above is simply
+$\operatorname{transport}~id~(ua~\operatorname{succEquiv})$ -- the successor function.
+
+[THIS GETS VERY HANDWAVY AND I'M NOT SURE HOW USEFUL]

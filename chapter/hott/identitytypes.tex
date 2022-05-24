@@ -2,8 +2,11 @@
 
 Given this notion of propositions as types, one of the things we may want to
 propose (and prove) is the equality of two terms. That is, given two terms of
-some type, how do we show that they are equal? Note that this is different from
-the \emph{judgemental} equality discussed in \autoref{sec/typetheory}. [HOW EXACTLY?]
+some type, how do we show that they are equal? Note that this
+\emph{propositional} equality is different from the \emph{judgemental} equality
+discussed in \autoref{sec/typetheory}. While judgemental equality is part of the
+inference rules of the type theory, the propositional equality of two terms is a
+type that can be inhabited and whose terms can be used. 
 
 Since propositions are types and ``x is equal to y'' is a proposition, there
 should be a corresponding type. Also, the truth of this proposition depends on
@@ -21,67 +24,73 @@ rules~\cite{Rijke2019}:
   \begin{array}[t]{c}
     \Gamma \vdash a:A\\
     \hline
-    \Gamma, x:A \vdash a =_A x \; Type\\
+    \Gamma, x:A \vdash a =_A x \; \Type\\
   \end{array}
   \qquad
   \begin{array}[t]{c}
     \Gamma \vdash a:A\\
     \hline
-    \Gamma \vdash refl_a : a =_A a
+    \Gamma \vdash \refl_a : a =_A a
   \end{array}
 \]
 and an induction principle given by:
 \[
-  \begin{array}{c}
-    \Gamma \vdash a:A \qquad \Gamma, x:A, p:a =_A x \vdash P (x,p) Type\\
+  \begin{array}[t]{l}
+    \Gamma \vdash a:A\\
+    \Gamma, x:A, p:a =_A x \vdash P~x~p \Type\\
+    \Gamma, a:A \vdash J_a : P~a~\refl_a\\
     \hline
-    \Gamma \vdash J_a : P (a, refl_a) \rightarrow \Pi_{x:A}\Pi_{p:a=_Ax}P
-    (x, p)
+    \Gamma, x:A, p:a=_Ax \vdash P~x~p
   \end{array}
 \]
 
-This is astonishingly simple! The identity type has one constructor: $refl_{\_}$,
+This is astonishingly simple! The identity type has one constructor: $\refl_{\_}$,
 and in order to use its terms $p : x =_A y$ it is enough to know the case when $x
-\equiv y$ and $p \equiv refl$.
+\equiv y$ and $p \equiv \refl$.
 
 Despite the few ingredients, identity types exhibit a great deal of (admittedly
 expected) structure. For example, the identity type $=_A$ on some type $A$ is an
-equivalence relation. [TYPE THEORETICALLY? WHAT DO WE CALL THIS?] It is clearly
-reflexive ($x =_A x$ is inhabited by $refl_x$), but it is also symmetric and
-transitive. Given proofs $p : x = y$ and $q : y = z$, let us denote the
-symmetric proof by $p^{-1} : y = x$ and the result of transitivity $p \cdot q : x
-= z$.
+equivalence relation. It is clearly reflexive ($x =_A x$ is inhabited by
+$\refl_x$), but it is also symmetric and transitive. Given proofs $p : x = y$
+and $q : y = z$, let us denote the symmetric proof by $p^{-1} : y = x$ and the
+result of transitivity $p \cdot q : x = z$.
 
 Given a term $a:A$ the J-rule lets us inhabit a type $P(x,p)$ by providing a
-term of $P(a, refl_a)$. This reduces the task of showing symmetry and
-transitivity to the cases when the paths are all $refl$. The inverse $refl^{-1}$
-is again $refl$ and the composition $refl \cdot refl$ is also $refl$.
+term of $P(a, \refl_a)$. This reduces the task of showing symmetry and
+transitivity to the cases when the paths are all $\refl$. The inverse $\refl^{-1}$
+is again $\refl$ and the composition $\refl \cdot \refl$ is also $\refl$.
+
+Armed with the J-rule many useful functions can be constructed. A particularly
+useful one is $\operatorname{cong_f}$ ($ap_f$ in The Book) which for some
+function $f : A \ra B$ maps identity proofs $a =_A a'$ in $A$ to identity proofs
+$f~a =_B f~a'$ in $B$.
 
 %% a more technical, arguably less clear version
 % For a fixed $a : A$, symmetry is expressed by $P(x,p) := x =_A a$. Since $P(a,
-% refl_a) := a =_A a$ is inhabited by $refl_a$, $J_a$ gives an inverse for any $x
+% \refl_a) := a =_A a$ is inhabited by $\refl_a$, $J_a$ gives an inverse for any $x
 % : A$ and $p : a =_A x$. Denote this inverse by $p^{-1}$.
 
 \subsubsection{UIP and The Groupoid Structure of Types}
 
 A question one might ask is ``can there be more than one proof of identity?''.
-The affirmative answer is a property known as \emph{Uniqueness of Identity Proofs} (UIP). A
+The negative answer is a property known as \emph{Uniqueness of Identity Proofs} (UIP). A
 type $A$ satisfies UIP if for any $x~y : A$ and $p~q : x =_A y$ the type $p =_{x
-= y} q$ is inhabited\footnote{In HoTT we say A \emph{is a set}.}. Now the
-question of uniqueness can be posed as ``does UIP hold for every type?'' In 1995
+= y} q$ is inhabited\footnote{In HoTT we say A \emph{is a set} or has H-level 0.}. Now the
+question of uniqueness can be posed as ``does UIP necessarily hold for every type?'' In 1995
 Hofman and Streicher~\cite{Hofman1998} showed that the answer is ``no'' by
 constructing a model in which it fails to hold.
 
-What, then, are the relationships between these proofs? Hofman and Streicher's
-model give and answer here too. In it, types are \emph{groupoids} and the
+So an identity is not merely a type which either does or does not have an
+inhabitant, but does it have more structure?
+Hofman and Streicher's model give an answer here too. In it, types are \emph{groupoids} and the
 identity type $x =_A y$ is modeled by $Hom_A(x, y)$. In addition to the
 properties we have already seen, they show that composition is associative and
 respects units and inverses. That is, for proofs $p : x = y$, $q : y = z$, $r :
 z = w$ the following types are all inhabited:
 \[(p \cdot q) \cdot r =_{x = w} p \cdot (q \cdot r)\]
-\[p \cdot refl_y =_{x = y} p\]
-\[refl_x \cdot p_{x = y} = p\]
-\[p \cdot p^{-1} =_{x = x} refl_x\]
-\[p^{-1} \cdot p =_{y = y} refl_y\]
+\[p \cdot \refl_y =_{x = y} p\]
+\[\refl_x \cdot p_{x = y} = p\]
+\[p \cdot p^{-1} =_{x = x} \refl_x\]
+\[p^{-1} \cdot p =_{y = y} \refl_y\]
 
-This \emph{groupoid structure} of proofs will be very important in \autoref{ch/formalization}.
+This \emph{groupoid structure} of identity proofs will be very important in \autoref{ch/formalization}.

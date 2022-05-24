@@ -1,17 +1,15 @@
 \section{Propositions as Types}
 
 In this section we consider an important interpretation of type theory: the
-Howard-Curry Isomorphism (which isn't an isomorphism, but we're not going into
-those details).
+Curry-Howard Correspondence.
 
-Under this ``isomorphism'' types are identified with logical propositions, and
+Under this correspondence types are identified with logical propositions, and
 terms with proofs of those propositions. This means we can consider a
 proposition ``true'' (or at least ``proved'') if we can construct a term of the
 corresponding type.
 
 Two very simple types are the empty type $\bot$ which has not terms, and the
-unit type $\top$ which has one term denoted by $\mathbf{1}$. [MAYBE INTRODUCE
-THE TYPES FIRST]
+unit type $\top$ which has one term denoted by $\mathbf{1}$.
 
 Under the ``types as propositions'' interpretation, $\bot$ represents
 \emph{false}. The type has no terms so there are no proofs of ``false'', just
@@ -28,45 +26,18 @@ the ordered pair $(a, b)$. This is precisely an element of the product type $A
 \times B$! Hence this product type represents the proposition $A \land B$, since
 its terms correspond exactly to proofs of $A$ and $B$.
 
-As a sanity check, consider the truth table of $A \land B$~(\autoref{fig:and-truth-table}) alongside the terms of $A
-\times B$~(\autoref{fig:product-type-table}) using $\top$ and $\bot$ to represent true and false. $A \land B$ is
-true when both $A$ and $B$ are true, and similarly $A \times B$ is inhabited
-exactly when both $A$ and $B$ are inhabited.
-
-\begin{table}[h!]
-\centering
-\subfloat[logic]{
-\begin{tabular}{|l|l|l|}
-\hline
-$A$ & $B$ & $A \land B$ \\
-\hline
-false   & false   & false\\
-false   & true   & false\\
-true   & false   & false\\
-true   & true   & true\\   
-\hline
-\end{tabular}
-\label{fig:and-truth-table}}%
-\hspace{.25\linewidth}
-\subfloat[types ``()'' meaning there are no terms of this type]{
-\begin{tabular}{|l|l|l|}
-\hline
-$A$ & $B$ & $A \times B$ \\
-\hline
-$\bot$   & $\bot$   & $()$\\
-$\bot$   & $\top$   & $()$\\
-$\top$   & $\bot$   & $()$\\
-$\top$   & $\top$   & $(\mathbf{1}, \mathbf{1})$\\       
-\hline
-\end{tabular}
-\label{fig:product-type-table}}
-\end{table}
+To make sure this makes sense, consider the type $A \times B$ with $A$ and $B$
+ranging over $\top$ and $\bot$. Its logical counterpart $A \land B$ is true
+precisely when both $A$ and $B$ are true, and indeed if $A = B = \top$ we can
+construct the term $(\mathbf{1}, \mathbf{1}) : A \times B$. Conversely, if
+either type is $\bot$ we cannot construct a pair since there are no terms to put
+in it.
 
 As another example, what does it mean to prove an implication $A \rightarrow B$?
-One reasonable answer is that given a proof of $A$, I can produce a proof of
+One reasonable answer is that given a proof of $A$, we can produce a proof of
 $B$. In terms of types, that means a way to produce a term of type $B$ given a
-term of type $A$, which is exactly a function from $A$ to $B$! Finally, note
-that logical ``or'' is represented by the sum type (disjoint union) $A + B$.
+term of type $A$, which is exactly a function from $A$ to $B$! Finally,
+logical ``or'' is represented by the sum type (disjoint union) $A + B$.
 
 [NOTE: this results in a \emph{constructive} logic (good)]
 
@@ -78,19 +49,25 @@ First, let us note that a predicate on a variable is a lot like a dependent
 type. If simple types can be interpreted as propositions, and a predicate on
 some variable is a proposition that \emph{depends} on a variable, then it stands
 to reason that a predicate can be represented with a dependent type. As such, we
-may view a term of the type $B(x)$ as a proof that $B$ holds for the term $x$.
-[WHATEVER THAT MEANS, LOL]
+view a term of the type $B(x)$ as a proof that the proposition represented by
+$B$ holds for the term $x$.
 
 Extending this thinking to quantifiers and considering what it means to provide
-a proof, a proof of $\exists x. P(x)$ should consist of some $x:A$ [CHEATING IN
-THE A] and a proof that $P$ is true of $x$. Such a pair is a term of a type we have seen
-before: the dependent pair $\Sigma_A P$. Note that this term actually contains
+a proof, a proof of $\exists x. P(x)$ should consist of some $x:A$ and a proof
+that $P$ is true of $x$. Such a pair is a term of a type we have seen before:
+the dependent pair $\Sigma_A P$. Note that this term actually contains
 \emph{more} data than just asserting $\exists x. P(x)$ -- it gives us an $x$.
 
 Similarly, a proof of $\forall x. P(x)$ can be seen as an assertion that
-whatever $x:A$ you give me, I can produce a proof (term) of $P(x)$. This is
-exactly a function from $x:A$ to $P(x)$ so we use $\Pi_A P$ to represent this
+whenever a $x:A$ is given, we can produce a proof (term) of $P(x)$. This is
+exactly a function from $x:A$ to $P(x)$ so we use $\Pi_A P$ to represent universal
 quantification.
 
 Note that both of these constructions quantify over some base type $A$, so ``for
-all $x$'' necessarily becomes ``for all $x$ of type $A$''.
+all $x$'' necessarily becomes ``for all $x$ of type $A$''. This is usually left
+implicit in FOL.
+
+The Curry-Howard correspondence also elucidates why dependent elimination rules
+are called ``induction principles.'' Viewing a family of types as a predicate,
+an induction rule for some type tells us precisely how to prove that the
+predicate is true for all terms of that type.
