@@ -3,11 +3,13 @@
 In this section we introduce Agda~\cite{Agda} -- a dependently typed programming language / proof assistant.
 The goal is to introduce enough of its syntax and workings to follow the formalization in \autoref{ch/formalization}.
 
-The basic syntax of Agda is similar to that of Haskell [CITATION?], but with \texttt{:} for typing and significant use of unicode (including $\rightarrow$ for function types).
+The basic syntax of Agda is similar to that of Haskell~\cite{haskell2010},
+but with \texttt{:} for typing and significant use of unicode (including $\rightarrow$
+for function types).
 
-As an example of Agda as a dependently typed programming language,
-let us consider the type of vectors and operations on them.
-This is a simple dependent type which will give us a good look at Agda's syntax and features.
+As an example, we consider the type of vectors and operations on them.
+This is a dependent type that provides a good look at the syntax and features of
+Agda as a programming language.
 
 First, we are going to need the natural numbers (recall that vectors are a family of types indexed by natural numbers).
 The (Peano) natural numbers are an inductive type, which we introduce with the \texttt{data} keyword.
@@ -64,7 +66,7 @@ It has two constructors: \texttt{zero} and \texttt{suc}.
 \end{code}
 
 We can now define vectors as a family of types indexed by a type and a natural number.
-Vectors also have two constructors. The empy vector \texttt{[]} has length zero, and a vector of any length can be extended by adding a new element to the start.
+Vectors also have two constructors. The empy vector \texttt{[~]} has length zero, and a vector of any length can be extended by adding a new element to the start.
 The implicit argument \texttt{\{n~:~ℕ\}} should be read as "for all natural numbers n..." (and in fact we could write \texttt{∀~\{n\}} since Agda can easily infer that n must be a natural number).
 \begin{code}%
 \>[0]\AgdaKeyword{data}\AgdaSpace{}%
@@ -112,14 +114,18 @@ Infix functions can be used between its arguments, in this case \texttt{x :: xs}
 and are denoted by underscores. Each underscore in the name represents a position in which we may place
 the corresponding argument.
 
-Currying (Named after Haskell Curry [CITATION?]) is a way to describe functions with multiple arguments
-by making use of the product~$\dashv$~exponentiation adjunction.
-This adjunction gives a bijection between $(A \times B) \rightarrow C$ and $A \rightarrow (B \rightarrow C)$
-for all objects A, B and C~\footnote{For more on adjunctions in general, and this adjunction in particular see
-IV.6: Cartesian Closed Categories in~\cite{maclane1998}} which means we can write the type of a function which
-takes multiple arguments as a sequence of types with right arrows (associating to the right).
+Currying means that a function that takes two arguments of types \texttt{A} and
+\texttt{Vec A n} and produces a \texttt{Vec A (suc n)} can be written as
+\texttt{\_::\_ : A → Vec A n → Vec A (suc n)} (with → associating to the right).
+~\footnote{This is possible because of the product~$\dashv$~exponentiation
+adjunction in cartesian closed categories which gives a bijection
+between $(A \times B) \rightarrow C$ and $A \rightarrow (B \rightarrow C)$ for all objects A, B and C
+See IV.6: Cartesian Closed Categories in~\cite{maclane1998}}.
 
-[FOOTNOTE?] Mixfix operators and currying interact wonderfully with partial application. \texttt{x ::\_} is the
+This style allows for partial application of functions where \texttt{\_::\_ x} results
+in a unary function \texttt{Vec A n → Vec A (suc n)}.
+
+Mixfix operators and currying interact wonderfully with partial application. \texttt{x ::\_} is the
 function that takes a vector and conses x onto it.
 
 Now we can construct terms of this new type.
@@ -384,7 +390,7 @@ This is because addition is defined by induction on the left argument, so \textt
 \end{code}
 For \texttt{+-runit} we need a proof by induction. The base case (0 + 0 = 0) is proved by \texttt{refl}
 like before, but the induction step requires slightly more work.
-Luckily the term we need has type \texttt{(suc n + zero) ≡ suc n} and the left-hand side computes to \texttt{suc (n + zero)}.
+Luckily, the term we need has type \texttt{(suc n + zero) ≡ suc n} and the left-hand side computes to \texttt{suc (n + zero)}.
 Now we have \texttt{suc} applied to both sides of an instance of \texttt{+-runit} so we can use the induction hypothesis with \texttt{cong : (f : X → Y) → x ≡ y → (f x) ≡ (f y)}.
 (Also note the pattern matching on an implicit argument.)
 

@@ -1,4 +1,4 @@
-\section{Cubical Type Theory}
+\section{Cubical Type Theory}\label{sec:cubical}
 
 One way to imbue HoTT with computational meaning [INTRODUCE THIS PROBLEM
 SOMEWHERE] is Cubical type theory~\cite{cohen2016cubical}. The basic idea is to

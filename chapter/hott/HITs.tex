@@ -79,10 +79,10 @@ and identity proofs in a HIT as ``points'' and ``paths'' respectively.
 
 There is no reason to stop there! We could apply the same idea to give
 generators for paths between paths, paths between paths between
-paths and so on.
+paths and so on. In \autoref{sec/laws-hpt-noTrunc-noIndep} we will make use of
+such ``higher paths'', but for now let us focus on a simple example.
 
 \subsubsection{The Circle}
-
 Utilizing the language of spaces we introduce a very simple HIT: the circle
 $S^1$. This is a HIT with one point constructor $\base$ and one path constructor
 $\sloop$. Its introduction and formation rules are:
@@ -129,12 +129,14 @@ and applying it around $\sloop$ gives $l$.
   \begin{array}[t]{c}
     \Gamma \vdash b : B \qquad \Gamma \vdash l : b =_B b\\
     \hline
-    \Gamma \vdash \operatorname{cong} (rec_{S^1}~b~l) \sloop \equiv l
+    \Gamma \vdash \operatorname{loopComp} : \operatorname{cong} (rec_{S^1}~b~l) \sloop =_{b=b} l
   \end{array}
 \end{equation*}
+Note that the computation rule for $\sloop$ does not give a judgemental
+equality, but rather postulates a term called $\operatorname{loopComp}$
+witnessing the result.
 
 \subsubsection{Synthetic Homotopy Theory}
-
 An important use of HITs is synthetic homotopy theory~\cite{mortberg2020cubical,
   licata2015cubical}. By constructing spaces (or, more precisely cell
 complexes) as HITs it is possible to formalize results of homotopy theory very
@@ -142,7 +144,7 @@ directly.
 
 Here we recount a proof that the fundamental group of the circle is $\mathbb{Z}$
 originally given by Licata and Shulman~\cite{licata2013circle} and by M\"ortberg
-and Pujet~\cite{mortberg2020cubical}. [REWRITE] This showcases the use of circle
+and Pujet~\cite{mortberg2020cubical}.This showcases the use of circle
 recursion and also proves useful in \autoref{sec/elementary-hpt}.
 
 The fundamental group of a space $X$ (with base point $x_0$) $pi_1(X, x_0)$ is
@@ -159,8 +161,8 @@ The proof that $\pi_1(S^1, \base)$ has four parts:
   \item a proof that either winding or intLoop is a group homomorphism (it
     suffices to show one direction)
 \end{enumerate}
-We limit ourselves to (1) and (2) to showcase circle recursion, but the full
-details are spelled out section 8.1 of The Book~\cite{hottbook}.
+We limit ourselves to (1) to showcase circle recursion, but the full
+details are spelled out in section 8.1 of The Book~\cite{hottbook}.
 
 Since we cannot do recursion directly on $\Omega S^1$ we first construct the
 covering space of the circle $\operatorname{helix}$. This is a family over $S^1$
@@ -172,14 +174,21 @@ recursion to define:
 Where succEquiv is the equivalence $\mathbb{Z} \simeq \mathbb{Z}$ induced by the
 successor function.
 
-The winding number is computed by transporting in the helix.
+The winding number is computed by transporting in the helix. Given some $x:S^1$
+and path $p : \base = x$, define:
 \[
-  \operatorname{winding}(p) := \operatorname{transport}~\helix~p~0
+  \operatorname{encode}(p) := \transport^{\helix}~p~0
+\]
+and finally
+\[
+  \operatorname{winding} := \operatorname{encode} \base
 \]
 
-By [WHAT EXACTLY?] transporting along $\sloop$ in helix is equivalent to
-transporting along $\apcong \helix \sloop$ in the identity family, which by the
-computation rule above is simply
-$\operatorname{transport}~id~(ua~\operatorname{succEquiv})$ -- the successor function.
+Transporting along $\sloop$ in helix is equivalent to transporting along
+$\apcong \helix \sloop$ in the identity family, which by $\operatorname{loopComp}$
+is identified with $\transport^{id}~(\ua~\operatorname{succEquiv})$. Computation
+rules for $\ua$ give the final result: the successor function.
 
-[THIS GETS VERY HANDWAVY AND I'M NOT SURE HOW USEFUL]
+This technique -- making use of the recursion principle to define a function on
+all of $S^1$ before specializing to $\base$ -- is known as an ``encode-decode''
+style of proof.

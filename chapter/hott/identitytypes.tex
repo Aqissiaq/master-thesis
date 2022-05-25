@@ -33,7 +33,7 @@ rules~\cite{Rijke2019}:
     \Gamma \vdash \refl_a : a =_A a
   \end{array}
 \]
-and an induction principle given by:
+and an elimination rule (called the induction principle or simply the J-rule) given by:
 \[
   \begin{array}[t]{l}
     \Gamma \vdash a:A\\
@@ -60,18 +60,26 @@ term of $P(a, \refl_a)$. This reduces the task of showing symmetry and
 transitivity to the cases when the paths are all $\refl$. The inverse $\refl^{-1}$
 is again $\refl$ and the composition $\refl \cdot \refl$ is also $\refl$.
 
-Armed with the J-rule many useful functions can be constructed. A particularly
-useful one is $\operatorname{cong_f}$ ($ap_f$ in The Book) which for some
-function $f : A \ra B$ maps identity proofs $a =_A a'$ in $A$ to identity proofs
-$f~a =_B f~a'$ in $B$.
-
 %% a more technical, arguably less clear version
 % For a fixed $a : A$, symmetry is expressed by $P(x,p) := x =_A a$. Since $P(a,
 % \refl_a) := a =_A a$ is inhabited by $\refl_a$, $J_a$ gives an inverse for any $x
 % : A$ and $p : a =_A x$. Denote this inverse by $p^{-1}$.
 
-\subsubsection{UIP and The Groupoid Structure of Types}
+Armed with the J-rule many useful functions on identity types can be
+constructed. We mention two closely related functions:
 
+The first is $\apcong~f$ (called $ap_f$ in \cite{hottbook, lemma 2.2.1}) which for some
+function $f : A \ra B$ maps identity proofs $a =_A a'$ in $A$ to identity proofs
+$f~a =_B f~a'$ in $B$. By the J-rule we may assume that the path in question is
+$\refl_x$ and define $\apcong~f~\refl_x := refl_{f~x}$.
+
+The second is a dependent version of $\apcong$ called $\transport$. Given a
+family $P$ over $A$ and an identification $p : a =_A a'$, $\transport^P~p$ gives
+a function $P~a \ra P~a'$. In the case where $p$ is $refl_{x}$ it is the
+identity function $P~x \ra P~x$.
+
+
+\subsubsection{UIP and The Groupoid Structure of Types}
 A question one might ask is ``can there be more than one proof of identity?''.
 The negative answer is a property known as \emph{Uniqueness of Identity Proofs} (UIP). A
 type $A$ satisfies UIP if for any $x~y : A$ and $p~q : x =_A y$ the type $p =_{x

@@ -10,7 +10,7 @@ While this is a good basis for intuition, the Type Theory we consider is a bit d
 
 However, let us stick with the programming intuition to introduce a less
 familiar concept: \emph{dependent} types. First, note that one of the types in
-the previous paragraph is a bit different from the others: \text{['a','b','c']} is a
+the previous paragraph is different from the others: \text{['a','b','c']} is a
 list \emph{of \texttt{char}s}. Similarly we could have lists of \texttt{int}s,
 lists of \texttt{float}s or even lists of lists! Clearly ``lists'' comprises
 many different types, depending on the type of their elements. We could call
@@ -18,12 +18,13 @@ many different types, depending on the type of their elements. We could call
 actually a whole collection of types -- one for each other type we can make
 lists of.
 Dependent types extend this idea by allowing families to be parametrized by
-terms. Then we can create new and exciting types like \texttt{Vec 3} and
-\texttt{Vec 4} -- the types of 3- and 4-dimensional vectors. Again \texttt{Vec} is
-actually a whole collection of types -- one for each integer.
+terms. Then we can create new and exciting types like \texttt{Vec int 3} --
+lists of exactly 3 integers -- and \texttt{Vec [char] 4} -- lists of exactly 4
+lists of characters. Again \texttt{Vec} is actually a whole collection of types
+-- one for each choice of type and integer.
 
-We can think of \texttt{Vec} as a function that assigns a type to each integer,
-and may refer to it as ``a (type) family over \texttt{Int}''.
+We can think of \texttt{Vec} as a function that assigns a type to each pair of a
+type and an integer, and may refer to \texttt{Vec char} as ``a (type) family over \texttt{int}''.
 
 We now leave the familiar world of programming behind and venture in to the spooky
 (but exciting) world of foundational mathematics.
@@ -84,15 +85,17 @@ This rule says ``if $A$ is a type, then lists of $A$ is a type''. Using
 $\mathbb{N}$ for the type of natural numbers, vectors are very similar:
 \begin{equation*}
   \begin{array}{c}
-    \Gamma \vdash n : \mathbb{N} \\
+    \Gamma \vdash A \; \Type \qquad \Gamma \vdash n : \mathbb{N} \\
     \hline
-    \Gamma \vdash Vec (n) \; \Type
+    \Gamma \vdash \texttt{Vec}~A~(n) \; \Type
   \end{array}
-  \label{rule:lists}
+  \label{rule:vectors}
 \end{equation*}
+Like lists, vectors are parametrized by another type, but unlike lists they also
+depend on a natural number -- their length.
 
 The preceding introductions of lists and vectors are clearly not complete specifications
-of the types. They do not tell us how to create new terms, nor how to use those
+of the types. They do not tell us what the terms of look like, nor how to use those
 terms in other expressions. In order to give a complete description we will need
 need more rules. This pattern and terminology will be used to introduce new
 types, so we elucidate it with a well-known example: the type of (non-dependent)
@@ -246,3 +249,16 @@ term $p_{a,b}$.
 %     \Gamma, x:A \vdash f(x) : B(x)
 %   \end{array}
 % \end{equation*}
+
+\subsubsection{Normalization}
+One important property of this kind of type theory is
+\emph{normalization}. Because the derivations are made up from introduction
+rules, and elimination is justified by computation rules all terms reduce to a
+``normal form''. One important consequence is that type-checking (the task of
+deciding whether a term is of a certain type) is decidable. Another consequence
+is \emph{canonicity}: that any closed term of type $\mathbb{N}$ normalizes to a
+numeral~\cite{hottbook}.
+
+These properties have important consequences for the interpretations presented
+in \autoref{sec:typesandprops} and \autoref{sec:spaces}, and explain the
+usefulness of type theory in proof assistants.

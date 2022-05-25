@@ -1,4 +1,4 @@
-\section{Propositions as Types}
+\section{Propositions as Types}\label{sec:typesandprops}
 
 In this section we consider an important interpretation of type theory: the
 Curry-Howard Correspondence.
@@ -30,16 +30,15 @@ To make sure this makes sense, consider the type $A \times B$ with $A$ and $B$
 ranging over $\top$ and $\bot$. Its logical counterpart $A \land B$ is true
 precisely when both $A$ and $B$ are true, and indeed if $A = B = \top$ we can
 construct the term $(\mathbf{1}, \mathbf{1}) : A \times B$. Conversely, if
-either type is $\bot$ we cannot construct a pair since there are no terms to put
-in it.
+$A$ (resp. $B$) is $\bot$ we cannot construct a pair since there are no terms to put on the
+left (resp. right) hand side.
 
 As another example, what does it mean to prove an implication $A \rightarrow B$?
 One reasonable answer is that given a proof of $A$, we can produce a proof of
 $B$. In terms of types, that means a way to produce a term of type $B$ given a
-term of type $A$, which is exactly a function from $A$ to $B$! Finally,
-logical ``or'' is represented by the sum type (disjoint union) $A + B$.
-
-[NOTE: this results in a \emph{constructive} logic (good)]
+term of type $A$, which is exactly a function from $A$ to $B$! Finally, we
+mention that logical ``or'' is represented by the sum type (disjoint union) $A +
+B$ and negation ($\neg$) by a function into $\bot$.
 
 We have the basic building blocks of propositional logic, but what about
 first-order logic with $\exists$ and $\forall$? This is where our dependent
@@ -71,3 +70,14 @@ The Curry-Howard correspondence also elucidates why dependent elimination rules
 are called ``induction principles.'' Viewing a family of types as a predicate,
 an induction rule for some type tells us precisely how to prove that the
 predicate is true for all terms of that type.
+
+\subsubsection{Constructivity}
+Notably, the propositions-as-types logic is \emph{constructive}. This is a
+consequence of the type theory's normalization property and means that
+any proof necessitates constructing a proof term. For example, a proof of
+existence must explicitly construct the thing that exists as discussed above.
+
+Conversely there are some classical propositions that are not inhabited when
+considered as types. Most prominently the law of excluded middle ($A + \neg A$)
+cannot be inhabited for every $A$. After all, we would have to know whether $A$
+is inhabited or not before even deciding whether to form an $A$ or a $\neg A$
