@@ -61,11 +61,19 @@ seen in \autoref{eq:path-rules}.
 By iterating this construction we obtain higher homotopies. $\I \ra A$
 represents paths in $A$, $\I \ra \I \ra A$ squares, $\I \ra \I \ra \I \ra A$ the
 eponymous cubes and so on.
+We call the $A$'s which permit such a mapping of cubes "cubical sets" and use
+them to model types in our theory.
 
 Composition of paths is slightly involved. The most natural notion of composition
 is actually ternary because it corresponds to "putting a lid" on an open box. Given
 paths $p : x = y$, $q : y = z$ and $r : z = w$ the ternary composition is the dotted line
 in \autoref{fig:doublecomp}.
+
+This operation is called \texttt{hcomp} (homogenous composition). In order for hcomp
+to be well defined, it must be possible to put a lid on every such open box. This is precisely
+the "Kan condition" on cubical sets, so types are modelled by \emph{Kan} cubical sets. (Recall
+that Voevodsky's model used Kan simplices).
+
 \begin{figure}[h]
 \centering
 \begin{tikzcd}
@@ -248,8 +256,13 @@ postulate
 \end{code}
 can be constructed.
 
-Univalence in Cubical Agda is implemented through a new type former called
-\texttt{Glue}. Conceptually, \texttt{Glue} provides a way to construct lids
+Recall that types are modelled by Kan cubical sets which permit filling in
+the final side of any open box. Is the universe also such a type? The answer
+informs what paths in the universe looks like, so this is where univalence
+shows up. In Cubical Agda it shows up in the form of a new type former called
+\texttt{Glue}.
+
+Conceptually, \texttt{Glue} provides a way to construct lids
 of open boxes in the universe given a family of types and equivalences over \texttt{I}.
 We may think of it as a generalization of composition which allows a family of equivalences,
 rather than a family of paths~\cite{1labUnivalence}.
@@ -264,7 +277,8 @@ $e$, the bottom $\refl$ and the right the identity equivalence.
 \end{tikzcd}
 \end{figure}
 
-The result is one way of the equivalence above. The other direction is called \texttt{lineToEquiv}.
+The result is one way of the equivalence above.
+The other direction is called \texttt{lineToEquiv}. It is easily obtained by transporting along the path.
 \begin{code}
   ua          : {A B : Type} → A ≃ B → A ≡ B
   lineToEquiv : {A B : Type} → A ≡ B → A ≃ B
