@@ -370,7 +370,7 @@ to obtain the $\Sigma$-type of patches \texttt{q} and proofs that $q^{-1} \cdot 
 \begin{code}[hide]
     ≡⟨ refl ⟩
 \end{code}
-Finally, we reach the desired type by the groupoid properties of path composition.
+We reach the desired type by the groupoid properties of path composition.
 \begin{code}
   (Σ[ q ∈ Patch ] (sym q ∙ p) ≡ refl)
     ≡⟨ Σ-cong-snd (λ q → invLUnique q p) ⟩

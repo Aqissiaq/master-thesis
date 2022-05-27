@@ -117,8 +117,11 @@ for the base, and a path from $p$ to itself for the loop.
   \end{array}
 \end{equation*}
 
-The computation rules postulate that the resulting function maps $\base$ to $b$
+The computation rules state that the resulting function maps $\base$ to $b$
 and applying it around $\sloop$ gives $l$.
+Note that the computation rule for $\sloop$ does not give a judgemental
+equality, but rather postulates a term called $\operatorname{loopComp}$
+witnessing the result.
 \begin{equation*}
   \begin{array}[t]{c}
     \Gamma \vdash b : B \qquad \Gamma \vdash l : b =_B b\\
@@ -129,12 +132,14 @@ and applying it around $\sloop$ gives $l$.
   \begin{array}[t]{c}
     \Gamma \vdash b : B \qquad \Gamma \vdash l : b =_B b\\
     \hline
-    \Gamma \vdash \operatorname{loopComp} : \operatorname{cong} (rec_{S^1}~b~l) \sloop =_{b=b} l
+    \Gamma \vdash \operatorname{loopComp} : \operatorname{cong} (rec_{S^1}~b~l) \sloop = l
   \end{array}
 \end{equation*}
-Note that the computation rule for $\sloop$ does not give a judgemental
-equality, but rather postulates a term called $\operatorname{loopComp}$
-witnessing the result.
+In homotopy type theory as presented in The Book, HITs are included by adding
+their formation, introduction, elimination and computation rule(s) as axioms.
+Like the univalence axiom, this means their inclusion interferes with the
+computational properties of the theory and once again we lose canonicity.
+We will look at one possible remedy in \autoref{sec:cubical}.
 
 \subsubsection{Synthetic Homotopy Theory}
 An important use of HITs is synthetic homotopy theory~\cite{mortberg2020cubical,
@@ -165,7 +170,7 @@ We limit ourselves to (1) to showcase circle recursion, but the full
 details are spelled out in section 8.1 of The Book~\cite{hottbook}.
 
 Since we cannot do recursion directly on $\Omega S^1$ we first construct the
-covering space of the circle $\operatorname{helix}$. This is a family over $S^1$
+covering space of the circle called $\operatorname{helix}$. This is a family over $S^1$
 which can be viewed as a function from $S^1$ to the universe, so we use circle
 recursion to define:
 \[

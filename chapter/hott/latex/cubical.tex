@@ -1,11 +1,15 @@
 \section{Cubical Type Theory}\label{sec:cubical}
 
-One way to imbue HoTT with computational meaning [INTRODUCE THIS PROBLEM
-SOMEWHERE] is Cubical type theory~\cite{cohen2016cubical}. The basic idea is to
-take the ``types as spaces''-interpretation of identity types very literally, as
-a function from an interval. In particular, it allows for non-axiomatic
-implementations of univalence and higher inductive types~\cite{coquand2018higher}. This section
-introduces the basic concepts of cubical type theory, Cubical Agda and the
+The computational properties of type theory as a foundation is what makes a proof
+assistant like Agda possible. However, we have seen that adding axioms to the
+theory breaks these properties. That poses a problem when there are axioms we would
+like to make use of -- in particular the univalence axiom and higher inductive types.
+
+One way to imbue HoTT with computational meaning is Cubical type theory~\cite{cohen2016cubical}.
+The basic idea is to take the ``spaces as types''-interpretation of identity types very literally, as
+a function from the interval. With this interpretation, univalence and HITs do not need to
+be added axiomatically -- they become provable theorems~\cite{coquand2018higher}.
+This section introduces the basic concepts of cubical type theory, Cubical Agda and the
 Cubical library.
 
 The main ingredient of cubical type theory is the interval type. It represents
@@ -30,7 +34,7 @@ homotopy theory.
 Using lambda-abstraction to define the functions we obtain the inference rules
 seen in \autoref{eq:path-rules}.
 
-\begin{figure}
+\begin{figure}[h]
 \begin{equation*}
   \begin{array}[t]{c}
     \Gamma \vdash a : A \qquad \Gamma \vdash b : A\\
@@ -58,6 +62,24 @@ By iterating this construction we obtain higher homotopies. $\I \ra A$
 represents paths in $A$, $\I \ra \I \ra A$ squares, $\I \ra \I \ra \I \ra A$ the
 eponymous cubes and so on.
 
+Composition of paths is slightly involved. The most natural notion of composition
+is actually ternary because it corresponds to "putting a lid" on an open box. Given
+paths $p : x = y$, $q : y = z$ and $r : z = w$ the ternary composition is the dotted line
+in \autoref{fig:doublecomp}.
+\begin{figure}[h]
+\centering
+\begin{tikzcd}
+  x \arrow[r, dashed] \arrow[d, "p"'] & w \arrow[d, "r^{-1}"] \\
+  y \arrow[r, "q"']                   & z
+\end{tikzcd}
+\label{fig:doublecomp}
+\caption{Composition of $p,q,r$}
+\end{figure}
+
+Note that the right wall is inverted to be parallel with the left.
+To obtain binary composition $p \cdot q$ we fill in the box where the right-hand
+wall is $\refl_z$ (it does not actually matter which wall we choose).
+
 \subsection{Cubical Agda}
 Cubical Agda~\cite{vezzosi2021cubical} implements support for cubical type
 theory in Agda based on the development by Cohen et al.~\cite{cohen2016cubical}.
@@ -79,6 +101,19 @@ section. The interval type is denoted by $\I$, its two end-points by $i0$ and
 $i1$ and the operations by $\_\land\_, \_\lor\_, \sim\_$. The most basic notion
 of a path is actually the heterogenous/dependent path type:
 \begin{code}[hide]%
+\>[0]\AgdaKeyword{module}\AgdaSpace{}%
+\AgdaModule{\AgdaUnderscore{}}\AgdaSpace{}%
+\AgdaKeyword{where}\<%
+\\
+\>[0]\AgdaKeyword{open}\AgdaSpace{}%
+\AgdaKeyword{import}\AgdaSpace{}%
+\AgdaModule{Cubical.Foundations.Prelude}\<%
+\\
+\>[0][@{}l@{\AgdaIndent{0}}]%
+\>[2]\AgdaKeyword{using}\AgdaSymbol{(}\AgdaFunction{subst}\AgdaSpace{}%
+\AgdaSymbol{;}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{\AgdaUnderscore{}∙\AgdaUnderscore{}}}\AgdaSymbol{)}\<%
+\\
 \>[0]\AgdaKeyword{open}\AgdaSpace{}%
 \AgdaKeyword{import}\AgdaSpace{}%
 \AgdaModule{Cubical.Core.Everything}\<%
@@ -89,6 +124,17 @@ of a path is actually the heterogenous/dependent path type:
 \>[0]\AgdaKeyword{open}\AgdaSpace{}%
 \AgdaKeyword{import}\AgdaSpace{}%
 \AgdaModule{Cubical.Data.Int}\<%
+\\
+\>[0]\AgdaKeyword{open}\AgdaSpace{}%
+\AgdaKeyword{import}\AgdaSpace{}%
+\AgdaModule{Cubical.Data.Int.Properties}\<%
+\\
+\>[0]\AgdaKeyword{import}\AgdaSpace{}%
+\AgdaModule{Cubical.Foundations.Univalence}\<%
+\\
+\>[0]\AgdaKeyword{open}\AgdaSpace{}%
+\AgdaKeyword{import}\AgdaSpace{}%
+\AgdaModule{Cubical.Foundations.Isomorphism}\<%
 \\
 \>[0]\AgdaKeyword{variable}\<%
 \\
@@ -117,7 +163,7 @@ of a path is actually the heterogenous/dependent path type:
 \AgdaSymbol{→}\AgdaSpace{}%
 \AgdaPrimitive{Type}\<%
 \end{code}
-The non-dependent identity types as discussed in \autoref{sec:interval-type}
+The non-dependent identity types as discussed in \autoref{sec/identitytypes}
 corresponds to a \texttt{HPath} over a constant family:
 \begin{code}%
 \>[0]\AgdaFunction{Id}\AgdaSpace{}%
@@ -239,12 +285,151 @@ This is the function from the circle to itself which reverses the direction of t
 \AgdaSymbol{(}\AgdaInductiveConstructor{loop}\AgdaSpace{}%
 \AgdaBound{i}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{sym}\AgdaSpace{}%
 \AgdaInductiveConstructor{loop}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaOperator{\AgdaPrimitive{\textasciitilde{}}}\AgdaSpace{}%
-\AgdaBound{i}\AgdaSymbol{)}\<%
+\AgdaBound{i}\<%
 \end{code}
 
-[MORE EXAMPLES? ENCODE/DECODE FOR WINDING?]
+This is very much like $rec_{S^1}$. In order to define a function we require a point (\texttt{base})
+and loop (\texttt{sym loop})at that point. Since paths in Cubical agda are functions from the interval,
+the loop also includes an argument \texttt{i} which we supply to \texttt{sym loop}, representing
+travelling along the path.
+
+Similarly, let us define the helix and winding number from \autoref{sec:HITs}.
+\begin{code}%
+\>[0]\AgdaFunction{helix}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaDatatype{S¹}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaPrimitive{Type}\<%
+\\
+\>[0]\AgdaFunction{helix}\AgdaSpace{}%
+\AgdaInductiveConstructor{base}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaDatatype{ℤ}\<%
+\\
+\>[0]\AgdaFunction{helix}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaInductiveConstructor{loop}\AgdaSpace{}%
+\AgdaBound{i}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{ua}\AgdaSpace{}%
+\AgdaFunction{succEquiv}\AgdaSpace{}%
+\AgdaBound{i}\<%
+\end{code}
+\begin{code}[hide]%
+\>[0][@{}l@{\AgdaIndent{1}}]%
+\>[2]\AgdaKeyword{where}\<%
+\\
+%
+\>[2]\AgdaKeyword{open}\AgdaSpace{}%
+\AgdaModule{Cubical.Foundations.Univalence}\AgdaSpace{}%
+\AgdaKeyword{using}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{ua}\AgdaSymbol{)}\<%
+\\
+%
+\>[2]\AgdaFunction{succEquiv}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaDatatype{ℤ}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≃}}\AgdaSpace{}%
+\AgdaDatatype{ℤ}\<%
+\\
+%
+\>[2]\AgdaFunction{succEquiv}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{sucℤ}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
+\AgdaFunction{isoToIsEquiv}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaInductiveConstructor{iso}\AgdaSpace{}%
+\AgdaFunction{sucℤ}\AgdaSpace{}%
+\AgdaFunction{predℤ}\AgdaSpace{}%
+\AgdaFunction{sucPred}\AgdaSpace{}%
+\AgdaFunction{predSuc}\AgdaSymbol{))}\<%
+\end{code}
+\begin{code}%
+\>[0]\AgdaFunction{encode}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{x}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaDatatype{S¹}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaInductiveConstructor{base}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaBound{x}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaFunction{helix}\AgdaSpace{}%
+\AgdaBound{x}\<%
+\\
+\>[0]\AgdaFunction{encode}\AgdaSpace{}%
+\AgdaSymbol{\AgdaUnderscore{}}\AgdaSpace{}%
+\AgdaBound{p}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{subst}\AgdaSpace{}%
+\AgdaFunction{helix}\AgdaSpace{}%
+\AgdaBound{p}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaInductiveConstructor{pos}\AgdaSpace{}%
+\AgdaNumber{0}\AgdaSymbol{)}\<%
+\\
+%
+\\[\AgdaEmptyExtraSkip]%
+\>[0]\AgdaFunction{winding}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaInductiveConstructor{base}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaInductiveConstructor{base}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaDatatype{ℤ}\<%
+\\
+\>[0]\AgdaFunction{winding}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{encode}\AgdaSpace{}%
+\AgdaInductiveConstructor{base}\<%
+\end{code}
+
+Since everything computes, we do not need to evoke any computation rules to show that
+this function computes the winding number. Each case is witnessed directly by $\refl$.
+\begin{code}%
+\>[0]\AgdaFunction{\AgdaUnderscore{}}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaFunction{winding}\AgdaSpace{}%
+\AgdaInductiveConstructor{loop}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaNumber{1}\<%
+\\
+\>[0]\AgdaSymbol{\AgdaUnderscore{}}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{refl}\<%
+\\
+%
+\\[\AgdaEmptyExtraSkip]%
+\>[0]\AgdaFunction{\AgdaUnderscore{}}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaFunction{winding}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaInductiveConstructor{loop}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
+\AgdaInductiveConstructor{loop}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaNumber{2}\<%
+\\
+\>[0]\AgdaSymbol{\AgdaUnderscore{}}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{refl}\<%
+\\
+%
+\\[\AgdaEmptyExtraSkip]%
+\>[0]\AgdaFunction{\AgdaUnderscore{}}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaFunction{winding}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
+\AgdaInductiveConstructor{loop}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaOperator{\AgdaFunction{-}}\AgdaSpace{}%
+\AgdaNumber{1}\AgdaSymbol{)}\<%
+\\
+\>[0]\AgdaSymbol{\AgdaUnderscore{}}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{refl}\<%
+\end{code}
+
 
 %Explain this when its needed in the formalization
 %Note that the endpoints of a path must align with the mapping of points, and
@@ -272,16 +457,18 @@ In addition to the cubical mode, Vezzosi, M\"ortberg and Cavallo develop and
 maintain a cubical standard library~\footnote[1]{A standard library for Cubical
   Agda: \url{https://github.com/agda/cubical}} containing useful data types,
 functions and proofs.
-\subsection{Why Cubical Type Theory?}
 
-The main benefit of cubical type theories is that they make it possible to prove
+\subsection{Function Extensionality and Univalence}
+
+In addition to the higher inductive types, a benefit of cubical type theories
+is that they make it possible to prove
 useful results that are usually only axiomatically defined. Two
 prominent examples are function extensionality and Voevodsky's univalence
 axiom~\cite{voevodsky2014}.
 
 In cubical type theory (and in particular in Cubical Agda) these are not axioms
 at all, but provable theorems. Function extensionality is especially
-straightforward: given two (possibly dependent) functions $f,g : A \ra B$ and a
+straightforward: given two functions $f,g : A \ra B$ and a
 family of paths $p : \Pi_{(x:A)}~f(x)~=_B~g(x)$, the proof simply swaps the
 order of operations.
 \begin{code}%
@@ -297,9 +484,8 @@ order of operations.
 \AgdaBound{A}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
 \AgdaBound{B}\AgdaSymbol{\}}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{p}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{x}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaSymbol{((}\AgdaBound{x}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaBound{A}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
@@ -318,17 +504,20 @@ order of operations.
 \AgdaBound{i}\AgdaSpace{}%
 \AgdaBound{x}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaBound{x}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{p}\AgdaSpace{}%
+\AgdaBound{x}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaBound{i}\<%
 \end{code}
+It is also possible to prove function extensionality from
+univalence~\cite{gambino2016, bauer2011coq}, but the above is much
+more direct.
 
 Univalence is also provable in the sense that a term of the type
 \begin{code}[hide]%
 \>[0]\AgdaKeyword{postulate}\<%
 \\
 \>[0][@{}l@{\AgdaIndent{0}}]%
-\>[2]\AgdaPostulate{univalence}\AgdaSpace{}%
+\>[2]\AgdaPostulate{univalence'}\AgdaSpace{}%
 \AgdaSymbol{:}\<%
 \end{code}
 \begin{code}%
@@ -347,8 +536,24 @@ Univalence is also provable in the sense that a term of the type
 \AgdaBound{B}\AgdaSymbol{)}\<%
 \end{code}
 can be constructed.
-It is often useful to have only one direction of the equivalence.
-The cubical standard library provides both in:
+
+Univalence in Cubical Agda is implemented through a new type former called
+\texttt{Glue}. Conceptually, \texttt{Glue} provides a way to construct lids
+of open boxes in the universe given a family of types and equivalences over \texttt{I}.
+We may think of it as a generalization of composition which allows a family of equivalences,
+rather than a family of paths~\cite{1labUnivalence}.
+
+In order to define \texttt{ua} of some equivalence $e$ we let the left wall be
+$e$, the bottom $\refl$ and the right the identity equivalence.
+\begin{figure}[h]
+\centering
+\begin{tikzcd}
+  A \arrow[r, "\ua(e)", dashed] \arrow[d, "\rotatebox{90}{\(\sim\)}", "e"'] & B \arrow[d, "id", "\rotatebox{90}{\(\sim\)}"'] \\
+  B \arrow[r, "\refl"']                         & B
+\end{tikzcd}
+\end{figure}
+
+The result is one way of the equivalence above. The other direction is called \texttt{lineToEquiv}.
 \begin{code}%
 %
 \>[2]\AgdaPostulate{ua}%
@@ -383,21 +588,23 @@ The cubical standard library provides both in:
 \AgdaBound{B}\<%
 \end{code}
 
-Additionally, Cubical Agda's support for HITs and pattern matching on their
-constructors will be very useful.
-
+\subsection{Canonicity}
 The benefit of all this is canonicity. Since \texttt{ua} and HITs are non-axiomatic,
-terms constructed by their use actually compute to a value. This means our
+terms constructed by their use reduce to a normalized value. This means our
 formalization actually computes the result of applying patches.
 
-Sadly, however, this is not entirely true.
+However, that is not entirely true.
 There are two exceptions to canonicity at the time of writing:
 \begin{enumerate}
-  \item \texttt{transp} over indexed families, and
-  \item \texttt{hcomp} over indexed families.
+  \item \texttt{transp} (the primitive used to implement \texttt{transport}) over
+  inductive families, and
+  \item \texttt{hcomp} (the primitive used to implement path composition) over inductive families.
 \end{enumerate}
 
-Regrettably we require both in order to realize repositories as vectors of strings
-(an indexed family).
-
-[THE STATE OF AFFAIRS? OR LEAVE FOR CONCLUSION — MAYBE BOTH?]
+Inductive families refer to inductive types that are also indexed by some indexing type.
+For example, \texttt{Vec A} is an inductive family over \texttt{A} indexed by integers,
+and as such expressions like \texttt{transport (λ i → Vec A (p i)) [~]} do not reduce~\cite{vezzosi2021cubical}.
+Canonicity-preserving support for inductive families and its inclusion in Cubical Agda is
+an ongoing project~\footnote{https://github.com/agda/agda/issues/3733}. We will return
+to the issue in \autoref{ch/conclusion}, as it relates to the formalizations and results
+in \autoref{ch/formalization}.

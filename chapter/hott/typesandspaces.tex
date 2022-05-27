@@ -1,8 +1,8 @@
 \section{Spaces as Types}\label{sec:spaces}
 
 Another (related) way to make sense of identity types is through homotopy theory. With
-this interpretation pioneered by Voevodsky~\cite{voevodsky2014} and the HoTT
-program~\cite{hottbook}, a term of $x =_A y$ is like a path in $A$ from $x$ to
+this interpretation, pioneered by Voevodsky~\cite{voevodsky2014} and the HoTT
+program~\cite{hottbook}, a term of $x =_A y$ is a path in $A$ from $x$ to
 $y$.
 
 In fact the collection of all such paths is itself a space (and thus a type):
@@ -17,12 +17,21 @@ considering higher paths, they have the structure of ``weak higher-dimensional''
 groupoids. A classical example of weak higher-dimensional groupoids can be found
 in homotopy theory, where Kan complexes are a specific kind of ``well
 behaved'' space. This was observed by both Voevodsky and Streicher around
-2006~\cite{streicher2014sset}.
+2006~\cite{streicher2014sset} and Voevodsky used the insight to construct a
+model for Martin-L\"of type theory.
 
 Briefly, the model takes a combinatorial view of spaces by mapping them to
 \emph{simplicial sets} -- a sort of arbitrary-dimensional triangulation. To
 accommodate dependent types, we only consider Kan complexes -- intuitively the
-simplicial sets where every triangle can be filled in. 
+simplicial sets where every triangle can be filled in.
+
+The space containing all the basic spaces also forms a Kan complex
+called a \emph{Universe} and often denoted by a $\mathcal{U}$.
+Importantly the universe does not contain itself, but
+may be contained in another universe ``one level up''. If necessary, a
+cumulative hierarchy of universes containing all the lower ones is possible, but
+Voevodsky settles for two. This is a very brief overview, a full exposition by
+Kapulkin and Lumsdaine is found in~\cite{kapulkin2012}.
 
 \subsubsection{Univalence and Canonicity}%and the loss of canonicity
 Voevodsky also shows that his model satisfies the \emph{univalence property}.
@@ -31,12 +40,27 @@ equivalent to the type of equivalences. In other words, equivalent types can be
 identified.
 
 This property aligns well with mathematical practice where structures are often
-considered up to some suitable notion of equivalence. Consequently HoTT provides
-a setting for mathematics with desirable properties; the ``Univalent
-Foundations'' program is an attempt to do math in this setting.
+considered up to some suitable notion of equivalence. With well defined types,
+univalence makes means for example isomorphic groups \emph{are} equal.
+Consequently HoTT provides a setting for mathematics with desirable properties; the ``Univalent
+Foundations'' program as introduced in The Book~\cite{hottbook} aims to do
+mathematics in this setting.
 
 Since the univalence property holds in Voevodsky's model, we might justifiably want to
-include it in our type theory. However this poses a problem: when extending the
+include it in our type theory and The Book does exactly that by including the
+axiom (where idToEquiv is a function of type $(A =_{\mathcal{U}} B) \ra (A
+\simeq B)$):
+\begin{equation*}
+  \begin{array}[t]{c}
+    \Gamma \vdash A : \mathcal{U} \qquad \Gamma \vdash B : \mathcal{U}\\
+    \hline
+    \Gamma \vdash \operatorname{univalence}~A~B : \operatorname{isEquiv} (\operatorname{idToEquiv}~A~B)
+  \end{array}
+\end{equation*}
+The inverse of idToEquiv is ua, with the computation rule that transport along
+ua($f$) is (propositionally) equal to applying $f$.
+
+However this poses a problem: when extending the
 type theory with an axiom, the canonicity property is lost -- terms no longer
 necessarily reduce to a normal form and we lose the nice constructive properties
 of the resulting logic. The constructive/computational meaning of the univalence
