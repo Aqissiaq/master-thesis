@@ -29,15 +29,14 @@ The intended model for this theory is one where the patches either insert a stri
 \texttt{l}th line (\texttt{ADD s AT l}), or remove the \texttt{l}th line (\texttt{RM l}).
 
 Clearly these patches are not always applicable. It does not make sense to remove the 4th line of a file
-with only 3 lines, nor to insert something on line 14. To incorporate this more complicated patch language,
-the repository type must also be more complicated. This is accomplished by indexing \texttt{R} by a type
+with only 3 lines, nor to insert something on line 14 in the same context.
+To incorporate this more complicated patch language, the repository type must also be more complicated.
+This is accomplished by indexing \texttt{R} by a type
 of patch histories, where \texttt{History m n} is the type of sequences of patches which takes an \texttt{m}-
 line file to an \texttt{n}-line file.
 
-[I AM LEAVING OUT PATCH LAWS BECAUSE THEY ARE HARD]
-
 \begin{code}
-data History : ℕ → ℕ → Type₀ where
+data History : ℕ → ℕ → Type where
   []         : {m : ℕ} → History m m
   ADD_AT_::_ : {m n : ℕ} (s : String) (l : Fin (suc n)) →
                History m n → History m (suc n)
@@ -45,8 +44,10 @@ data History : ℕ → ℕ → Type₀ where
                History m (suc n) → History m n
 \end{code}
 
+It would also be possible to include higher constructers to specify patch laws,
+but we refrain in order to simplify other developments.
 \begin{code}
-data R : Type₀ where
+data R : Type where
   doc  : {n : ℕ} → History 0 n → R
 
   addP : {n : ℕ} (s : String) (l : Fin (suc n))

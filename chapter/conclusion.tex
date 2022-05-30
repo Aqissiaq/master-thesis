@@ -9,7 +9,7 @@ expected -- at least for simple examples.
 A full exploration of the behavior is (at the time of writing) limited by two
 factors: the efficiency of typechecking for complicated terms, and the fact that
 Cubical Agda does not fully reduce \texttt{transp} and \texttt{hcomp} for
-indexed families of types.
+inductive families of types.
 
 The former means that it is computationally expensive (and time consuming) to
 verify the behavior of the implementation, while the latter makes it impossible
@@ -17,8 +17,56 @@ to compute results for the more complicated models. In particular for
 compositions of patches (using \texttt{hcomp}) when modeling the repository as a
 vector of strings (and indexed family of types).
 
-Additionally, the first chapter contains an exposition of HoTT and (cubical)
-Agda and the second a survey of some approaches to a theory of VCS.
+This chapter discusses the implementation and results of
+\autoref{ch/formalization}, outlines directions for future work on homotopical
+patch theory, and finally presents an attempt at an entirely different approach to modeling
+version control systems in HoTT.
+
+\section{Discussion}
+Cubical Agda provides a good setting for formalizations relying on univalence,
+function extensionality and higher inductive types. I was able to implement the
+ideas of HPT directly, and avoid complicated elimination rules associated with
+HITs and univalence~\footnote{Compare the length of just the contractibility
+proof in \url{https://github.com/dlicata335/hott-agda/blob/master/programming/PatchWithHistories3.agda}
+to our one-liner.}.
+
+However, a few complications were encountered. In particular the independence
+patch law in ``a patch theory with laws'' is a glaring omission. While it is
+easy to state, it does not play well with our technique -- adapted from the Cubical library's set
+truncation -- for mapping out of higher path constructors. This is not a
+fundamental limitation, and may have solutions, but was a hurdle.
+
+The other omission is the patch laws of ``a patch theory with richer contexts''.
+In this case the issues arose already trying to define \texttt{Interpreter}. The
+cases for patch laws should encode the fact that \texttt{replay} respects these
+patch laws, but since repositories are already indexed by a HIT of histories,
+the resulting type becomes very complicated and I was unable to state it
+correctly.
+
+We might also expect that \emph{any} square will do, since all four corners are
+singletons and all singletons are equivalent. However, this does not appear to
+pass Cubical Agda's typechecking because the sides must \emph{definitionally}
+agree with the mapping of points and patches.
+
+The computational results are promising, but also reveal the current limits of
+HoTT. There are two distinct issues: firstly the issue of \texttt{transp} and
+\texttt{hcomp} over inductive families which simply does not reduce, and
+secondly an issue of performance.
+
+The performance limitations are also visible in two distinct places. First,
+recall the elementary computations in \autoref{subsec:elementary-results}. A
+detailed performance analysis is outside the scope of this thesis, but it is
+noteworthy that computing 1000 successor functions takes significant time.
+
+Second, the results of \texttt{optimize} appear to be very slow. In fact, the
+author has been unable to compute the result of applying any optimized patch due
+to memory constraints. As noted in \autoref{sec:results} the results themselves
+are not in question, since \texttt{optimize} also produces a proof that the
+resulting patch is equal to the original, but the resource use is interesting
+nevertheless.
+
+Possible causes include the trick used to define \texttt{opt} of the \texttt{noop}
+constructor and the transport along the long sequence of paths constituting \texttt{e}.
 
 \section{Future Work}
 
@@ -32,10 +80,20 @@ the patch theory with laws and all patch laws for the theory in section 6 are
 missing. Their inclusion would require a different way to map higher-dimensional
 paths into the universe which is guaranteed to terminate.
 
+Additionally, Angiuli et al. implement an alternative version of the patch
+theory with laws in which \texttt{R} is set-truncated by adding another
+constructor. This is used as an alternative to the contractibility of the target
+type when defining \texttt{opt} and may offer a solution to the termination
+problems of the independence patch law.
+
 The other is to work towards more computational results.
-Specifically we are limited by indexed families, and further work in Cubical
-Agda's normalization would lead to more results ``for free''. It would also be
-interesting to look at the computation of \texttt{opt}, as it requires some
+Specifically we are limited by inductive families, and further work in Cubical
+Agda's normalization would lead to more results ``for free''~\footnote{This is
+  an active area of work for Cubical Agda, see for example
+  \url{https://github.com/agda/agda/issues/3733\#issuecomment-903581647},
+  \url{https://github.com/agda/cubical/pull/309} and section 3.2.4 of \cite{vezzosi2021cubical}}.
+
+It would also be interesting to look at the computation of \texttt{opt}, as it requires some
 notions of sub-singletons~\cite{Angiuli2016} and is very time consuming at the
 time of writing.
 

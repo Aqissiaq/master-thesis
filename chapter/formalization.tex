@@ -1,18 +1,17 @@
 \chapter{Formalization}\label{ch/formalization}
 
-[EMPHASIZE?]
-\begin{enumerate}
-\item computational content of paths~\cite{Angiuli2016}
-\item computation in Cubical Agda~\cite{vezzosi2021cubical, Angiuli2016}
-\end{enumerate}
-
 This section describes the development of a formalization of Homotopical Patch
-theory~\cite{Angiuli2016} in Cubical Agda. First the implementation details of
-three patch theories, then some computational results.
+Theory~\cite{Angiuli2016} in Cubical Agda. The development follows Angiuli et
+al. in defining three patch theories of increasing complexity.
 
-We show that the elementary patch theory performs as expected, but that ``a
-patch theory with laws'' and ``a patch theory with richer contexts'' require
-further development of type-checking tools to fully explore.
+``An elementary patch theory'' uses the fundamental group of $S^1$ to implement
+a patch theory of integers and the successor function, ``A patch theory with
+laws'' extends to fixed-size vectors of strings and includes a patch law which
+is used to implement a patch optimizer, and ``a patch theory with richer
+contexts'' allows for more complex patch contexts with a repository indexed by
+its history.
 
-These limitations are known challenges. Of particular note is the Brunerie
-number~[CITATION] and the ``little Brunerie number''~[CITATION].
+Lastly, we look at some concrete computations using the formalization and
+show that the elementary patch theory performs as expected, but that ``a
+patch theory with laws'' and ``a patch theory with richer contexts''
+require further development of Cubical Agda to fully explore.

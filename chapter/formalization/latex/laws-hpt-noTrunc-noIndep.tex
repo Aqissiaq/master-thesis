@@ -2,7 +2,7 @@
 
 In this section we explore a formalization of HPTs section 5: \textbf{A Patch Theory with Laws}.
 This is a more complicated patch theory in which the type \texttt{R} has not only repositories
-and patches, but also patch \emph{laws} represented by squares (paths between paths).
+and patches, but also a patch \emph{law} represented by a square (a path between path).
 
 We start by implementing the patch theory, followed by a "patch optimizer" that computes
 smaller patches with the same effect. This optimizer makes crucial use of the patch law.
@@ -271,17 +271,17 @@ In this patch theory we consider repositories consisting of a single file with l
 There is one type of patch which permutes the line at a given index. Let \texttt{Patch} denote the type
 \texttt{doc ≡ doc}.
 
-Additionally we enforce patch \emph{laws} with the \texttt{noop} constructor which states that
+Additionally we enforce a patch \emph{law} with the \texttt{noop} constructor which states that
 swapping a string for itself is the same as doing nothing.
 
 In the geometric interpretation of HITs this is a space with one point, loops for each choice of
-\texttt{(s1, s2, i)} and a square between each loop where \texttt{s1 == s2} and the constant path.
+\texttt{(s1, s2, i)} and a cylinder between each loop where \texttt{s1 == s2} and the constant path.
 
 \begin{code}%
 \>[0]\AgdaKeyword{data}\AgdaSpace{}%
 \AgdaDatatype{R}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
-\AgdaPrimitive{Type₀}\AgdaSpace{}%
+\AgdaPrimitive{Type}\AgdaSpace{}%
 \AgdaKeyword{where}\<%
 \\
 \>[0][@{}l@{\AgdaIndent{0}}]%
@@ -327,7 +327,7 @@ In the geometric interpretation of HITs this is a space with one point, loops fo
 \begin{code}[hide]%
 \>[0]\AgdaFunction{Patch}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
-\AgdaPrimitive{Type₀}\<%
+\AgdaPrimitive{Type}\<%
 \\
 \>[0]\AgdaFunction{Patch}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
@@ -391,7 +391,8 @@ Angiuli et al's original definition also includes an additional law:
 This law states that swapping strings commutes as long as the indices are different.
 We do not include this law as it leads to some problems later. See \autoref{subsec/opt}.
 
-In order to interpret this model in the universe of types we will need three things:
+In order to interpret this model in the universe of types (called \texttt{Type} in Cubical Agda)
+we will need three things:
 \begin{enumerate}
   \item a \emph{type} of repository contexts \texttt{repoType},
   \item a path \texttt{swap} from \texttt{repoType} to itself for
@@ -400,11 +401,10 @@ In order to interpret this model in the universe of types we will need three thi
 \end{enumerate}
 
 The type of repositories will be realized by vectors of strings of a fixed size.
-
 \begin{code}%
 \>[0]\AgdaFunction{repoType}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
-\AgdaPrimitive{Type₀}\<%
+\AgdaPrimitive{Type}\<%
 \\
 \>[0]\AgdaFunction{repoType}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
@@ -413,8 +413,8 @@ The type of repositories will be realized by vectors of strings of a fixed size.
 \AgdaFunction{size}\<%
 \end{code}
 
-To create a path \texttt{swap s1 s2 i : repoType ≡ repoType} we will first construct a
-bijection, and then use \texttt{ua} to make a path in the universe.
+To create a path \texttt{swap s1 s2 i : repoType ≡ repoType} we will first construct an
+isomorphism and then use \texttt{ua} to make a path in the universe.
 
 Semantically, our patch should swap the line at index \texttt{j} if it is equal to either \texttt{s1}
 or \texttt{s2} and otherwise leave it alone. This behavior is encoded in \texttt{permute} and \texttt{permuteAt}
@@ -503,7 +503,7 @@ applies it to the appropriate index.
 \AgdaBound{t}\AgdaSymbol{))}\<%
 \end{code}
 
-To show that \texttt{permuteAt} is a bijection (and hence an equivalence) we need
+To show that \texttt{permuteAt} is an isomorphism (and hence an equivalence) we need
 some additional results.
 
 First we show that updating at the same index twice is equal to updating once with the
@@ -1138,18 +1138,16 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 \\
 %
 \>[4]\AgdaFunction{pointwise}\AgdaSpace{}%
-\AgdaBound{r}%
-\>[726I]\AgdaSymbol{=}\AgdaSpace{}%
-\AgdaFunction{equivFun}\AgdaSpace{}%
+\AgdaBound{r}\AgdaSpace{}%
+\AgdaSymbol{=}%
+\>[727I]\AgdaFunction{equivFun}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{swapat}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{s}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaBound{s}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaBound{j}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaBound{r}\<%
-\\
-\>[.][@{}l@{}]\<[726I]%
-\>[16]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
+\AgdaBound{r}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{cong}\AgdaSpace{}%
 \AgdaSymbol{(λ}\AgdaSpace{}%
 \AgdaBound{x}\AgdaSpace{}%
@@ -1163,19 +1161,17 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 \AgdaFunction{permuteId}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{⟩}}\<%
 \\
-\>[16][@{}l@{\AgdaIndent{0}}]%
+\>[.][@{}l@{}]\<[727I]%
 \>[18]\AgdaBound{r}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{[}}\AgdaSpace{}%
 \AgdaBound{j}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{]\%=}}\AgdaSpace{}%
-\AgdaFunction{id}\<%
-\\
-%
-\>[16]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
+\AgdaFunction{id}%
+\>[48]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{[]\%=id}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{⟩}}\<%
 \\
-\>[16][@{}l@{\AgdaIndent{0}}]%
+%
 \>[18]\AgdaFunction{id}\AgdaSpace{}%
 \AgdaBound{r}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∎}}\<%
@@ -1209,11 +1205,10 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 
 With these pieces we are ready to interpret the repository HIT.
 \texttt{I} sends \texttt{doc} to the type of string vectors, each patch to \texttt{ua} of the
-\texttt{swapat} bijection and each \texttt{noop} square to \texttt{swapatIsId} composed with
-\texttt{uaIdEquiv} which the path identifying \texttt{ua (idEquiv \_)} and \texttt{refl}.
+\texttt{swapat} equivalence and each \texttt{noop} square to \texttt{swapatIsId} composed with
+\texttt{uaIdEquiv} which is the path identifying \texttt{ua (idEquiv \_)} and \texttt{refl}.
 
 Then we can interpret and apply patches like before.
-
 \begin{code}%
 \>[0]\AgdaFunction{I}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -1324,56 +1319,9 @@ We proceed in two steps. First creating a function
 \end{code}
 that performs the desired optimization on points, and then applying it along
 a patch with \texttt{cong}.
-\begin{code}[hide]%
-\>[0]\AgdaFunction{result-contractible}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaSymbol{\{}\AgdaBound{X}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaPrimitive{Type}\AgdaSymbol{\}}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{x}\AgdaSpace{}%
-\AgdaSymbol{:}\AgdaSpace{}%
-\AgdaBound{X}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaFunction{isContr}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{Σ[}\AgdaSpace{}%
-\AgdaBound{y}\AgdaSpace{}%
-\AgdaFunction{∈}\AgdaSpace{}%
-\AgdaBound{X}\AgdaSpace{}%
-\AgdaFunction{]}\AgdaSpace{}%
-\AgdaBound{y}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
-\AgdaBound{x}\AgdaSymbol{)}\<%
-\\
-\>[0]\AgdaFunction{result-contractible}\AgdaSpace{}%
-\AgdaBound{x}\AgdaSpace{}%
-\AgdaSymbol{=}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{x}\AgdaSpace{}%
-\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
-\AgdaFunction{refl}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
-\AgdaSymbol{λ}\AgdaSpace{}%
-\AgdaSymbol{(\AgdaUnderscore{}}\AgdaSpace{}%
-\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaFunction{ΣPathP}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
-\AgdaSymbol{λ}\AgdaSpace{}%
-\AgdaBound{i}\AgdaSpace{}%
-\AgdaBound{j}\AgdaSpace{}%
-\AgdaSymbol{→}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaOperator{\AgdaPrimitive{\textasciitilde{}}}\AgdaSpace{}%
-\AgdaBound{i}\AgdaSpace{}%
-\AgdaOperator{\AgdaPrimitive{∨}}\AgdaSpace{}%
-\AgdaBound{j}\AgdaSymbol{))}\<%
-\end{code}
+
 The point constructor \texttt{doc} gets mapped to itself along with \texttt{refl}.
 This is natural since we want to optimize patches and leave the repositories unchanged.
-[MORE EXPLANATION/JUSTIFICATION?]
 \begin{code}%
 \>[0]\AgdaFunction{opt}\AgdaSpace{}%
 \AgdaInductiveConstructor{doc}\AgdaSpace{}%
@@ -1382,24 +1330,19 @@ This is natural since we want to optimize patches and leave the repositories unc
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaFunction{refl}\AgdaSymbol{)}\<%
 \end{code}
-
 The path constructor \texttt{s1 ↔ s2 AT j} is where we implement our optimization.
 If the two strings are different, we do nothing. Note that \texttt{x} here captures the
-interval paramter, and so "varies along the path" as required.
+interval parameter, so that \texttt{(x , refl)} may be a point along the path.
 
 If the strings \emph{are} equal we replace the patch with \texttt{refl$_\texttt{doc}$} by
 mapping to \texttt{doc} regardless of the interval parameter. Now, our result type also requires
 a proof that \texttt{refl} is in fact equal to permuting two equal strings and we have exactly
 what we need: it's \texttt{noop}!
 
-There are two complications:
-\begin{enumerate}
-  \item \texttt{noop} requires the strings to be the same, not just equal.
-        Luckily we can use the proof that they are equal to get a patch of the correct type
-  \item the \texttt{noop} square goes the wrong way, but this is easily fixed by inverting one
-        interval argument.
-\end{enumerate}
-
+There are two complications. Firstly \texttt{noop} requires a swap-patch with identical strings.
+Luckily we can use the proof that they are equal to get a patch of the correct type.
+Secondly the \texttt{noop} square goes the wrong way -- from the patch to \texttt{refl} --
+but this is easily fixed by inverting one interval argument.
 \begin{code}%
 \>[0]\AgdaFunction{opt}\AgdaSpace{}%
 \AgdaBound{x}\AgdaSymbol{@((}\AgdaBound{s1}\AgdaSpace{}%
@@ -1417,10 +1360,10 @@ There are two complications:
 \>[26]\AgdaSymbol{|}\AgdaSpace{}%
 \AgdaInductiveConstructor{yes}\AgdaSpace{}%
 \AgdaBound{s1=s2}%
-\>[905I]\AgdaSymbol{=}\AgdaSpace{}%
+\>[864I]\AgdaSymbol{=}\AgdaSpace{}%
 \AgdaInductiveConstructor{doc}\<%
 \\
-\>[.][@{}l@{}]\<[905I]%
+\>[.][@{}l@{}]\<[864I]%
 \>[38]\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaSymbol{λ}\AgdaSpace{}%
 \AgdaBound{k}\AgdaSpace{}%
@@ -1496,6 +1439,62 @@ is exactly what \texttt{noop s j} is!
 \AgdaBound{i}\AgdaSpace{}%
 \AgdaBound{k}\<%
 \end{code}
+\begin{code}[hide]%
+%
+\>[2]\AgdaKeyword{where}\<%
+\end{code}
+
+Contractibility of the result type is immediate from the characterization of paths
+in $\Sigma$-types and the inverse of the provided path.
+\begin{code}%
+%
+\>[2]\AgdaFunction{result-contractible}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaBound{X}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaPrimitive{Type}\AgdaSymbol{\}}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{x}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaBound{X}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaFunction{isContr}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{Σ[}\AgdaSpace{}%
+\AgdaBound{y}\AgdaSpace{}%
+\AgdaFunction{∈}\AgdaSpace{}%
+\AgdaBound{X}\AgdaSpace{}%
+\AgdaFunction{]}\AgdaSpace{}%
+\AgdaBound{y}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaBound{x}\AgdaSymbol{)}\<%
+\\
+%
+\>[2]\AgdaFunction{result-contractible}\AgdaSpace{}%
+\AgdaBound{x}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{x}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
+\AgdaFunction{refl}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
+\AgdaSymbol{(λ}\AgdaSpace{}%
+\AgdaSymbol{(\AgdaUnderscore{}}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
+\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaFunction{ΣPathP}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
+\AgdaBound{p}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
+\AgdaSymbol{λ}\AgdaSpace{}%
+\AgdaBound{i}\AgdaSpace{}%
+\AgdaBound{j}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaBound{p}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaOperator{\AgdaPrimitive{\textasciitilde{}}}\AgdaSpace{}%
+\AgdaBound{i}\AgdaSpace{}%
+\AgdaOperator{\AgdaPrimitive{∨}}\AgdaSpace{}%
+\AgdaBound{j}\AgdaSymbol{)))}\<%
+\end{code}
 
 This trick is the reason \texttt{indep} was left out. Because we need to apply \texttt{opt} to
 the paths to compute the sides of the square it would not terminate, instead constructing squares
@@ -1509,12 +1508,12 @@ Luckily this type is equivalent to our desired target type by:
 \begin{code}%
 \>[0]\AgdaFunction{e}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[957I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSpace{}%
+\>[958I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaFunction{Patch}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{→}\<%
 \\
-\>[.][@{}l@{}]\<[957I]%
+\>[.][@{}l@{}]\<[958I]%
 \>[4]\AgdaSymbol{(}\AgdaPostulate{PathP}\AgdaSpace{}%
 \AgdaSymbol{(λ}\AgdaSpace{}%
 \AgdaBound{i}\AgdaSpace{}%
@@ -1548,17 +1547,15 @@ Luckily this type is equivalent to our desired target type by:
 \end{code}
 \begin{code}[hide]%
 \>[0]\AgdaFunction{e}%
-\>[987I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSymbol{\}}\AgdaSpace{}%
+\>[988I]\AgdaSymbol{\{}\AgdaBound{p}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{=}\<%
 \end{code}
-[SHOULD THIS JUST BE PRESENTED AS A PROPOSITION/PROOF?]
-
-By the characterizations of paths over constant families and paths in $\Sigma$-types this [WHAT?]
+We present the (somewhat involved) proof here.
+By the characterizations of paths over constant families and paths in $\Sigma$-types the Pathover
 is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x ≡ \texttt{doc})}$ p) ≡ refl}.
 
-[USING BOOK SYNTAX I HAVE NOT INTRODUCED..]
 \begin{code}%
-\>[.][@{}l@{}]\<[987I]%
+\>[.][@{}l@{}]\<[988I]%
 \>[2]\AgdaSymbol{(}\AgdaPostulate{PathP}\AgdaSpace{}%
 \AgdaSymbol{(λ}\AgdaSpace{}%
 \AgdaBound{i}\AgdaSpace{}%
@@ -1738,7 +1735,7 @@ is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x 
 Then we apply lemma 2.11.2 from the book
 \footnote{For the category theorist: this is the functorial action of the contravariant hom-functor~\cite{hottbook}}
 to obtain the $\Sigma$-type of patches \texttt{q} and proofs that $q^{-1} \cdot p \equiv \texttt{refl}$.
-[THIS PROOF IS A (SMALL, BUT) GENUINE CONTRIBUTION. NOTE?]
+The proof by path induction was written for this purpose and has been contributed to the Cubical library.
 \begin{code}[hide]%
 \>[2][@{}l@{\AgdaIndent{1}}]%
 \>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
@@ -1797,7 +1794,7 @@ to obtain the $\Sigma$-type of patches \texttt{q} and proofs that $q^{-1} \cdot 
 \AgdaFunction{refl}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{⟩}}\<%
 \end{code}
-Finally, we reach the desired type by the groupoid properties of path composition.
+We reach the desired type by the groupoid properties of path composition.
 \begin{code}%
 %
 \>[2]\AgdaSymbol{(}\AgdaFunction{Σ[}\AgdaSpace{}%
@@ -1834,16 +1831,16 @@ Finally, we reach the desired type by the groupoid properties of path compositio
 \AgdaBound{q}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∎}}\<%
 \end{code}
+In particular, \texttt{invLUnique} identifies $p^{-1} \cdot q \equiv \texttt{refl}$
+with $q \equiv p$. The proof is by path induction and application of groupoid laws.
 \begin{code}[hide]%
 %
 \>[2]\AgdaKeyword{where}\<%
-\end{code}
-In particular $p^{-1} \cdot q \equiv \texttt{refl}$ is equivalent to $q \equiv p$.
-\begin{code}%
+\\
 %
 \>[2]\AgdaFunction{invLUnique}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[1206I]\AgdaSymbol{\{}\AgdaBound{X}\AgdaSpace{}%
+\>[1207I]\AgdaSymbol{\{}\AgdaBound{X}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaPrimitive{Type}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{x}\AgdaSpace{}%
@@ -1852,7 +1849,7 @@ In particular $p^{-1} \cdot q \equiv \texttt{refl}$ is equivalent to $q \equiv p
 \AgdaBound{X}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{→}\<%
 \\
-\>[.][@{}l@{}]\<[1206I]%
+\>[.][@{}l@{}]\<[1207I]%
 \>[15]\AgdaSymbol{(}\AgdaBound{p}\AgdaSpace{}%
 \AgdaBound{q}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -1870,153 +1867,106 @@ In particular $p^{-1} \cdot q \equiv \texttt{refl}$ is equivalent to $q \equiv p
 \AgdaSymbol{(}\AgdaBound{q}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
 \AgdaBound{p}\AgdaSymbol{)}\<%
-\end{code}
-\begin{code}[hide]%
+\\
 %
 \>[2]\AgdaFunction{invLUnique}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaBound{q}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaBound{X}\AgdaSymbol{\}}\AgdaSpace{}%
+\AgdaSymbol{\{}\AgdaBound{x}\AgdaSymbol{\}}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{J}\AgdaSpace{}%
+\AgdaFunction{P}\AgdaSpace{}%
+\AgdaFunction{r}\<%
+\\
+\>[2][@{}l@{\AgdaIndent{0}}]%
+\>[4]\AgdaKeyword{where}\<%
+\\
+%
+\>[4]\AgdaFunction{P}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{y'}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaBound{X}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaBound{x}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaBound{y'}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaPrimitive{Type}\AgdaSpace{}%
+\AgdaSymbol{\AgdaUnderscore{}}\<%
+\\
+%
+\>[4]\AgdaFunction{P}\AgdaSpace{}%
+\AgdaBound{y'}\AgdaSpace{}%
+\AgdaBound{p'}\AgdaSpace{}%
+\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{q'}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaBound{x}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaBound{y'}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{→}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
+\AgdaBound{p'}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
+\AgdaBound{q'}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaFunction{refl}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{q'}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaBound{p'}\AgdaSymbol{)}\<%
+\\
+%
+\\[\AgdaEmptyExtraSkip]%
+%
+\>[4]\AgdaFunction{r}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaFunction{P}\AgdaSpace{}%
+\AgdaBound{x}\AgdaSpace{}%
+\AgdaFunction{refl}\<%
+\\
+%
+\>[4]\AgdaFunction{r}%
+\>[1271I]\AgdaBound{q'}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
+\AgdaFunction{refl}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{q}\AgdaSpace{}%
+\AgdaBound{q'}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
 \AgdaFunction{refl}\<%
 \\
-\>[2][@{}l@{\AgdaIndent{0}}]%
-\>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
+\>[.][@{}l@{}]\<[1271I]%
+\>[6]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{cong}\AgdaSpace{}%
-\AgdaSymbol{((}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{q}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{≡\AgdaUnderscore{}}}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{lCancel}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{))}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{⟩}}\<%
-\\
-\>[4][@{}l@{\AgdaIndent{0}}]%
-\>[6]\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{q}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{p}\<%
-\\
-%
-\>[4]\AgdaComment{--\ this\ is\ the\ key\ step:\ the\ rest\ is\ just\ groupoidLaw\ shuffling}\<%
-\\
-%
-\>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
-\AgdaFunction{ua}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{compl≡Equiv}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{q}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{))}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{⟩}}\<%
-\\
-\>[4][@{}l@{\AgdaIndent{0}}]%
-\>[6]\AgdaSymbol{(}\AgdaBound{p}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{q}\AgdaSymbol{))}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\<%
-\\
-%
-\>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
-\AgdaFunction{cong₂}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{\AgdaUnderscore{}≡\AgdaUnderscore{}}}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{assoc}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaBound{q}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{assoc}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{⟩}}\<%
-\\
-\>[4][@{}l@{\AgdaIndent{0}}]%
-\>[6]\AgdaSymbol{(}\AgdaBound{p}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{q}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{p}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{p}\<%
-\\
-%
-\>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
-\AgdaFunction{cong₂}\AgdaSpace{}%
 \AgdaSymbol{(λ}\AgdaSpace{}%
-\AgdaBound{a}\AgdaSpace{}%
-\AgdaBound{b}\AgdaSpace{}%
+\AgdaBound{p}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaBound{a}\AgdaSpace{}%
+\AgdaBound{p}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{q}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaBound{q'}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
-\AgdaBound{b}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{rCancel}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{rCancel}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{⟩}}\<%
-\\
-\>[4][@{}l@{\AgdaIndent{0}}]%
-\>[6]\AgdaFunction{refl}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{q}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaFunction{refl}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaFunction{symRefl}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{⟩}}\AgdaSpace{}%
 \AgdaFunction{refl}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
-\AgdaBound{p}\<%
+\AgdaBound{q'}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaFunction{refl}\<%
 \\
 %
-\>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
-\AgdaFunction{cong₂}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{\AgdaUnderscore{}≡\AgdaUnderscore{}}}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
+\>[6]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
+\AgdaFunction{sym}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{cong}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaOperator{\AgdaFunction{\AgdaUnderscore{}≡}}\AgdaSpace{}%
+\AgdaFunction{refl}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{lUnit}\AgdaSpace{}%
-\AgdaBound{q}\AgdaSymbol{))}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{sym}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaFunction{lUnit}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSymbol{))}\AgdaSpace{}%
-\AgdaOperator{\AgdaFunction{⟩}}\<%
-\\
-\>[4][@{}l@{\AgdaIndent{0}}]%
-\>[6]\AgdaBound{q}\AgdaSpace{}%
+\AgdaBound{q'}\AgdaSymbol{))}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{⟩}}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaBound{q'}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
-\AgdaBound{p}\AgdaSpace{}%
+\AgdaFunction{refl}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∎}}\<%
 \end{code}
 

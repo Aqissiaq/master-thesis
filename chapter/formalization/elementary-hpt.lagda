@@ -52,8 +52,7 @@ open import Cubical.HITs.S1.Base public
   ; base to num
   ; loop to add1
   ; ΩS¹ to Patch
-  ; helix to I
-  )
+  ; helix to I)
 \end{code}
 
 With this machinery we can easily define an interpretation of patches as bijections on \texttt{ℤ}

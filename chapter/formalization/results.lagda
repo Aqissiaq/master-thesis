@@ -1,21 +1,15 @@
 \section{Computational Results}\label{sec:results}
 
-Having implemented several patch theories we can have a look at what they actually do.
+Having implemented several patch theories in a cubical setting, we may inspect
+their computational properties to see what application of patches does.
 In this section we do exactly that, considering some concrete examples of repositories,
 patches and merges for the three theories.
 
-[NOTES]
-\begin{itemize}
-\item rewrite?
-\item trans/hcomp problems
-\item mention Brunerie number (and the smaller Brunerie nr.)
-\end{itemize}
-
-\subsection{Elementary Patch Computations}
+\subsection{Elementary Patch Computations}\label{subsec:elementary-results}
 
 First, consider the elementary patch theory implemented in \autoref{sec/elementary-hpt}.
-Recall that this theory has one type of repositories -- the integers -- and one patch
--- \texttt{add1}.
+Recall that this theory has one type of repositories -- the integers -- and one patch:
+\texttt{add1}.
 
 \begin{code}[hide]
 {-# OPTIONS --cubical --allow-unsolved-metas --rewriting #-}
@@ -57,14 +51,15 @@ All of these suggestively named patches behave as one might expect:
 
 We can generalize further and create patches to add or subtract any integer,
 and these also compute as expected.
-\begin{code}
+\begin{code}[hide]
   -- maybe hide this definition
   addN : ℤ → Patch
   addN (pos zero) = noop
   addN (pos (suc n)) = add1 ∙ addN (pos n)
   addN (negsuc zero) = sub1
   addN (negsuc (suc n)) = sub1 ∙ addN (negsuc n)
-
+\end{code}
+\begin{code}
   _ : apply (addN 22) 20 ≡ 42
   _ = refl
 
@@ -74,27 +69,30 @@ and these also compute as expected.
 
 Clearly, this patch theory is a fully functioning calculator (for integer addition and subtraction),
 but the detour through algebraic topology takes a computational toll.
-The following proof typechecks, but it takes about 2 minutes.
+The following proof typechecks, but takes on the order of minutes for a conventional laptop.
+%1m47s, actually
 \begin{code}
   _ : apply (addN 1000) 0 ≡ 1000
   _ = refl
 \end{code}
 
-\begin{figure}
-\begin{centering}
-\begin{tikzcd}
-  & n \arrow[ld, "p"'] \arrow[rd, "q"] &\\
-  x \arrow[rd, "p'"'] && y \arrow[ld, "q'"] \\
-  & z&
-\end{tikzcd}
-\caption{\texttt{merger}}
-\label{fig:elementary-merger}
-\end{centering}
-\end{figure}
+% why did I even do this?
+%\begin{figure}
+%\begin{centering}
+%\begin{tikzcd}
+  %& n \arrow[ld, "p"'] \arrow[rd, "q"] &\\
+  %x \arrow[rd, "p'"'] && y \arrow[ld, "q'"] \\
+  %& z&
+%\end{tikzcd}
+%\caption{\texttt{merger}}
+%\label{fig:elementary-merger}
+%\end{centering}
+%\end{figure}
 
-Finally, we look at \texttt{merge}. The function \texttt{merger} neatly computes the result of
-merging patches $p$ and $q$ from the original repository $n$ as shown in
-\autoref{fig:elementary-merger}.
+Finally, we look at \texttt{merge}. The function \texttt{merger} neatly computes the two patches
+$p'$ and $q'$ resulting from merging patches $p$ and $q$ from the original repository $n$
+and returns a pair of integers obtained by applying them.
+
 \begin{code}
   merger : ℤ → Patch → Patch → ℤ × ℤ
   merger n p q = let x = apply p n
@@ -106,7 +104,8 @@ merging patches $p$ and $q$ from the original repository $n$ as shown in
 Applying \texttt{merger} to a few test cases, it too behaves as expected.
 The resulting two integers are always equal, which is exactly what we want merge to do.
 Of course this is a consequence of the general case proven by \texttt{reconcile} in
-\autoref{sec/elementary-hpt}, but it is good to see it in practice.
+\autoref{sec/elementary-hpt}.
+% , but it is good to see it in practice.
 \begin{code}
   _ : merger 0 noop sub1 ≡ (-1 , -1)
   _ = refl
@@ -151,9 +150,9 @@ For concrete examples, consider the starting repository and patches:
 \end{code}
 
 When applying these patches, we encounter the current limits of Cubical Agda.
-In particular, \texttt{Vec String size} is a dependent family so \texttt{transp} and
+In particular, \texttt{Vec String size} is an inductive family so \texttt{transp} and
 \texttt{hcomp} do not compute on it. In the simple case of applying just one patch the issue
-is resolved by \texttt{transportRefl : (x : A) → transport refl x ≡ x}, giving the expected result.
+is resolved by \texttt{transportRefl~:~(x~:~A)~→~transport~refl~x~≡~x}, giving the expected result.
 \begin{code}
   _ : apply nop repo ≡ repo
   _ = transportRefl repo
@@ -182,7 +181,6 @@ about the patches being composed, and are able to eliminate the composition befo
 \end{code}
 
 Applying the patches in order also produces the expected result.
-[THIS SHOULD BE EQUIVALENT TO COMPOSITION, BUT IT'S REALLY HAIRY]
 \begin{code}
   _ : apply swap (apply swap' repo) ≡ "greetings" ∷ "earthlings" ∷ []
   _ = cong (apply swap) (transportRefl ("hello" ∷ "earthlings" ∷ [])) ∙ transportRefl _
@@ -223,7 +221,7 @@ module richer where
 \end{code}
 Finally, we consider the patch theory with richer contexts from \autoref{sec:richer}.
 For this theory we have implemented two interpretations, we will look at them in turn
-followed by merging. For the purpose of testing, define a few simple patches:
+before considering merging. For the purpose of testing, define a few simple patches:
 \begin{code}
   addPatch : doc [] ≡ doc (ADD "hello" AT zero :: [])
   addPatch = addP "hello" zero []
@@ -236,7 +234,7 @@ followed by merging. For the purpose of testing, define a few simple patches:
 
 The first interpretation sends each \texttt{doc h} to a singleton type of the vector determined
 by replay. For the simplest patches this works as expected with \texttt{transportRefl}.
-(Here \texttt{S} denotes the inclusion into the singleton type.)
+(Here \texttt{S} is the inclusion into the singleton type.)
 
 \begin{code}
   _ : apply addPatch (S []) ≡ S ("hello" ∷ [])
@@ -254,10 +252,10 @@ Again, direct composition of patches runs in to the current limits of Cubical Ag
 Because \texttt{hcomp} does not reduce in singletons (which is a $\Sigma$-type),
 we get stuck trying to compute the (enormous) composition term.
 \begin{code}
-  -- _ : apply (addPatch ∙ rmPatch) (S []) ≡ S []
-  -- _ = apply (addPatch ∙ rmPatch) (S (replay []))
-  --   ≡⟨ transportRefl _ ⟩ _
-  --   ≡⟨ {!!} ⟩ S (replay (RM zero :: (ADD "hello" AT zero :: []))) ∎
+  _ : apply (addPatch ∙ rmPatch) (S []) ≡ S []
+  _ = apply (addPatch ∙ rmPatch) (S (replay []))
+    ≡⟨ transportRefl _ ⟩ _
+    ≡⟨ {!!} ⟩ S (replay (RM zero :: (ADD "hello" AT zero :: []))) ∎
 \end{code}
 
 \subsubsection{History Interpretation}
@@ -340,9 +338,11 @@ extracts the history and does not need to compute the actual composition of patc
   _ = fst (undo-merge (fst (applyH (p1 ∙ p2) ([] , refl))) ((fst (applyH refl ([] , refl)))))
     ≡⟨ cong {y = []} (λ x → fst (undo-merge (fst (applyH (p1 ∙ p2) ([] , refl))) x)) (transportRefl _) ⟩
       fst (undo-merge (fst (applyH (p1 ∙ p2) ([] , refl))) [])
-    ≡⟨ cong {y = ADD "world" AT (suc zero) :: transport refl (ADD "hello" AT zero :: transport refl [])}
+    ≡⟨ cong {y = ADD "world" AT (suc zero)
+                     :: transport refl (ADD "hello" AT zero :: transport refl [])}
             (λ x → fst (undo-merge x [])) (transportRefl _) ⟩
-      fst (undo-merge (ADD "world" AT (suc zero) :: transport refl (ADD "hello" AT zero :: transport refl [])) [])
+      fst (undo-merge (ADD "world" AT (suc zero)
+                           :: transport refl (ADD "hello" AT zero :: transport refl [])) [])
     ≡⟨ cong {y = ADD "hello" AT zero :: []}
             (λ x → fst (undo-merge (ADD "world" AT suc zero :: x) [])) (transportRefl _) ⟩
       fst (undo-merge (ADD "world" AT (suc zero) :: (ADD "hello" AT zero :: [])) []) ∎

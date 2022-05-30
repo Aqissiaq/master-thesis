@@ -13,14 +13,20 @@ characterization of its patch space given by Kraus and von Raumer~\cite{kraus201
 
 The goal of this approach is to define patch theories that are -- in some sense
 -- \emph{semantic}. Operations and laws on patches should be definable in terms
-of both their endpoints and the \emph{kind} of patch. [HOW DOES THIS CONNECT TO
-COEQUALIZERS?]
+of both their endpoints and the \emph{kind} of patch. Constructing such theories in
+terms of higher inductive types leads to coequalizers.
 
 We present an unsuccessful attempt at implementing this approach in Cubical Agda
 along the results of Kraus and von Raumer, followed by a discussion of the
 problems encountered.
 
 \subsection{Repository HIT}
+
+Aiming to construct a HIT in which point constructors are repository contexts and
+path constructor represent patches, we arrive at an inclusion of some base type
+into the HIT and one or more named paths with endpoints specified in the base type.
+
+The result is much like the coequalizers discussed by Kraus and von Raumer.
 
 The data of a coequalizer is a type $A$ and a doubly indexed family of types $\sim : A
 \rightarrow A \rightarrow Type$ called a ``proof relevant relation'' on $A$. We
@@ -653,17 +659,20 @@ maps every span to the cospan reversing both patches.
 \AgdaBound{q}\<%
 \end{code}
 
-[NOT SURE WHAT/WHERE/HOW TO WRITE ABOUT THIS. I did a lot of work here with little to
-show for it]
-
+\subsection{Result/Discussion}
 Attempting to write more useful merges proved both laborious and difficult. In
 particular, the final term of \texttt{bin-path-ind} is an equivalence of
 (dependent) function types that is difficult to reason about and construct.
 
-\subsection{Result/Discussion}
+One possible intuition, in the case of merge, is that it represents an equivalence between
+"ways to merge an arbitrary $q$ with $p$" and "ways to merge an arbitrary $q$ with $p \cdot sett x$".
+However, this has not proven fruitful and despite efforts to construct more fitting equivalences
+the result has been the same "reverse everything"-merge.
 
 As presented, this approach leaves a lot to be desired. Apart from the trivial
 merge, it does not provide an intuitive or useful way to define merges even for
-very simple examples, and it is not clear [READ: I HAVE NOT PROVEN] that it
+very simple examples, and it is not immediately clear that it
 extends to more complicated theories with multiple kinds of patches and patch
 laws.
+
+[ANOTHER CONCLUSION? WEIRD NOTE TO END ON]

@@ -1,21 +1,15 @@
 \section{Computational Results}\label{sec:results}
 
-Having implemented several patch theories we can have a look at what they actually do.
+Having implemented several patch theories in a cubical setting, we may inspect
+their computational properties to see what application of patches does.
 In this section we do exactly that, considering some concrete examples of repositories,
 patches and merges for the three theories.
 
-[NOTES]
-\begin{itemize}
-\item rewrite?
-\item trans/hcomp problems
-\item mention Brunerie number (and the smaller Brunerie nr.)
-\end{itemize}
-
-\subsection{Elementary Patch Computations}
+\subsection{Elementary Patch Computations}\label{subsec:elementary-results}
 
 First, consider the elementary patch theory implemented in \autoref{sec/elementary-hpt}.
-Recall that this theory has one type of repositories -- the integers -- and one patch
--- \texttt{add1}.
+Recall that this theory has one type of repositories -- the integers -- and one patch:
+\texttt{add1}.
 
 \begin{code}[hide]%
 \>[0]\AgdaSymbol{\{-\#}\AgdaSpace{}%
@@ -169,7 +163,7 @@ All of these suggestively named patches behave as one might expect:
 
 We can generalize further and create patches to add or subtract any integer,
 and these also compute as expected.
-\begin{code}%
+\begin{code}[hide]%
 %
 \>[2]\AgdaComment{--\ maybe\ hide\ this\ definition}\<%
 \\
@@ -217,9 +211,8 @@ and these also compute as expected.
 \AgdaFunction{addN}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaInductiveConstructor{negsuc}\AgdaSpace{}%
 \AgdaBound{n}\AgdaSymbol{)}\<%
-\\
-%
-\\[\AgdaEmptyExtraSkip]%
+\end{code}
+\begin{code}%
 %
 \>[2]\AgdaFunction{\AgdaUnderscore{}}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -256,7 +249,8 @@ and these also compute as expected.
 
 Clearly, this patch theory is a fully functioning calculator (for integer addition and subtraction),
 but the detour through algebraic topology takes a computational toll.
-The following proof typechecks, but it takes about 2 minutes.
+The following proof typechecks, but takes on the order of minutes for a conventional laptop.
+%1m47s, actually
 \begin{code}%
 %
 \>[2]\AgdaFunction{\AgdaUnderscore{}}\AgdaSpace{}%
@@ -274,21 +268,23 @@ The following proof typechecks, but it takes about 2 minutes.
 \AgdaFunction{refl}\<%
 \end{code}
 
-\begin{figure}
-\begin{centering}
-\begin{tikzcd}
-  & n \arrow[ld, "p"'] \arrow[rd, "q"] &\\
-  x \arrow[rd, "p'"'] && y \arrow[ld, "q'"] \\
-  & z&
-\end{tikzcd}
-\caption{\texttt{merger}}
-\label{fig:elementary-merger}
-\end{centering}
-\end{figure}
+% why did I even do this?
+%\begin{figure}
+%\begin{centering}
+%\begin{tikzcd}
+  %& n \arrow[ld, "p"'] \arrow[rd, "q"] &\\
+  %x \arrow[rd, "p'"'] && y \arrow[ld, "q'"] \\
+  %& z&
+%\end{tikzcd}
+%\caption{\texttt{merger}}
+%\label{fig:elementary-merger}
+%\end{centering}
+%\end{figure}
 
-Finally, we look at \texttt{merge}. The function \texttt{merger} neatly computes the result of
-merging patches $p$ and $q$ from the original repository $n$ as shown in
-\autoref{fig:elementary-merger}.
+Finally, we look at \texttt{merge}. The function \texttt{merger} neatly computes the two patches
+$p'$ and $q'$ resulting from merging patches $p$ and $q$ from the original repository $n$
+and returns a pair of integers obtained by applying them.
+
 \begin{code}%
 %
 \>[2]\AgdaFunction{merger}\AgdaSpace{}%
@@ -347,7 +343,8 @@ merging patches $p$ and $q$ from the original repository $n$ as shown in
 Applying \texttt{merger} to a few test cases, it too behaves as expected.
 The resulting two integers are always equal, which is exactly what we want merge to do.
 Of course this is a consequence of the general case proven by \texttt{reconcile} in
-\autoref{sec/elementary-hpt}, but it is good to see it in practice.
+\autoref{sec/elementary-hpt}.
+% , but it is good to see it in practice.
 \begin{code}%
 %
 \>[2]\AgdaFunction{\AgdaUnderscore{}}\AgdaSpace{}%
@@ -535,9 +532,9 @@ For concrete examples, consider the starting repository and patches:
 \end{code}
 
 When applying these patches, we encounter the current limits of Cubical Agda.
-In particular, \texttt{Vec String size} is a dependent family so \texttt{transp} and
+In particular, \texttt{Vec String size} is an inductive family so \texttt{transp} and
 \texttt{hcomp} do not compute on it. In the simple case of applying just one patch the issue
-is resolved by \texttt{transportRefl : (x : A) → transport refl x ≡ x}, giving the expected result.
+is resolved by \texttt{transportRefl~:~(x~:~A)~→~transport~refl~x~≡~x}, giving the expected result.
 \begin{code}%
 %
 \>[2]\AgdaFunction{\AgdaUnderscore{}}\AgdaSpace{}%
@@ -682,7 +679,6 @@ about the patches being composed, and are able to eliminate the composition befo
 \end{code}
 
 Applying the patches in order also produces the expected result.
-[THIS SHOULD BE EQUIVALENT TO COMPOSITION, BUT IT'S REALLY HAIRY]
 \begin{code}%
 %
 \>[2]\AgdaFunction{\AgdaUnderscore{}}\AgdaSpace{}%
@@ -817,7 +813,7 @@ The strings in \texttt{swap} are not equal, and so the patch should be kept as i
 \end{code}
 Finally, we consider the patch theory with richer contexts from \autoref{sec:richer}.
 For this theory we have implemented two interpretations, we will look at them in turn
-followed by merging. For the purpose of testing, define a few simple patches:
+before considering merging. For the purpose of testing, define a few simple patches:
 \begin{code}%
 %
 \>[2]\AgdaFunction{addPatch}\AgdaSpace{}%
@@ -882,7 +878,7 @@ followed by merging. For the purpose of testing, define a few simple patches:
 
 The first interpretation sends each \texttt{doc h} to a singleton type of the vector determined
 by replay. For the simplest patches this works as expected with \texttt{transportRefl}.
-(Here \texttt{S} denotes the inclusion into the singleton type.)
+(Here \texttt{S} is the inclusion into the singleton type.)
 
 \begin{code}%
 %
@@ -966,16 +962,52 @@ Because \texttt{hcomp} does not reduce in singletons (which is a $\Sigma$-type),
 we get stuck trying to compute the (enormous) composition term.
 \begin{code}%
 %
-\>[2]\AgdaComment{--\ \AgdaUnderscore{}\ :\ apply\ (addPatch\ ∙\ rmPatch)\ (S\ [])\ ≡\ S\ []}\<%
+\>[2]\AgdaFunction{\AgdaUnderscore{}}\AgdaSpace{}%
+\AgdaSymbol{:}\AgdaSpace{}%
+\AgdaFunction{apply}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{addPatch}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
+\AgdaFunction{rmPatch}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{S}\AgdaSpace{}%
+\AgdaInductiveConstructor{[]}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
+\AgdaFunction{S}\AgdaSpace{}%
+\AgdaInductiveConstructor{[]}\<%
 \\
 %
-\>[2]\AgdaComment{--\ \AgdaUnderscore{}\ =\ apply\ (addPatch\ ∙\ rmPatch)\ (S\ (replay\ []))}\<%
+\>[2]\AgdaSymbol{\AgdaUnderscore{}}%
+\>[530I]\AgdaSymbol{=}\AgdaSpace{}%
+\AgdaFunction{apply}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{addPatch}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
+\AgdaFunction{rmPatch}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{S}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{replay}\AgdaSpace{}%
+\AgdaInductiveConstructor{[]}\AgdaSymbol{))}\<%
+\\
+\>[.][@{}l@{}]\<[530I]%
+\>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
+\AgdaFunction{transportRefl}\AgdaSpace{}%
+\AgdaSymbol{\AgdaUnderscore{}}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{⟩}}\AgdaSpace{}%
+\AgdaSymbol{\AgdaUnderscore{}}\<%
 \\
 %
-\>[2]\AgdaComment{--\ \ \ ≡⟨\ transportRefl\ \AgdaUnderscore{}\ ⟩\ \AgdaUnderscore{}}\<%
-\\
-%
-\>[2]\AgdaComment{--\ \ \ ≡⟨\ \{!!\}\ ⟩\ S\ (replay\ (RM\ zero\ ::\ (ADD\ "hello"\ AT\ zero\ ::\ [])))\ ∎}\<%
+\>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
+\AgdaHole{\{!!\}}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{⟩}}\AgdaSpace{}%
+\AgdaFunction{S}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaFunction{replay}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaOperator{\AgdaInductiveConstructor{RM}}\AgdaSpace{}%
+\AgdaInductiveConstructor{zero}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaOperator{\AgdaInductiveConstructor{ADD}}\AgdaSpace{}%
+\AgdaString{"hello"}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{AT}}\AgdaSpace{}%
+\AgdaInductiveConstructor{zero}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
+\AgdaInductiveConstructor{[]}\AgdaSymbol{)))}\AgdaSpace{}%
+\AgdaOperator{\AgdaFunction{∎}}\<%
 \end{code}
 
 \subsubsection{History Interpretation}
@@ -1012,7 +1044,7 @@ is the empty \emph{history} rather than the empty vector.)
 \\[\AgdaEmptyExtraSkip]%
 %
 \>[2]\AgdaFunction{\AgdaUnderscore{}}%
-\>[536I]\AgdaSymbol{:}\AgdaSpace{}%
+\>[572I]\AgdaSymbol{:}\AgdaSpace{}%
 \AgdaFunction{applyH}\AgdaSpace{}%
 \AgdaFunction{rmPatch}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{S}\AgdaSpace{}%
@@ -1023,7 +1055,7 @@ is the empty \emph{history} rather than the empty vector.)
 \AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
 \AgdaInductiveConstructor{[]}\AgdaSymbol{))}\<%
 \\
-\>[.][@{}l@{}]\<[536I]%
+\>[.][@{}l@{}]\<[572I]%
 \>[4]\AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
 \AgdaFunction{S}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaOperator{\AgdaInductiveConstructor{RM}}\AgdaSpace{}%
@@ -1108,7 +1140,7 @@ is the empty \emph{history} rather than the empty vector.)
 \>[2][@{}l@{\AgdaIndent{0}}]%
 \>[4]\AgdaPostulate{undo-inverse}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[603I]\AgdaSymbol{∀}\AgdaSpace{}%
+\>[639I]\AgdaSymbol{∀}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaBound{n}\AgdaSpace{}%
 \AgdaBound{m}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
@@ -1118,7 +1150,7 @@ is the empty \emph{history} rather than the empty vector.)
 \AgdaBound{n}\AgdaSpace{}%
 \AgdaBound{m}\AgdaSymbol{)}\<%
 \\
-\>[.][@{}l@{}]\<[603I]%
+\>[.][@{}l@{}]\<[639I]%
 \>[19]\AgdaSymbol{→}\AgdaSpace{}%
 \AgdaBound{h}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{+++}}\AgdaSpace{}%
@@ -1135,13 +1167,13 @@ but simply undos the changes in both branches if there is a possibility of confl
 %
 \>[2]\AgdaFunction{undo-merge}\AgdaSpace{}%
 \AgdaSymbol{:}%
-\>[619I]\AgdaSymbol{\{}\AgdaBound{n}\AgdaSpace{}%
+\>[655I]\AgdaSymbol{\{}\AgdaBound{n}\AgdaSpace{}%
 \AgdaBound{m}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaDatatype{ℕ}\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaSymbol{→}\<%
 \\
-\>[.][@{}l@{}]\<[619I]%
+\>[.][@{}l@{}]\<[655I]%
 \>[15]\AgdaSymbol{(}\AgdaBound{h1}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
 \AgdaDatatype{History}\AgdaSpace{}%
@@ -1325,7 +1357,7 @@ results by \texttt{transportRefl}. Merging \texttt{p1} with \texttt{refl} keeps 
 \\
 %
 \>[2]\AgdaSymbol{\AgdaUnderscore{}}%
-\>[764I]\AgdaSymbol{=}\AgdaSpace{}%
+\>[800I]\AgdaSymbol{=}\AgdaSpace{}%
 \AgdaField{fst}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{undo-merge}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaField{fst}\AgdaSpace{}%
@@ -1341,7 +1373,7 @@ results by \texttt{transportRefl}. Merging \texttt{p1} with \texttt{refl} keeps 
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaFunction{refl}\AgdaSymbol{)))))}\<%
 \\
-\>[.][@{}l@{}]\<[764I]%
+\>[.][@{}l@{}]\<[800I]%
 \>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{cong}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaArgument{y}\AgdaSpace{}%
@@ -1423,7 +1455,7 @@ Merging two non-empty patches results int he empty patch:
 \\
 %
 \>[2]\AgdaSymbol{\AgdaUnderscore{}}%
-\>[841I]\AgdaSymbol{=}\AgdaSpace{}%
+\>[877I]\AgdaSymbol{=}\AgdaSpace{}%
 \AgdaField{fst}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{undo-merge}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaField{fst}\AgdaSpace{}%
@@ -1439,10 +1471,10 @@ Merging two non-empty patches results int he empty patch:
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaFunction{refl}\AgdaSymbol{)))))}\<%
 \\
-\>[.][@{}l@{}]\<[841I]%
+\>[.][@{}l@{}]\<[877I]%
 \>[4]\AgdaOperator{\AgdaFunction{≡⟨}}%
-\>[856I]\AgdaFunction{cong}%
-\>[857I]\AgdaSymbol{\{}\AgdaArgument{y}\AgdaSpace{}%
+\>[892I]\AgdaFunction{cong}%
+\>[893I]\AgdaSymbol{\{}\AgdaArgument{y}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaOperator{\AgdaInductiveConstructor{ADD}}\AgdaSpace{}%
 \AgdaString{"hello"}\AgdaSpace{}%
@@ -1451,7 +1483,7 @@ Merging two non-empty patches results int he empty patch:
 \AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
 \AgdaInductiveConstructor{[]}\AgdaSymbol{)\}}\<%
 \\
-\>[.][@{}l@{}]\<[857I]%
+\>[.][@{}l@{}]\<[893I]%
 \>[12]\AgdaSymbol{(λ}\AgdaSpace{}%
 \AgdaBound{x}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
@@ -1468,7 +1500,7 @@ Merging two non-empty patches results int he empty patch:
 \AgdaSymbol{\AgdaUnderscore{})}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{⟩}}\<%
 \\
-\>[.][@{}l@{}]\<[856I]%
+\>[.][@{}l@{}]\<[892I]%
 \>[7]\AgdaField{fst}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{undo-merge}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaOperator{\AgdaInductiveConstructor{ADD}}\AgdaSpace{}%
@@ -1486,8 +1518,8 @@ Merging two non-empty patches results int he empty patch:
 \\
 %
 \>[4]\AgdaOperator{\AgdaFunction{≡⟨}}%
-\>[892I]\AgdaFunction{cong}%
-\>[893I]\AgdaSymbol{\{}\AgdaArgument{y}\AgdaSpace{}%
+\>[928I]\AgdaFunction{cong}%
+\>[929I]\AgdaSymbol{\{}\AgdaArgument{y}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaOperator{\AgdaInductiveConstructor{ADD}}\AgdaSpace{}%
 \AgdaString{"hello"}\AgdaSpace{}%
@@ -1496,7 +1528,7 @@ Merging two non-empty patches results int he empty patch:
 \AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
 \AgdaInductiveConstructor{[]}\AgdaSymbol{)\}}\<%
 \\
-\>[.][@{}l@{}]\<[893I]%
+\>[.][@{}l@{}]\<[929I]%
 \>[12]\AgdaSymbol{(λ}\AgdaSpace{}%
 \AgdaBound{x}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
@@ -1513,7 +1545,7 @@ Merging two non-empty patches results int he empty patch:
 \AgdaSymbol{\AgdaUnderscore{})}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{⟩}}\<%
 \\
-\>[.][@{}l@{}]\<[892I]%
+\>[.][@{}l@{}]\<[928I]%
 \>[7]\AgdaField{fst}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{undo-merge}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaOperator{\AgdaInductiveConstructor{ADD}}\AgdaSpace{}%
@@ -1548,7 +1580,7 @@ extracts the history and does not need to compute the actual composition of patc
 \\
 %
 \>[2]\AgdaSymbol{\AgdaUnderscore{}}%
-\>[937I]\AgdaSymbol{=}\AgdaSpace{}%
+\>[973I]\AgdaSymbol{=}\AgdaSpace{}%
 \AgdaField{fst}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{undo-merge}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaField{fst}\AgdaSpace{}%
@@ -1566,7 +1598,7 @@ extracts the history and does not need to compute the actual composition of patc
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaFunction{refl}\AgdaSymbol{)))))}\<%
 \\
-\>[.][@{}l@{}]\<[937I]%
+\>[.][@{}l@{}]\<[973I]%
 \>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{cong}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaArgument{y}\AgdaSpace{}%
@@ -1606,14 +1638,16 @@ extracts the history and does not need to compute the actual composition of patc
 %
 \>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{cong}%
-\>[986I]\AgdaSymbol{\{}\AgdaArgument{y}\AgdaSpace{}%
+\>[1022I]\AgdaSymbol{\{}\AgdaArgument{y}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
-\AgdaOperator{\AgdaInductiveConstructor{ADD}}\AgdaSpace{}%
-\AgdaString{"world"}\AgdaSpace{}%
+\AgdaOperator{\AgdaInductiveConstructor{ADD}}%
+\>[1025I]\AgdaString{"world"}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{AT}}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaInductiveConstructor{suc}\AgdaSpace{}%
-\AgdaInductiveConstructor{zero}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
+\AgdaInductiveConstructor{zero}\AgdaSymbol{)}\<%
+\\
+\>[.][@{}l@{}]\<[1025I]%
+\>[21]\AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
 \AgdaFunction{transport}\AgdaSpace{}%
 \AgdaFunction{refl}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaOperator{\AgdaInductiveConstructor{ADD}}\AgdaSpace{}%
@@ -1625,7 +1659,7 @@ extracts the history and does not need to compute the actual composition of patc
 \AgdaFunction{refl}\AgdaSpace{}%
 \AgdaInductiveConstructor{[]}\AgdaSymbol{)\}}\<%
 \\
-\>[.][@{}l@{}]\<[986I]%
+\>[.][@{}l@{}]\<[1022I]%
 \>[12]\AgdaSymbol{(λ}\AgdaSpace{}%
 \AgdaBound{x}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
@@ -1640,12 +1674,14 @@ extracts the history and does not need to compute the actual composition of patc
 \>[4][@{}l@{\AgdaIndent{0}}]%
 \>[6]\AgdaField{fst}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaFunction{undo-merge}\AgdaSpace{}%
-\AgdaSymbol{(}\AgdaOperator{\AgdaInductiveConstructor{ADD}}\AgdaSpace{}%
-\AgdaString{"world"}\AgdaSpace{}%
+\AgdaSymbol{(}\AgdaOperator{\AgdaInductiveConstructor{ADD}}%
+\>[1050I]\AgdaString{"world"}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{AT}}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaInductiveConstructor{suc}\AgdaSpace{}%
-\AgdaInductiveConstructor{zero}\AgdaSymbol{)}\AgdaSpace{}%
-\AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
+\AgdaInductiveConstructor{zero}\AgdaSymbol{)}\<%
+\\
+\>[.][@{}l@{}]\<[1050I]%
+\>[27]\AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
 \AgdaFunction{transport}\AgdaSpace{}%
 \AgdaFunction{refl}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaOperator{\AgdaInductiveConstructor{ADD}}\AgdaSpace{}%
@@ -1661,7 +1697,7 @@ extracts the history and does not need to compute the actual composition of patc
 %
 \>[4]\AgdaOperator{\AgdaFunction{≡⟨}}\AgdaSpace{}%
 \AgdaFunction{cong}%
-\>[1032I]\AgdaSymbol{\{}\AgdaArgument{y}\AgdaSpace{}%
+\>[1066I]\AgdaSymbol{\{}\AgdaArgument{y}\AgdaSpace{}%
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{ADD}}\AgdaSpace{}%
 \AgdaString{"hello"}\AgdaSpace{}%
@@ -1670,7 +1706,7 @@ extracts the history and does not need to compute the actual composition of patc
 \AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
 \AgdaInductiveConstructor{[]}\AgdaSymbol{\}}\<%
 \\
-\>[.][@{}l@{}]\<[1032I]%
+\>[.][@{}l@{}]\<[1066I]%
 \>[12]\AgdaSymbol{(λ}\AgdaSpace{}%
 \AgdaBound{x}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
