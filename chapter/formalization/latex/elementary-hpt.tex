@@ -1,7 +1,7 @@
 \section{An Elementary Patch Theory}\label{sec/elementary-hpt}
 
-This section discusses the implementation of a very simple language of patches,
-described in~\cite{Angiuli2016, section 4}.
+This section discusses the implementation of \emph{an elementary patch theory}
+as described by section 4 of hpt~\cite{Angiuli2016}.
 \begin{code}[hide]%
 \>[0]\AgdaSymbol{\{-\#}\AgdaSpace{}%
 \AgdaKeyword{OPTIONS}\AgdaSpace{}%
@@ -94,8 +94,9 @@ described in~\cite{Angiuli2016, section 4}.
 
 \subsection{The Circle as a Repository}
 
-In the elementary patch theory the repository is a single integer and there is exactly one kind of patch:
-adding one to the integer. This means the underlying type has one point constructor \texttt{num} and
+In the elementary patch theory the repository is a single integer and there is exactly
+one kind of patch: adding one to the integer.
+This means the underlying type has one point constructor \texttt{num} and
 one path \texttt{add1 : num ≡ num}.
 
 The structure of this type may seem familiar - it is just the circle with its constructors renamed!
@@ -144,10 +145,7 @@ to \texttt{ua} of the equivalence \texttt{ℤ ≃ ℤ} induced by the successor 
 \>[2]\AgdaSymbol{;}\AgdaSpace{}%
 \AgdaFunction{helix}\AgdaSpace{}%
 \AgdaSymbol{to}\AgdaSpace{}%
-\AgdaFunction{I}\<%
-\\
-%
-\>[2]\AgdaSymbol{)}\<%
+\AgdaFunction{I}\AgdaSymbol{)}\<%
 \end{code}
 
 With this machinery we can easily define an interpretation of patches as bijections on \texttt{ℤ}

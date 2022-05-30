@@ -26,8 +26,10 @@ lists of characters. Again \texttt{Vec} is actually a whole collection of types
 We can think of \texttt{Vec} as a function that assigns a type to each pair of a
 type and an integer, and may refer to \texttt{Vec char} as ``a (type) family over \texttt{int}''.
 
-We now leave the familiar world of programming behind and venture in to the spooky
-(but exciting) world of foundational mathematics.
+We now leave the familiar world of programming behind and venture in to the
+exciting world of foundational mathematics.
+In this new and wondrous world, a type theory is a system of \emph{inference
+  rules} like \ref{rule:example} that can be used to make \emph{derivations}.
 \begin{equation}
   \begin{array}{c}
     \Gamma \vdash a : A \qquad \Gamma \vdash f : A \rightarrow B\\
@@ -36,9 +38,6 @@ We now leave the familiar world of programming behind and venture in to the spoo
   \end{array}
   \label{rule:example}
 \end{equation}
-
-In this new and wondrous world, a type theory is a system of \emph{inference
-  rules} like \ref{rule:example} that can be used to make \emph{derivations}.
 
 % anatomy of an inference rule
 This particular inference rule is the elimination rule for function types. It
@@ -171,7 +170,8 @@ functions''). Intuitively, $\Sigma$-types consist of pairs $(x,y)$ where the
 type of $y$ is allowed to depend on $x$, and terms of $\Pi$-types are functions
 $\lambda x . y$ where the type of $y$ may depend on $x$. If the type of $y$
 happens to be constant, $\Sigma_A B$ is the product type $A \times B$ and
-$\Pi_A B$ is the type of non-dependent functions $A \rightarrow B$.
+$\Pi_A B$ is the type of non-dependent functions $A \rightarrow B$. First we
+look at the type of dependent pairs.
 
 \begin{equation*}
   \begin{array}[t]{c}
@@ -187,7 +187,7 @@ $\Pi_A B$ is the type of non-dependent functions $A \rightarrow B$.
   \end{array}
 \end{equation*}
 
-The introduction and formation rules tell use that: 
+The introduction and formation rules tell us that: 
 \begin{enumerate}
 \item if $A$ is a type, and $B$ is a type family over $A$,
   then we can make the type $\Sigma_A B$ of dependent pairs
@@ -196,7 +196,7 @@ The introduction and formation rules tell use that:
 \end{enumerate}
 
 In a dependent setting we call the most general elimination rule an ``induction
-principle''. Such a principle describes how to construct a terms in a family
+principle''. Such a principle describes how to construct a term in a family
 over the type we are interested in. For dependent pairs, it looks like this:
 
 \begin{equation*}
@@ -204,14 +204,14 @@ over the type we are interested in. For dependent pairs, it looks like this:
     \Gamma, x : \Sigma_A B \vdash P \; \Type\\
     \Gamma, a : A, b : B~a \vdash p_{a,b} : P (a,b)\\
     \hline
-    \Gamma, x : \Sigma_A B \vdash \operatorname{ind}~p~x : P~x
+    \Gamma, x : \Sigma_A B \vdash \operatorname{ind}~p_{a,b}~x : P~x
   \end{array}
 \end{equation*}
 
 In words: if, given an $a : A$ and $b : B (a)$ we have a term of type $P~(a,b)$,
 then given an $x$ in $\Sigma_A B$ we can construct a term of type $P~x$. Note
-that the term $p_{a,b}$ depends on the given $a$ and $b$, and $\operatorname{ind}~p~x$
-depends on both $p$ and $x$.
+that the term $p_{a,b}$ depends on the given $a$ and $b$, and $\operatorname{ind}~p_{a,b}~x$
+depends on both $p_{a,b}$ and $x$.
 
 The computational rule associated with the above induction principle postulate
 that the result applying the induction rule to a pair $(a,b)$ is the dependent
@@ -220,35 +220,47 @@ term $p_{a,b}$.
 \begin{equation*}
   \begin{array}[t]{l}
     \Gamma, x : \Sigma_A B \vdash P \; \Type\\
-    \Gamma, a : A, b : B~a \vdash p_{a,b} : P (a,b)\\
+    \Gamma, a : A, b : B~a \vdash p : P (a,b)\\
     \hline
-    \Gamma, a : A, b : B~a \vdash \operatorname{ind}~p~(a,b) \equiv p_{a,b}
+    \Gamma, a : A, b : B~a \vdash \operatorname{ind}~p~(a,b) \equiv p
   \end{array}
 \end{equation*}
 
-% The analogous rules for dependent functions are:
+The analogous rules for dependent functions are:
 
-% \begin{equation*}
-%   \begin{array}[t]{c}
-%     \Gamma \vdash A \; \Type \qquad \Gamma, x:A \vdash B(x) \; \Type\\
-%     \hline
-%     \Gamma \vdash \Pi_A B \; \Type\\
-%   \end{array}
-% \end{equation*}
-% \begin{equation*}
-%   \begin{array}[t]{c}
-%     \Gamma, a:A \vdash b(a) : B(a)\\
-%     \hline
-%     \Gamma \vdash \lambda x.b(x) : \Pi_A B
-%   \end{array}
-% \end{equation*}
-% \begin{equation*}
-%   \begin{array}[t]{c}
-%     \Gamma \vdash f : \Pi_A B \\
-%     \hline
-%     \Gamma, x:A \vdash f(x) : B(x)
-%   \end{array}
-% \end{equation*}
+\begin{equation*}
+  \begin{array}[t]{c}
+    \Gamma \vdash A \; \Type \qquad \Gamma, x:A \vdash B(x) \; \Type\\
+    \hline
+    \Gamma \vdash \Pi_A B \; \Type\\
+  \end{array}
+\qquad
+  \begin{array}[t]{c}
+    \Gamma, a:A \vdash b(a) : B(a)\\
+    \hline
+    \Gamma \vdash \lambda x.b(x) : \Pi_A B
+  \end{array}
+\end{equation*}
+\begin{equation*}
+  \begin{array}[t]{c}
+    \Gamma \vdash f : \Pi_A B \\
+    \hline
+    \Gamma, x:A \vdash f(x) : B(x)
+  \end{array}
+\end{equation*}
+\begin{equation*}
+  \begin{array}[t]{c}
+    \Gamma, a:A \vdash b(a) : B(a)\\
+    \hline
+    \Gamma, x:A \vdash (\lambda y.b(y)~x) \equiv b(x)
+  \end{array}
+  \qquad
+  \begin{array}[t]{c}
+    \Gamma \vdash f : \Pi_A B \\
+    \hline
+    \Gamma \vdash \lambda x.f(x) \equiv f
+  \end{array}
+\end{equation*}
 
 \subsubsection{Normalization}
 One important property of this kind of type theory is

@@ -2,7 +2,10 @@
 
 Now that we have several useful interpretations of types, we need some ways to
 construct more complex types to study. In this section we look at one such way:
-Higher Inductive Types (HITs).
+Higher Inductive Types (HITs). HITs are motivated by the interpretation of types
+as spaces. In this section we first introduce regular inductive types, then
+their ``higher'' counter-part and finally an application of HITs serving as a
+concrete example.
 
 \subsection{Inductive Types}
 One way to construct more elaborate types is by induction. An inductive type is
@@ -29,7 +32,7 @@ cons function we have a pair of introduction rules:
 From these we can construct arbitrarily long lists by starting with the empty
 list and affixing new terms of $A$ to obtain $[~]$, $(a::[~])$, $(a'::(a::[~]))$
 etc. For this reason we may refer to the introduction rules as ``constructors''
-of $[A]$.
+of $[A]$ and say that lists of $A$ are ``generated'' by its two constructors.
 
 In order to use this type, we also need an induction principle. The
 induction principle tells us how to use terms of the type by defining functions
@@ -38,7 +41,7 @@ non-dependent) we call such a rule a ``recursion principle''.
 
 \[
   \begin{array}{l}
-    \Gamma, as : [A] \vdash P~as \; \Type\\
+    \Gamma, l : [A] \vdash P~l \; \Type\\
     \Gamma \vdash p_{[~]} : P~[~]\\
     \Gamma \vdash p_{::}: \Pi_{a:A} \Pi_{as:[A]} P~(a :: as)\\
     \hline
@@ -52,18 +55,22 @@ it does on $(a :: as)$. It is not a coincidence that we require two terms --
 they correspond precisely to the two constructors.
 
 The resulting function maps the empty list to $p_{[~]}$ and any arbitrary list
-$(a::as)$ to $p_{cons}$ by the computation rules:
-\[
+$(a::as)$ to $p_{::}$ by the computation rules:
+\begin{equation*}
   \begin{array}{c}
+    \Gamma \vdash p_{[~]} : P~[~]\\
+    \Gamma \vdash p_{::}: \Pi_{a:A} \Pi_{as:[A]} P~(a :: as)\\
     \hline
     \Gamma \vdash ind_{[A]}~p_{[~]}~p_{::}~[~] \equiv p_{[~]}
   \end{array}
-  \\
+\qquad
   \begin{array}{c}
+    \Gamma \vdash p_{[~]} : P~[~]\\
+    \Gamma \vdash p_{::}: \Pi_{a:A} \Pi_{as:[A]} P~(a :: as)\\
     \hline
     \Gamma, a:A, as:[A] \vdash ind_{[A]}~p_{[~]}~p_{::}~(a::as) \equiv p_{::}~a~as
   \end{array}
-\]
+\end{equation*}
 
 \subsection{Higher Inductive Types}
 
@@ -79,13 +86,13 @@ and identity proofs in a HIT as ``points'' and ``paths'' respectively.
 
 There is no reason to stop there! We could apply the same idea to give
 generators for paths between paths, paths between paths between
-paths and so on. In \autoref{sec/laws-hpt-noTrunc-noIndep} we will make use of
+paths and so on. In \autoref{sec/laws-noTrunc-noIndep} we will make use of
 such ``higher paths'', but for now let us focus on a simple example.
 
 \subsubsection{The Circle}
 Utilizing the language of spaces we introduce a very simple HIT: the circle
-$S^1$. This is a HIT with one point constructor $\base$ and one path constructor
-$\sloop$. Its introduction and formation rules are:
+$S^1$. This is a HIT with one point constructor ($\base$) and one path constructor
+($\sloop$). Its introduction and formation rules are:
 \begin{equation*}
   \begin{array}[t]{c}
     \hline
@@ -143,22 +150,20 @@ We will look at one possible remedy in \autoref{sec:cubical}.
 
 \subsubsection{Synthetic Homotopy Theory}
 An important use of HITs is synthetic homotopy theory~\cite{mortberg2020cubical,
-  licata2015cubical}. By constructing spaces (or, more precisely cell
-complexes) as HITs it is possible to formalize results of homotopy theory very
-directly.
+  licata2015cubical}. By constructing representation of spaces as HITs it is
+possible to formalize results of homotopy theory very directly.
 
 Here we recount a proof that the fundamental group of the circle is $\mathbb{Z}$
-originally given by Licata and Shulman~\cite{licata2013circle} and by M\"ortberg
-and Pujet~\cite{mortberg2020cubical}.This showcases the use of circle
+originally given by Licata and Shulman~\cite{licata2013circle}. This showcases the use of circle
 recursion and also proves useful in \autoref{sec/elementary-hpt}.
 
-The fundamental group of a space $X$ (with base point $x_0$) $pi_1(X, x_0)$ is
+The fundamental group of a space $X$ (with base point $x_0$) $\pi_1(X, x_0)$ is
 the group whose elements are loops at $x_0$ and whose operation is path
 concatenation. In type theoretic terms we define the loop space (at $x_0$) $\Omega X$ as the
 identity type $x_0 =_X x_0$. Path concatenation is simply the transitive
 property of identity proofs.
 
-The proof that $\pi_1(S^1, \base)$ has four parts:
+The proof that $\pi_1(S^1, \base) \simeq \mathbb{Z}$ has four parts:
 \begin{enumerate}
   \item a function winding $: \Omega S^1 \ra \mathbb{Z}$
   \item a function intLoop $: \mathbb{Z} \ra \Omega S^1$
@@ -167,9 +172,10 @@ The proof that $\pi_1(S^1, \base)$ has four parts:
     suffices to show one direction)
 \end{enumerate}
 We limit ourselves to (1) to showcase circle recursion, but the full
-details are spelled out in section 8.1 of The Book~\cite{hottbook}.
+details are spelled out in section 8.1 of The Book~\cite{hottbook} an repeated
+by \textcite{mortberg2020cubical}.
 
-Since we cannot do recursion directly on $\Omega S^1$ we first construct the
+Since we do not have a recursion principle for $\Omega S^1$ we first construct the
 covering space of the circle called $\operatorname{helix}$. This is a family over $S^1$
 which can be viewed as a function from $S^1$ to the universe, so we use circle
 recursion to define:
@@ -193,6 +199,10 @@ Transporting along $\sloop$ in helix is equivalent to transporting along
 $\apcong \helix \sloop$ in the identity family, which by $\operatorname{loopComp}$
 is identified with $\transport^{id}~(\ua~\operatorname{succEquiv})$. Computation
 rules for $\ua$ give the final result: the successor function.
+
+The other direction could be defined by simple recursion on the integers, but
+this makes it difficult to prove (3). Instead, Licata and Shulman define a
+decode-function analogous to helix such that intLoop is decode of $\base$.
 
 This technique -- making use of the recursion principle to define a function on
 all of $S^1$ before specializing to $\base$ -- is known as an ``encode-decode''

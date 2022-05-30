@@ -1,11 +1,14 @@
 % run `agda --latex` on this file to generate the actual LaTeX in ./latex/
 \section{Agda}
-In this section we introduce Agda~\cite{Agda} -- a dependently typed programming language / proof assistant.
+In this section we introduce Agda~\cite{Agda} -- a dependently typed programming language
+and proof assistant.
 The goal is to introduce enough of its syntax and workings to follow the formalization in \autoref{ch/formalization}.
 
-The basic syntax of Agda is similar to that of Haskell~\cite{haskell2010},
+The basic syntax of Agda will be familiar to users of Haskell~\cite{haskell2010},
 but with \texttt{:} for typing and significant use of unicode (including $\rightarrow$
-for function types).
+for function types). In general, terms will appear as \texttt{term : Type} followed by
+\texttt{term = ...} where the first line provides the type and the second defines the
+specific term.
 
 As an example, we consider the type of vectors and operations on them.
 This is a dependent type that provides a good look at the syntax and features of
@@ -40,12 +43,12 @@ Note that the data declaration has \texttt{A} before the colon, but \texttt{ℕ}
 This is because \texttt{A} stays constant over the two constructors, while the natural number varies.
 
 The cons function (\texttt{\_::\_}) shows two important features of Agda's syntax: infix notation and currying.
-Infix functions can be used between its arguments, in this case \texttt{x :: xs} would be a vector,
-and are denoted by underscores. Each underscore in the name represents a position in which we may place
-the corresponding argument.
+Infix functions can be used between its arguments -- in this case \texttt{(x::xs)} is a vector --
+and are denoted by underscores.
+Each underscore in the name represents a position in which we may place the corresponding argument.
 
-Currying means that a function that takes two arguments of types \texttt{A} and
-\texttt{Vec A n} and produces a \texttt{Vec A (suc n)} can be written as
+Currying means that a function like \texttt{\_::\_} that takes two arguments of types
+\texttt{A} and \texttt{Vec A n} and produces a \texttt{Vec A (suc n)} can be written as
 \texttt{\_::\_ : A → Vec A n → Vec A (suc n)} (with → associating to the right).
 ~\footnote{This is possible because of the product~$\dashv$~exponentiation
 adjunction in cartesian closed categories which gives a bijection
@@ -54,7 +57,6 @@ See IV.6: Cartesian Closed Categories in~\cite{maclane1998}}.
 
 This style allows for partial application of functions where \texttt{\_::\_ x} results
 in a unary function \texttt{Vec A n → Vec A (suc n)}.
-
 Mixfix operators and currying interact wonderfully with partial application. \texttt{x ::\_} is the
 function that takes a vector and conses x onto it.
 
@@ -82,8 +84,8 @@ map f (x :: v) = (f x) :: (map f v)
 \end{code}
 
 Of course, map would work equally well for the non-dependent type of lists.
-To make use of this additional power we can define \texttt{map-pointwise}
-which safely applies a different function to each element.
+To make use of the additional power of dependent types we can define \texttt{map-pointwise}
+which safely applies a different function to each element of a vector.
 \begin{code}
 map-pointwise : {A B : Set}{n : ℕ} →
                 Vec (A → B) n → Vec A n → Vec B n
@@ -94,7 +96,7 @@ map-pointwise (f :: fs) (x :: xs) = f x :: map-pointwise fs xs
 Concatenation is the binary operation that adjoins one vector to the end of another.
 This has the effect of adding their lengths, evidenced by the resulting type \texttt{Vec A (n + m)}.
 Note that we only pattern match on the left vector. This is actually important, since \texttt{\_+\_} is defined
-by pattern matching on its left argument, allowing this definition to type-check. [SHOW +?]
+by pattern matching on its left argument, allowing this definition to type-check.
 \begin{code}
 _++_ : {A : Set} {n m : ℕ} → Vec A n → Vec A m → Vec A (n + m)
 [] ++ ys = ys
@@ -123,7 +125,6 @@ Of course, not all proofs are so simple. In fact, proving that zero is also the 
 This is because addition is defined by induction on the left argument, so \texttt{+-lunit} is simply the base case.
 
 \begin{code}
--- zero is the right unit for addition
 +-runit : ∀ {n} → n + zero ≡ n
 +-runit {zero} = refl
 +-runit {suc n} = cong suc +-runit

@@ -1,7 +1,9 @@
 \chapter{Conclusion}\label{ch/conclusion}
 
 In this thesis we have constructed and outlined an implementation of homotopical
-patch theory in Cubical Agda. The implementation makes use of higher inductive
+patch theory in Cubical Agda\footnote{Available here:
+  \url{https://github.com/Aqissiaq/hpt-experiments}}.
+The implementation makes use of higher inductive
 types and univalence, and since the cubical model imbues univalence with
 computational meaning we are able to show that models of the theory behave as
 expected -- at least for simple examples.
@@ -18,14 +20,13 @@ compositions of patches (using \texttt{hcomp}) when modeling the repository as a
 vector of strings (and indexed family of types).
 
 This chapter discusses the implementation and results of
-\autoref{ch/formalization}, outlines directions for future work on homotopical
-patch theory, and finally presents an attempt at an entirely different approach to modeling
-version control systems in HoTT.
+\autoref{ch/formalization} and outlines directions for future work on homotopical
+patch theory.
 
 \section{Discussion}
 Cubical Agda provides a good setting for formalizations relying on univalence,
-function extensionality and higher inductive types. I was able to implement the
-ideas of HPT directly, and avoid complicated elimination rules associated with
+function extensionality and higher inductive types. Implementation of the
+ideas of HPT was direct, avoiding complicated elimination rules associated with
 HITs and univalence~\footnote{Compare the length of just the contractibility
 proof in \url{https://github.com/dlicata335/hott-agda/blob/master/programming/PatchWithHistories3.agda}
 to our one-liner.}.
@@ -115,3 +116,4 @@ operations on them. In particular, a formal theory could incorporate merging and
 its properties. Another direction for expansion would be a more modular theory
 in which different patch theories (e.g for text files and integers) could be
 combined in a principled way to form something like a directory.
+An attempt at an alternative approach is included in \autoref{sec:attempt}.

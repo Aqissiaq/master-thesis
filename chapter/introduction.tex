@@ -1,8 +1,10 @@
-\chapter{Introduction}
+\chapter{Introduction and Background}\label{ch/intro}
 
-[SOME GENERAL INTRO HERE?]
+This thesis is about Homotopy Type Theory (HoTT), its interpretation and use in the
+Cubical Agda proof assistant, and an application to version control systems (VCSs).
+It is accordingly organized into three parts.
 
-\ChRef{ch/hott} contains an introduction to the Homotopy Type Theory (HoTT)
+The remainder of this chapter contains an introduction to the Homotopy Type Theory
 setting, a cubical interpretation of this type theory, and an introduction to
 the syntax and workings of the Agda programming language~\cite{Agda} in general and Cubical
 Agda~\cite{vezzosi2021cubical} in particular.
@@ -10,15 +12,33 @@ Agda~\cite{vezzosi2021cubical} in particular.
 \ChRef{ch/vc} gives and exposition of Version Control Systems (VCS) and some
 approaches to a theory of such systems. We give an account of
 Darcs'~\cite{Darcs} ``Algebra of Patches'' as described by
-Lynagh~\cite{Lynagh2006}, an approach based on category theory by Mimram and Di
-Giusto~\cite{Categorical2013}, and Angiuli et al.'s ``Homotopical Patch
-Theory''~\cite{Angiuli2016} which utilizes HoTT. Finally we present another
-HoTT approach attempted by the author, which has not proven fruitful.
+Lynagh~\cite{Lynagh2006} and Angiuli et al.'s ``Homotopical Patch
+Theory''~\cite{Angiuli2016} which utilizes HoTT.
 
 \ChRef{ch/formalization} describes the main contribution of this thesis: an
 implementation of Homotopical Patch Theory in Cubical Agda. Following Angiuli et
 al. we implement three patch theories of increasing complexity. In
 \autoref{sec:results} we examine the implementations by testing them on simple
 examples. We conclude that the theories and models behave as expected, but are
-severely limited by the current limitations of Cubical Agda -- in particular
-that \texttt{transp} and \texttt{hcomp} do not compute over indexed families.
+restricted by the current limitations of Cubical Agda -- in particular that
+\texttt{transp} and \texttt{hcomp} do not compute over inductive families.
+
+Finally, \autoref{ch/conclusion} discusses the results of the formalization and
+possible directions for future work on homotopical path theory in particular and
+HoTT models of version control in general.
+
+\section{Homotopy Type Theory}
+
+The purpose of this introduction is to give the reader the prerequisites to
+follow the formalization in \autoref{ch/formalization}. For an excellent
+in-depth introduction see Egbert Rijke's 2019 summer school
+notes~\cite{Rijke2019}. The canonical text is The Book~\cite{hottbook}.
+
+We start by giving an intuitive introduction to dependent types and their
+notation (in terms of inference rules). Then we consider two important
+interpretations: types as propositions and types as spaces. We then move on to
+inductive types and higher inductive types (HITs), before an introduction to the
+syntax of the dependently typed language and proof assistant Agda.
+
+Finally we look at a cubical interpretation of HoTT and Cubical Agda, an
+implementation of it in Agda.

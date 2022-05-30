@@ -22,7 +22,7 @@ open import Data.String
 
 The previous patch theories have both described repositories with a single context --
 in which patches are always applicable. In this section we explore a theory with more
-complex contexts by implementing Angiuli et al.'s \textbf{Patch Theory With Richer Contexts}.
+complex contexts by implementing Angiuli et al.'s \emph{Patch Theory With Richer Contexts}.
 
 \subsection{The Type of Repositories}
 The intended model for this theory is one where the patches either insert a string \texttt{s} on the
@@ -157,8 +157,9 @@ Extension {n} {m} h1 h2 = Σ[ h3 ∈ History n m ] (h1 +++ h3) ≡ h2
 \end{code}
 Here \texttt{+++} denotes straight-forward concatenation of histories.
 
-It is straight-forward to turn a history into a path in \texttt{R}, and likewise to
-turn an extension into a path. Note that \texttt{extToPath} actually ignores the extension
+It is simple to turn a history into a path in \texttt{R} by using the constructors of \texttt{R},
+and likewise to turn an extension into a path.
+Note that \texttt{extToPath} actually ignores the extension
 itself, instead computing the patch going "via" the empty file.
 \begin{code}
 toPath : {n : ℕ} (h : History 0 n) → doc [] ≡ doc h

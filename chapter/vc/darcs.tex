@@ -11,20 +11,20 @@ control system frameworks, while the latter forms the basis of the
 formalizations making up the rest of the thesis.
 
 % START OF PROPER SUBSECTION
-\subsection{Patch Theory (Darcs)}
+\subsection{Darcs}
 % Lynagh's Algebra of Patches
 \textcite{Lynagh2006} proposes an ``algebra of patches'' as a theoretical
 basis for the Darcs~\cite{Darcs} version control system.
 
 In this model a repository state is a set of updates (called \emph{patches}, but
 we want to avoid that ambiguity) and a patch is a change to this set. For
-example pulling the repository $\{c\}$ into the repository $\{a,b\}$ results in
+example adding the update $c$ to the repository $\{a,b\}$ results in
 a new repository $\{a,b\} \cup \{c\} = \{a,b,c\}$.
 
 Patches are only applicable to one repository state, and result in a new state.
 If they are compatible, we may string them together into a \emph{patch sequence}.
 Denoting the previous example patch by $P$ and the ``do-nothing'' patch by $Id$
-we have $\{a,b\}P\{a,b,c\}Id\{a,b,c\}$ -- pulling $\{c\}$ followed by doing
+we have $\{a,b\}P\{a,b,c\}Id\{a,b,c\}$ -- adding $c$ followed by doing
 nothing. The repository state may be omitted from sequences.
 
 Finally a notion of \emph{commutation} of patches is defined. We say the patch sequence $AB$
@@ -47,13 +47,13 @@ respectively) are the same, but the intermediary contexts need not be.
 
 There are four axioms for patches and commutation:
 \begin{enumerate}
-  \item Commutativity (lol) (3.1): $AB \comm B'A' \iff B'A' \comm AB$
+  \item Commutativity(3.1): $AB \comm B'A' \iff B'A' \comm AB$
   \item Invertibility (3.2): for each $A$ there is an $A^{-1}$ s.t
     $AA^{-1}=A^{-1}A=Id$
   \item Inv-cong (3.3): $AB \comm B'A' \iff A^{-1}B' \comm BA'^{-1}$. (we can
     start in the top left corner of \autoref{fig:darcs-commuting-patches} if we want)
     \label{axiom:darcs-inv-cong}
-  \item Circular (3.5/6): performing all pairwise commutations in a sequence
+  \item Circular (3.5): performing all pairwise commutations in a sequence
     gets us back to the beginning (or, a horrible equation)
 \end{enumerate}
 
@@ -100,5 +100,11 @@ obtain $C'$ with the desired endpoints.
 \label{fig:darcs-cherry-pick}
 \end{figure}
 
-Problem: we cannot always commute patches, and Darcs does not have a great
-solution here.
+One immediate problem is that patches cannot always be commuted. Lynagh's
+solution is a new type of patch called a \emph{conflictor} which represents a
+conflict between two patches, and whose effect is to ``undo'' the changes that
+cause a conflict.
+
+However, conflictors do not entirely solve the problem. In particular they are
+insufficient to fill certain gaps, because while conflicting is a symmetric
+relation, dependencies (often the cause of a conflict) are not~\cite{DarcsConflictors}.

@@ -10,13 +10,14 @@ The basic idea is to take the ``spaces as types''-interpretation of identity typ
 a function from the interval. With this interpretation, univalence and HITs do not need to
 be added axiomatically -- they become provable theorems~\cite{coquand2018higher}.
 This section introduces the basic concepts of cubical type theory, Cubical Agda and the
-Cubical library.
+Cubical library. In particular we discuss the theory emplyed by Cubical Agda:
+the CCHM (Cohen, Coquand, Huber and M\"ortberg) cubical type theory~\cite{cohen2016cubical}.
 
 The main ingredient of cubical type theory is the interval type. It represents
-the closed interval $[0,1]$ in and we can think of it as a HIT with two points
-and an equality between them. Denote the interval by $\I$ and its two
+the closed interval $[0,1]$ in and we can roughly think of it as a HIT with two points
+and a path between them. Denote the interval by $\I$ and its two
 endpoints by $\texttt{0}$ and $\texttt{1}$. An element along the interval is
-represented by a variable $i : \I$
+represented by a variable $i : \I$.
 
 In addition to its elements, the interval supports three operations. The binary
 operations $\land$ and $\lor$ and the unary operation $\sim$. In the geometric
@@ -31,7 +32,7 @@ Concretely, an identity type $x =_A y$ is the type of functions $p : \texttt{I}
 This corresponds precisely to the notion of a path with endpoints $x$ and $y$ in
 homotopy theory.
 
-Using lambda-abstraction to define the functions we obtain the inference rules
+Using lambda-abstraction to define the functions from \texttt{I} we obtain the inference rules
 seen in \autoref{eq:path-rules}.
 
 \begin{figure}[h]
@@ -59,8 +60,8 @@ seen in \autoref{eq:path-rules}.
 \end{figure}
 
 By iterating this construction we obtain higher homotopies. $\I \ra A$
-represents paths in $A$, $\I \ra \I \ra A$ squares, $\I \ra \I \ra \I \ra A$ the
-eponymous cubes and so on.
+is the type of paths in $A$, $\I \ra \I \ra A$ the type of squares,
+$\I \ra \I \ra \I \ra A$ the eponymous cubes and so on.
 We call the $A$'s which permit such a mapping of cubes "cubical sets" and use
 them to model types in our theory.
 
@@ -80,8 +81,8 @@ that Voevodsky's model used Kan simplices).
   x \arrow[r, dashed] \arrow[d, "p"'] & w \arrow[d, "r^{-1}"] \\
   y \arrow[r, "q"']                   & z
 \end{tikzcd}
-\label{fig:doublecomp}
 \caption{Composition of $p,q,r$}
+\label{fig:doublecomp}
 \end{figure}
 
 Note that the right wall is inverted to be parallel with the left.
@@ -141,7 +142,7 @@ sym p = λ i → p (~ i)
 \end{code}
 
 Higher inductive types are defined by their point and path constructors. As an
-example, consider the circle $S^1$ as introduced in \autoref{sec:HITs}.
+example, consider the circle $S^1$ introduced in \autoref{sec:HITs}.
 
 \begin{code}
 data S¹ : Type where
@@ -160,7 +161,7 @@ reverse (loop i) = sym loop i
 \end{code}
 
 This is very much like $rec_{S^1}$. In order to define a function we require a point (\texttt{base})
-and loop (\texttt{sym loop})at that point. Since paths in Cubical agda are functions from the interval,
+and loop (\texttt{sym loop}) at that point. Since paths in Cubical agda are functions from the interval,
 the loop also includes an argument \texttt{i} which we supply to \texttt{sym loop}, representing
 travelling along the path.
 
@@ -221,7 +222,7 @@ _ = refl
 
 
 In addition to the cubical mode, Vezzosi, M\"ortberg and Cavallo develop and
-maintain a cubical standard library~\footnote[1]{A standard library for Cubical
+maintain a Cubical library~\footnote[1]{A standard library for Cubical
   Agda: \url{https://github.com/agda/cubical}} containing useful data types,
 functions and proofs.
 
@@ -233,10 +234,10 @@ useful results that are usually only axiomatically defined. Two
 prominent examples are function extensionality and Voevodsky's univalence
 axiom~\cite{voevodsky2014}.
 
-In cubical type theory (and in particular in Cubical Agda) these are not axioms
+In CCHM type theory (and therefore in Cubical Agda) these are not axioms
 at all, but provable theorems. Function extensionality is especially
 straightforward: given two functions $f,g : A \ra B$ and a
-family of paths $p : \Pi_{(x:A)}~f(x)~=_B~g(x)$, the proof simply swaps the
+family of paths $p : \Pi_{(x:A)}~f(x) =_B g(x)$, the proof simply swaps the
 order of operations.
 \begin{code}
 funExt : {A B : Type} {f g : A → B} → ((x : A) → f x ≡ g x) → f ≡ g
@@ -269,12 +270,15 @@ rather than a family of paths~\cite{1labUnivalence}.
 
 In order to define \texttt{ua} of some equivalence $e$ we let the left wall be
 $e$, the bottom $\refl$ and the right the identity equivalence.
+Then Glue closes the box providing the desired path (\autoref{fig:glue-ua})
 \begin{figure}[h]
 \centering
 \begin{tikzcd}
   A \arrow[r, "\ua(e)", dashed] \arrow[d, "\rotatebox{90}{\(\sim\)}", "e"'] & B \arrow[d, "id", "\rotatebox{90}{\(\sim\)}"'] \\
   B \arrow[r, "\refl"']                         & B
 \end{tikzcd}
+\caption{$ua(e)$ in terms of Glue}
+\label{fig:glue-ua}
 \end{figure}
 
 The result is one way of the equivalence above.

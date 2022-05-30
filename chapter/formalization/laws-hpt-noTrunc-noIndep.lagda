@@ -1,6 +1,6 @@
 \section{A Patch Theory With Laws}\label{sec/laws-noTrunc-noIndep}
 
-In this section we explore a formalization of HPTs section 5: \textbf{A Patch Theory with Laws}.
+In this section we explore a formalization of HPTs section 5: \emph{A Patch Theory with Laws}.
 This is a more complicated patch theory in which the type \texttt{R} has not only repositories
 and patches, but also a patch \emph{law} represented by a square (a path between path).
 
@@ -96,7 +96,7 @@ Angiuli et al's original definition also includes an additional law:
 \end{code}
 
 This law states that swapping strings commutes as long as the indices are different.
-We do not include this law as it leads to some problems later. See \autoref{subsec/opt}.
+We do not include this law as it would lead to problems later. See \autoref{subsec/opt}.
 
 In order to interpret this model in the universe of types (called \texttt{Type} in Cubical Agda)
 we will need three things:
@@ -238,7 +238,7 @@ With these pieces we are ready to interpret the repository HIT.
 
 Then we can interpret and apply patches like before.
 \begin{code}
-I : R → Type₀
+I : R → Type
 I doc = repoType
 I ((s1 ↔ s2 AT j) i) = ua (swapat (s1 , s2) j) i
 I (noop s j i i') = (cong ua (swapatIsId {s} {j}) ∙ uaIdEquiv) i i'
@@ -253,7 +253,7 @@ apply p = equivFun (interp p)
 \subsection{A Patch Optimizer}\label{subsec/opt}
 
 With the patch theory above it is possible to implement a patch optimizer --
-a function that takes a patch and produces a new (hopefully smaller) patch
+a function that takes a patch and produces a new and (potentially) smaller patch
 with the same effect. The development makes use of the \texttt{noop} patch law.
 
 Specifically we implement the \emph{program and prove} approach from section 5.3 of HPT~\cite{Angiuli2016}.
@@ -336,7 +336,7 @@ e : {p : Patch} →
 \begin{code}[hide]
 e {p} =
 \end{code}
-We present the (somewhat involved) proof here.
+We present the steps of the proof here.
 By the characterizations of paths over constant families and paths in $\Sigma$-types the Pathover
 is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x ≡ \texttt{doc})}$ p) ≡ refl}.
 
@@ -351,10 +351,10 @@ is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x 
     ≡⟨ Σ-cong-snd (λ q → PathP≡Path (λ i → q i ≡ doc) p refl) ⟩
   (Σ[ q ∈ Patch ] (transport (λ i → q i ≡ doc) p) ≡ refl)
 \end{code}
-Then we apply lemma 2.11.2 from the book
-\footnote{For the category theorist: this is the functorial action of the contravariant hom-functor~\cite{hottbook}}
+Then we apply lemma 2.11.2 from the Book\footnote{For the category theorist: this is the functorial action of the contravariant hom-functor~\cite{hottbook}}
 to obtain the $\Sigma$-type of patches \texttt{q} and proofs that $q^{-1} \cdot p \equiv \texttt{refl}$.
-The proof by path induction was written for this purpose and has been contributed to the Cubical library.
+The proof of \texttt{path-transport-lemma} is by path induction.
+It was written for this purpose and has been contributed to the Cubical library.
 \begin{code}[hide]
     ≡⟨ refl ⟩
 \end{code}

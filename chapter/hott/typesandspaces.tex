@@ -13,7 +13,7 @@ Geometrically we visualize them as ``filling in'' the space between paths.
 
 \subsubsection{Voevodsky's Model}
 We have already seen a model that lets us view types as groupoids. When also
-considering higher paths, they have the structure of ``weak higher-dimensional''
+considering higher paths, types have the structure of ``weak higher-dimensional''
 groupoids. A classical example of weak higher-dimensional groupoids can be found
 in homotopy theory, where Kan complexes are a specific kind of ``well
 behaved'' space. This was observed by both Voevodsky and Streicher around
@@ -41,13 +41,14 @@ identified.
 
 This property aligns well with mathematical practice where structures are often
 considered up to some suitable notion of equivalence. With well defined types,
-univalence makes means for example isomorphic groups \emph{are} equal.
+univalence means groups can be identified when they are isomorphic, and natural
+numbers can be identified only when they are equal.
 Consequently HoTT provides a setting for mathematics with desirable properties; the ``Univalent
 Foundations'' program as introduced in The Book~\cite{hottbook} aims to do
 mathematics in this setting.
 
 Since the univalence property holds in Voevodsky's model, we might justifiably want to
-include it in our type theory and The Book does exactly that by including the
+include it in our type theory and The Book does exactly that by including the following
 axiom (where idToEquiv is a function of type $(A =_{\mathcal{U}} B) \ra (A
 \simeq B)$):
 \begin{equation*}

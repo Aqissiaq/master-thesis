@@ -69,7 +69,7 @@ and these also compute as expected.
 
 Clearly, this patch theory is a fully functioning calculator (for integer addition and subtraction),
 but the detour through algebraic topology takes a computational toll.
-The following proof typechecks, but takes on the order of minutes for a conventional laptop.
+The following proof typechecks, but takes on the order of minutes.
 %1m47s, actually
 \begin{code}
   _ : apply (addN 1000) 0 ≡ 1000
@@ -180,20 +180,20 @@ about the patches being composed, and are able to eliminate the composition befo
     ≡⟨ transportRefl _ ⟩ ("greetings" ∷ "world" ∷ []) ∎
 \end{code}
 
-Applying the patches in order also produces the expected result.
+Applying the patches one after the other also produces the expected result.
 \begin{code}
   _ : apply swap (apply swap' repo) ≡ "greetings" ∷ "earthlings" ∷ []
   _ = cong (apply swap) (transportRefl ("hello" ∷ "earthlings" ∷ [])) ∙ transportRefl _
 \end{code}
+
+\subsubsection{The Patch Optimizer}
 
 In addition to the patches themselves this theory includes an optimizer
 making use of the patch laws. In our implementation these optimized patches come equipped
 with a proof that they are equal to the original patch, so testing the results should not reveal
 anything new -- nevertheless it is interesting to note just how slow these computations are.
 
-All three exhaust the heap, taking on the order of 10s of minutes to do so, \texttt{swapOpt} is
-particularly notable since \texttt{optimize} does not actually do anything.
-The strings in \texttt{swap} are not equal, and so the patch should be kept as it is.
+Consider the following applications of optimized patches:
 \begin{code}
   nopOpt swapOpt compOpt : Patch
   nopOpt = fst (optimize nop)
@@ -209,8 +209,11 @@ The strings in \texttt{swap} are not equal, and so the patch should be kept as i
   -- _ : apply compOpt repo ≡ "greetings" ∷ "earthlings" ∷ []
   -- _ = transportRefl _
 \end{code}
+All three exhaust the heap, taking on the order of 10s of minutes to do so, \texttt{swapOpt} is
+particularly notable since \texttt{optimize} does not actually do anything.
+The strings in \texttt{swap} are not equal, and so the patch should be kept as it is.
 
-\subsection{Richer Contexts}
+\subsection{Patch Computations with Richer Contexts}
 
 \begin{code}[hide]
 module richer where
@@ -250,7 +253,7 @@ by replay. For the simplest patches this works as expected with \texttt{transpor
 
 Again, direct composition of patches runs in to the current limits of Cubical Agda.
 Because \texttt{hcomp} does not reduce in singletons (which is a $\Sigma$-type),
-we get stuck trying to compute the (enormous) composition term.
+we get stuck trying to compute an enormous composition term.
 \begin{code}
   _ : apply (addPatch ∙ rmPatch) (S []) ≡ S []
   _ = apply (addPatch ∙ rmPatch) (S (replay []))
@@ -304,7 +307,8 @@ We further define some simple patches
   p1 : doc [] ≡ doc (ADD "hello" AT zero :: [])
   p1 = addP "hello" (zero) []
 
-  p2 : doc (ADD "hello" AT zero :: []) ≡ doc (ADD "world" AT suc zero :: (ADD "hello" AT zero :: []))
+  p2 : doc (ADD "hello" AT zero :: [])
+     ≡ doc (ADD "world" AT suc zero :: (ADD "hello" AT zero :: []))
   p2 = addP "world" (suc zero) (ADD "hello" AT zero :: [])
 \end{code}
 
@@ -346,5 +350,4 @@ extracts the history and does not need to compute the actual composition of patc
     ≡⟨ cong {y = ADD "hello" AT zero :: []}
             (λ x → fst (undo-merge (ADD "world" AT suc zero :: x) [])) (transportRefl _) ⟩
       fst (undo-merge (ADD "world" AT (suc zero) :: (ADD "hello" AT zero :: [])) []) ∎
-open richer
 \end{code}

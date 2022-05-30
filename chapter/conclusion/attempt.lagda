@@ -1,4 +1,4 @@
-\section{Another Type-Theoretic Approach}\label{sec:attempt}
+\chapter{Another Type-Theoretic Approach}\label{sec:attempt}
 
 In this section we explain a different approach to modeling VCSs in homotopy
 type theory based on a specific class of HITs called coequalizers. The basic
@@ -20,7 +20,7 @@ We present an unsuccessful attempt at implementing this approach in Cubical Agda
 along the results of Kraus and von Raumer, followed by a discussion of the
 problems encountered.
 
-\subsection{Repository HIT}
+\section{Repository HIT}
 
 Aiming to construct a HIT in which point constructors are repository contexts and
 path constructor represent patches, we arrive at an inclusion of some base type
@@ -92,7 +92,7 @@ module repo (A : Type₀) where
     sett    : ∀ a → [ Nothing ] ≡ [ Just a ]
 \end{code}
 
-\subsection{Merge}
+\section{Merge}
 
 Kraus and von Raumer's characterization of the path spaces of such coequalizers
 take the form of an induction principle for their paths. Given a coequalizer
@@ -181,7 +181,7 @@ maps every span to the cospan reversing both patches.
     p q
 \end{code}
 
-\subsection{Result/Discussion}
+\section{Result/Discussion}
 Attempting to write more useful merges proved both laborious and difficult. In
 particular, the final term of \texttt{bin-path-ind} is an equivalence of
 (dependent) function types that is difficult to reason about and construct.
@@ -191,10 +191,17 @@ One possible intuition, in the case of merge, is that it represents an equivalen
 However, this has not proven fruitful and despite efforts to construct more fitting equivalences
 the result has been the same "reverse everything"-merge.
 
+In their discussion of homotopical patch theory~\cite{Angiuli2016} Angiuli et al. mention
+that the requirement that all patches must have strict inverses presents difficulties.
+Their solution is the history-inedxed repositories of "a patch theory with richer contexts,"
+which introduces a lot of complexity. Our problem may be related, since the requirement that
+the final induction term be an equivalence arises from the need for paths to have inverses.
+
+Possible solutions include a directional indexing like HPT's histories and further investigation
+of directed type theory~\cite{licata2011} which treats paths non-symmetrically.
+
 As presented, this approach leaves a lot to be desired. Apart from the trivial
 merge, it does not provide an intuitive or useful way to define merges even for
 very simple examples, and it is not immediately clear that it
 extends to more complicated theories with multiple kinds of patches and patch
 laws.
-
-[ANOTHER CONCLUSION? WEIRD NOTE TO END ON]
