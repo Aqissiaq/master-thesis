@@ -14,7 +14,7 @@ $x$ and $y$ (clearly ``2 is equal to 2'' should be different from ``2 is equal
 to 3'') so the type should depend on $x$ and $y$ as well. But how should this
 type be constructed? What are the terms of such a type?
 
-The solution, proposed by Per Martin-Löf~\cite{ML75}, is an inductive family of dependent
+A solution, proposed by Per Martin-Löf~\cite{ML75}, is an inductive family of dependent
 types called the \emph{identity type}. For each type $A$ and pair of terms
 $x,y:A$ we construct the identity type $x =_A y$ (the subscript may be dropped
 when the type of $x$ and $y$ is clear). It has the following formation and introduction
@@ -37,10 +37,10 @@ and an elimination rule (called the induction principle or simply the J-rule) gi
 \[
   \begin{array}[t]{l}
     \Gamma \vdash a:A\\
-    \Gamma, x:A, p:a =_A x \vdash P~x~p \Type\\
-    \Gamma, a:A \vdash J_a : P~a~\refl_a\\
+    \Gamma, x:A, p:a =_A x \vdash P(x,p) \; \Type\\
+    \Gamma, a:A \vdash J_a : P(a,\refl_a)\\
     \hline
-    \Gamma, x:A, p:a=_Ax \vdash P~x~p
+    \Gamma, x:A, p:a=_Ax \vdash P(x,p)
   \end{array}
 \]
 
@@ -71,12 +71,12 @@ constructed. We mention two closely related functions:
 The first is $\apcong~f$ (called $ap_f$ in \cite{hottbook, lemma 2.2.1}) which for some
 function $f : A \ra B$ maps identity proofs $a = a'$ in $A$ to identity proofs
 $f~a = f~a'$ in $B$. By the J-rule we may assume that the path in question is
-$\refl_x$ and define $\apcong~f~\refl_x := refl_{f~x}$.
+$\refl_x$ and define $\apcong~f~\refl_x := refl_{(f~x)}$.
 
 The second is a dependent version of $\apcong$ called $\transport$. Given a
 family $P$ over $A$ and an identification $p : a =_A a'$, $\transport^P~p$ gives
-a function $P~a \ra P~a'$. In the case where $p$ is $refl_{x}$ it is the
-identity function $P~x \ra P~x$.
+a function $P(a) \ra P(a')$. In the case where $p$ is $\refl_{x}$ it is the
+identity function $P(x) \ra P(x)$.
 
 
 \subsubsection{UIP and The Groupoid Structure of Types}
@@ -95,10 +95,14 @@ identity type $x =_A y$ is modeled by $Hom_A(x, y)$. In addition to the
 properties we have already seen, they show that composition is associative and
 respects units and inverses. That is, for proofs $p : x = y$, $q : y = z$, $r :
 z = w$ the following types are all inhabited:
-\[(p \cdot q) \cdot r =_{x = w} p \cdot (q \cdot r)\]
-\[p \cdot \refl_y =_{x = y} p\]
-\[\refl_x \cdot p_{x = y} = p\]
-\[p \cdot p^{-1} =_{x = x} \refl_x\]
-\[p^{-1} \cdot p =_{y = y} \refl_y\]
+\begin{equation*}
+\begin{array}{l}
+  (p \cdot q) \cdot r =_{x = w} p \cdot (q \cdot r)\\
+  p \cdot \refl_y =_{x = y} p\\
+  \refl_x \cdot p =_{x = y} p\\
+  p \cdot p^{-1} =_{x = x} \refl_x\\
+  p^{-1} \cdot p =_{y = y} \refl_y
+\end{array}
+\end{equation*}
 
 This \emph{groupoid structure} of identity proofs will be very important in \autoref{ch/formalization}.

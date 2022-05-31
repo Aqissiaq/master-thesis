@@ -23,7 +23,7 @@ and proof of $B$. But since proofs are terms of the corresponding type, this is
 the same as having terms $a : A$ and $b : B$. To keep track of both, lets form
 the ordered pair $(a, b)$. This is precisely an element of the product type $A
 \times B$! Hence the product type represents the proposition $A \land B$, since
-its terms correspond exactly to proofs of $A$ and $B$.
+its terms correspond exactly to proofs of $A \land B$.
 
 As a sanity check, consider the type $A \times B$ with $A$ and $B$
 ranging over $\top$ and $\bot$. Its logical counterpart $A \land B$ is true
@@ -37,10 +37,10 @@ One reasonable answer is that given a proof of $A$, we can produce a proof of
 $B$. In terms of types, that means a way to produce a term of type $B$ given a
 term of type $A$, which is exactly a function from $A$ to $B$! Finally, we
 mention that logical ``or'' is represented by the sum type (disjoint union) $A +
-B$ and negation ($\neg$) by a function into $\bot$.
+B$ and negation of $A$ ($\neg A$) by a function $ A \ra \bot$.
 
 We have the basic building blocks of propositional logic, but what about
-first-order logic with $\exists$ and $\forall$? This is where our dependent
+first-order logic with $\exists$ and $\forall$? This is where dependent
 types come in handy.
 
 First, let us note that a predicate on a variable is a lot like a dependent
@@ -57,13 +57,13 @@ the dependent pair $\Sigma_A P$. Note that this term actually contains
 \emph{more} data than just asserting $\exists x. P(x)$ -- it gives us an $x$.
 
 Similarly, a proof of $\forall x. P(x)$ can be seen as an assertion that
-whenever a $x:A$ is given, we can produce a proof (term) of $P(x)$. This is
+whenever a $x:A$ is given, we can produce a term of $P(x)$. This is
 exactly a function from $x:A$ to $P(x)$ so we use $\Pi_A P$ to represent universal
 quantification.
 
 Note that both of these constructions quantify over some base type $A$, so ``for
 all $x$'' necessarily becomes ``for all $x$ of type $A$''. This is usually left
-implicit in FOL.
+implicit in first-order logic.
 
 The Curry-Howard correspondence also elucidates why dependent elimination rules
 are called ``induction principles.'' Viewing a family of types as a predicate,
@@ -73,10 +73,10 @@ predicate is true for all terms of that type.
 \subsubsection{Constructivity}
 Notably, the propositions-as-types logic is \emph{constructive}. This is a
 consequence of the type theory's normalization property and means that
-any proof necessitates constructing a proof term. For example, a proof of
+any proof necessarily constructs a proof term. For example, a proof of
 existence must explicitly construct the thing that exists as discussed above.
 
-Conversely there are some classical propositions that are not inhabited when
+Conversely there are some classical propositions that are not necessarily inhabited when
 considered as types. Most prominently the law of excluded middle ($A + \neg A$)
 cannot be inhabited for every $A$. After all, we would have to know whether $A$
 is inhabited or not before even deciding whether to form an $A$ or a $\neg A$.

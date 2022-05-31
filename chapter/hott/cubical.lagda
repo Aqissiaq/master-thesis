@@ -10,7 +10,7 @@ The basic idea is to take the ``spaces as types''-interpretation of identity typ
 a function from the interval. With this interpretation, univalence and HITs do not need to
 be added axiomatically -- they become provable theorems~\cite{coquand2018higher}.
 This section introduces the basic concepts of cubical type theory, Cubical Agda and the
-Cubical library. In particular we discuss the theory emplyed by Cubical Agda:
+Cubical library. In particular we discuss the theory employed by Cubical Agda:
 the CCHM (Cohen, Coquand, Huber and M\"ortberg) cubical type theory~\cite{cohen2016cubical}.
 
 The main ingredient of cubical type theory is the interval type. It represents
@@ -40,7 +40,7 @@ seen in \autoref{eq:path-rules}.
   \begin{array}[t]{c}
     \Gamma \vdash a : A \qquad \Gamma \vdash b : A\\
     \hline
-    \Gamma \vdash a =_A b \; Type\\
+    \Gamma \vdash a =_A b \; \Type\\
   \end{array}
   \qquad
   \begin{array}[t]{c}
@@ -87,10 +87,11 @@ that Voevodsky's model used Kan simplices).
 
 Note that the right wall is inverted to be parallel with the left.
 To obtain binary composition $p \cdot q$ we fill in the box where the right-hand
-wall is $\refl_z$ (it does not actually matter which wall we choose).
+wall is $\refl_z$ (it does not actually matter which wall we choose,
+letting the left-hand wall be $\refl_x$ gives the same result).
 
 \subsection{Cubical Agda}
-Cubical Agda~\cite{vezzosi2021cubical} implements support for cubical type
+Cubical Agda~\cite{vezzosi2021cubical} implements support for CCHM cubical type
 theory in Agda based on the development by Cohen et al.~\cite{cohen2016cubical}.
 Additionally it extends the theory to support records and co-inductive types, a
 general schema of HITs and univalence through \texttt{Glue} types. In this
@@ -101,7 +102,6 @@ As of Agda version 2.6.0, cubical mode can be activated with:
 \begin{code}
 {-# OPTIONS --cubical #-}
 \end{code}
-
 First, let us consider the cubical path type as introduced in the preceding
 section. The interval type is denoted by $\I$, its two end-points by $i0$ and
 $i1$ and the operations by $\_\land\_, \_\lor\_, \sim\_$. The most basic notion
@@ -126,10 +126,9 @@ postulate
 The non-dependent identity types as discussed in \autoref{sec/identitytypes}
 corresponds to a \texttt{HPath} over a constant family:
 \begin{code}
-Id : {A : Type} → A → A → Type
-Id {A} x y = HPath (λ _ → A) x y
+_==_ : {A : Type} → A → A → Type
+_==_ {A} x y = HPath (λ _ → A) x y
 \end{code}
-
 As one might expect, \texttt{refl} is the constant path
 \begin{code}
 refl : {x : A} → x ≡ x
@@ -140,28 +139,25 @@ and symmetry is defined using $\sim\_$:
 sym : {x y : A} → x ≡ y → y ≡ x
 sym p = λ i → p (~ i)
 \end{code}
-
 Higher inductive types are defined by their point and path constructors. As an
 example, consider the circle $S^1$ introduced in \autoref{sec:HITs}.
-
 \begin{code}
 data S¹ : Type where
   base : S¹
   loop : base ≡ base
 \end{code}
-
-Defining functions out of HITs is done by pattern matching. Notice the variable
-\texttt{i:\I} which represents ``varying along the path''.
-This is the function from the circle to itself which reverses the direction of the loop.
-
+Defining functions out of HITs is done by pattern matching.
+For example, \texttt{reverse} is the function from the circle to itself which
+reverses the direction of the loop.
+Notice the variable \texttt{i:\I} which means the right-hand side is actually a point in $S^1$
+``varying along the path''.
 \begin{code}
 reverse : S¹ → S¹
 reverse base = base
 reverse (loop i) = sym loop i
 \end{code}
-
 This is very much like $rec_{S^1}$. In order to define a function we require a point (\texttt{base})
-and loop (\texttt{sym loop}) at that point. Since paths in Cubical agda are functions from the interval,
+and loop (\texttt{sym loop}) at that point. Since paths in Cubical Agda are functions from the interval,
 the loop also includes an argument \texttt{i} which we supply to \texttt{sym loop}, representing
 travelling along the path.
 
@@ -184,7 +180,6 @@ encode _ p = subst helix p (pos 0)
 winding : base ≡ base → ℤ
 winding = encode base
 \end{code}
-
 Since everything computes, we do not need to evoke any computation rules to show that
 this function computes the winding number. Each case is witnessed directly by $\refl$.
 \begin{code}

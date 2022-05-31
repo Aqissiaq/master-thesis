@@ -64,7 +64,7 @@ other kinds of judgements permitted in (Martin-Löf) type theory:
   \[\Gamma \vdash A \; \Type\]
   ``$A$ is a type.''
   \[\Gamma \vdash a \equiv b : A\]
-  ``$a$ and $b$ are judgementally equal terms of type A,'' and
+  ``$a$ and $b$ are judgementally equal terms of type A,'' (the type may be omitted) and
   \[\Gamma \vdash A \equiv B \; \Type\]
   ``$A$ and $B$ are judgementally equal types.''
 \end{center}
@@ -215,7 +215,7 @@ depends on both $p_{a,b}$ and $x$.
 
 The computational rule associated with the above induction principle postulate
 that the result applying the induction rule to a pair $(a,b)$ is the dependent
-term $p_{a,b}$.
+term $p$.
 
 \begin{equation*}
   \begin{array}[t]{l}
@@ -229,37 +229,29 @@ term $p_{a,b}$.
 The analogous rules for dependent functions are:
 
 \begin{equation*}
-  \begin{array}[t]{c}
-    \Gamma \vdash A \; \Type \qquad \Gamma, x:A \vdash B(x) \; \Type\\
-    \hline
-    \Gamma \vdash \Pi_A B \; \Type\\
-  \end{array}
+\infer[\Pi-\operatorname{intro}]
+  {\Gamma \vdash \Pi_A B \; \Type}
+  {\Gamma \vdash A \; \Type \qquad \Gamma, x:A \vdash B(x) \; \Type}
+\end{equation*}
+
+\begin{equation*}
+\infer[\Pi-\operatorname{form}]
+  {\Gamma \vdash \lambda x.b(x) : \Pi_A B}
+  {\Gamma, a:A \vdash b(a) : B(a)}
 \qquad
-  \begin{array}[t]{c}
-    \Gamma, a:A \vdash b(a) : B(a)\\
-    \hline
-    \Gamma \vdash \lambda x.b(x) : \Pi_A B
-  \end{array}
+\infer[\Pi-\operatorname{elim}]
+  {\Gamma, x:A \vdash f(x) : B(x)}
+  {\Gamma \vdash f : \Pi_A B}
 \end{equation*}
+
 \begin{equation*}
-  \begin{array}[t]{c}
-    \Gamma \vdash f : \Pi_A B \\
-    \hline
-    \Gamma, x:A \vdash f(x) : B(x)
-  \end{array}
-\end{equation*}
-\begin{equation*}
-  \begin{array}[t]{c}
-    \Gamma, a:A \vdash b(a) : B(a)\\
-    \hline
-    \Gamma, x:A \vdash (\lambda y.b(y)~x) \equiv b(x)
-  \end{array}
-  \qquad
-  \begin{array}[t]{c}
-    \Gamma \vdash f : \Pi_A B \\
-    \hline
-    \Gamma \vdash \lambda x.f(x) \equiv f
-  \end{array}
+\infer[\Pi-\beta]
+  {\Gamma, x:A \vdash (\lambda y.b(y)~x) \equiv b(x)}
+  {\Gamma, a:A \vdash b(a) : B(a)}
+\qquad
+\infer[\Pi-\eta]
+  {\Gamma \vdash \lambda x.f(x) \equiv f}
+  {\Gamma \vdash f : \Pi_A B}
 \end{equation*}
 
 \subsubsection{Normalization}

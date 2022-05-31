@@ -45,7 +45,6 @@ which contains many of the ingredients we will need. Specifically the loop space
 of patches, and \texttt{helix : S¹ → Type} is precisely the interpretation of points in \texttt{R} as
 types of repositories. Concretely \texttt{helix} maps \texttt{base} to the integers, and \texttt{loop}
 to \texttt{ua} of the equivalence \texttt{ℤ ≃ ℤ} induced by the successor function.
-
 \begin{code}
 open import Cubical.HITs.S1.Base public
   renaming(
@@ -55,7 +54,6 @@ open import Cubical.HITs.S1.Base public
   ; ΩS¹ to Patch
   ; helix to I)
 \end{code}
-
 With this machinery we can easily define an interpretation of patches as bijections on \texttt{ℤ}
 by applying \texttt{I} along the patch and weakening the resulting path. For convenience we also
 define a function to apply a patch to a given integer.
@@ -71,21 +69,17 @@ apply p n = equivFun (interp p) n
 
 Knowing that addition on the integers is commutative, merging two patches simply swaps
 the order.
-
 \begin{code}
 merge : (Patch × Patch) → (Patch × Patch)
 merge (p , q) = (q , p)
 \end{code}
-
 We now prove some properties of merge. Symmetry is essentially trivial, since swapping
 the order twice gets us back to where we started.
-
 \begin{code}
 symmetric : { f1 f2 g1 g2 : Patch }
             → merge ( f1 , f2 ) ≡ ( g1 , g2 ) → merge ( f2 , f1 ) ≡ ( g2 , g1 )
 symmetric p = cong merge p
 \end{code}
-
 Reconcile turns out to be more involved, but luckily some work is done for us.
 It boils down to showing that composition of patches commutes, which relies on two facts:
 \begin{enumerate}
@@ -113,9 +107,7 @@ patch-comm p q = let (n , p-is-n) = intLoop-sur p
   intLoop m ∙ intLoop n ≡⟨ cong₂ _∙_ (sym q-is-m) (sym p-is-n) ⟩
   q ∙ p ∎
 \end{code}
-
 With the commutativity of patches established, reconcile follows easily:
-
 \begin{code}
 reconcile : {f1 f2 g1 g2 : Patch}
           → merge (f1 , f2) ≡ (g1 , g2) → f1 ∙ g1 ≡ f2 ∙ g2

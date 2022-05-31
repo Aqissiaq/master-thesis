@@ -276,7 +276,6 @@ swapping a string for itself is the same as doing nothing.
 
 In the geometric interpretation of HITs this is a space with one point, loops for each choice of
 \texttt{(s1, s2, i)} and a cylinder between each loop where \texttt{s1 == s2} and the constant path.
-
 \begin{code}%
 \>[0]\AgdaKeyword{data}\AgdaSpace{}%
 \AgdaDatatype{R}\AgdaSpace{}%
@@ -394,13 +393,13 @@ We do not include this law as it would lead to problems later. See \autoref{subs
 In order to interpret this model in the universe of types (called \texttt{Type} in Cubical Agda)
 we will need three things:
 \begin{enumerate}
-  \item a \emph{type} of repository contexts \texttt{repoType},
+  \item a type of repository contexts \texttt{repoType},
   \item a path \texttt{swap} from \texttt{repoType} to itself for
         each choice of strings and index, and
   \item a path of paths between \texttt{swap s s i} and \texttt{refl}
 \end{enumerate}
 
-The type of repositories will be realized by vectors of strings of a fixed size.
+The type of repositories is vectors of strings of a fixed size.
 \begin{code}%
 \>[0]\AgdaFunction{repoType}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -412,14 +411,12 @@ The type of repositories will be realized by vectors of strings of a fixed size.
 \AgdaPostulate{String}\AgdaSpace{}%
 \AgdaFunction{size}\<%
 \end{code}
-
 To create a path \texttt{swap s1 s2 i : repoType ≡ repoType} we will first construct an
 isomorphism and then use \texttt{ua} to make a path in the universe.
 
 Semantically, our patch should swap the line at index \texttt{j} if it is equal to either \texttt{s1}
 or \texttt{s2} and otherwise leave it alone. This behavior is encoded in \texttt{permute} and \texttt{permuteAt}
 applies it to the appropriate index.
-
 \begin{code}%
 \>[0]\AgdaFunction{permute}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -502,13 +499,11 @@ applies it to the appropriate index.
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaBound{t}\AgdaSymbol{))}\<%
 \end{code}
-
 To show that \texttt{permuteAt} is an isomorphism (and hence an equivalence) we need
 some additional results.
 
 First we show that updating at the same index twice is equal to updating once with the
 composition of the functions.
-
 \begin{code}%
 \>[0]\AgdaFunction{[]\%=twice}\AgdaSpace{}%
 \AgdaSymbol{:}%
@@ -625,9 +620,7 @@ Then we show that updating by the identity function does not change the vector.
 \AgdaOperator{\AgdaInductiveConstructor{∷\AgdaUnderscore{}}}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaFunction{[]\%=id}\<%
 \end{code}
-
 Both are proven by induction on the index.
-
 \begin{code}[hide]%
 \>[0]\AgdaFunction{permuteTwice'}\AgdaSpace{}%
 \AgdaSymbol{:}%
@@ -820,12 +813,10 @@ Both are proven by induction on the index.
 \>[53]\AgdaSymbol{=}\AgdaSpace{}%
 \AgdaFunction{refl}\<%
 \end{code}
-
 Finally, permuting twice is equivalent to the identity function.
 The pointwise result \texttt{permuteTwice' : ∀ x → permute (s , t) (permute (s , t) x) ≡ id x}
 is straightforwardly (but laboriously) proven by case analysis, from which the full result follows
 by function extensionality.
-
 \begin{code}%
 \>[0]\AgdaFunction{permuteTwice}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -850,7 +841,6 @@ by function extensionality.
 \AgdaFunction{funExt}\AgdaSpace{}%
 \AgdaFunction{permuteTwice'}\<%
 \end{code}
-
 With these facts it follows that permuting at an index is its own inverse, and
 an equivalence \texttt{swapat} can be constructed from this isomorphism.
 \begin{code}%
@@ -982,12 +972,10 @@ an equivalence \texttt{swapat} can be constructed from this isomorphism.
 \AgdaBound{t}\AgdaSpace{}%
 \AgdaBound{j}\AgdaSymbol{))}\<%
 \end{code}
-
 For the \texttt{noop} law we need to show that \texttt{swapat} respects it.
 We proceed in two steps. First \texttt{swapssId} shows that the underlying function of the equivalence
 \texttt{swapat (s , s) j} is the identity function. Then, since two equivalences are equal if their
 underlying functions are equal we get an identification of \texttt{swapat (s , s) j} and the identity equivalence.
-
 \begin{code}[hide]%
 \>[0]\AgdaFunction{permuteId'}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -1202,7 +1190,6 @@ underlying functions are equal we get an identification of \texttt{swapat (s , s
 \AgdaFunction{equivEq}\AgdaSpace{}%
 \AgdaFunction{swapssId}\<%
 \end{code}
-
 With these pieces we are ready to interpret the repository HIT.
 \texttt{I} sends \texttt{doc} to the type of string vectors, each patch to \texttt{ua} of the
 \texttt{swapat} equivalence and each \texttt{noop} square to \texttt{swapatIsId} composed with
@@ -1403,7 +1390,6 @@ is the dependent version of \texttt{isSet}. We can then provide the sides
 \texttt{cong opt (s ↔ s AT j)} and \texttt{refl} (or really \texttt{cong opt refl}). Since we are
 constructing a \emph{dependent} square we also need a family of types \texttt{I → I → Type}, but this
 is exactly what \texttt{noop s j} is!
-
 \begin{code}%
 \>[0]\AgdaFunction{opt}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaInductiveConstructor{noop}\AgdaSpace{}%
@@ -1443,7 +1429,6 @@ is exactly what \texttt{noop s j} is!
 %
 \>[2]\AgdaKeyword{where}\<%
 \end{code}
-
 Contractibility of the result type is immediate from the characterization of paths
 in $\Sigma$-types and the inverse of the provided path.
 \begin{code}%
@@ -1495,7 +1480,6 @@ in $\Sigma$-types and the inverse of the provided path.
 \AgdaOperator{\AgdaPrimitive{∨}}\AgdaSpace{}%
 \AgdaBound{j}\AgdaSymbol{)))}\<%
 \end{code}
-
 This trick is the reason \texttt{indep} was left out. Because we need to apply \texttt{opt} to
 the paths to compute the sides of the square it would not terminate, instead constructing squares
 back and forth between \texttt{(s ↔ t AT i) ∙ (u ↔ v AT j)} and \texttt{(u ↔ v AT j) ∙ (s ↔ t AT i)}
@@ -1504,7 +1488,6 @@ for eternity.
 There is one additional complication: The result of \texttt{cong opt p} for some patch \texttt{p}
 is actually of type \texttt{Pathover (λ x → $\Sigma_\texttt{(y : R)}$ y ≡ x) p (doc,refl) (doc,refl)}.
 Luckily this type is equivalent to our desired target type by:
-
 \begin{code}%
 \>[0]\AgdaFunction{e}\AgdaSpace{}%
 \AgdaSymbol{:}%
@@ -1552,8 +1535,8 @@ Luckily this type is equivalent to our desired target type by:
 \end{code}
 We present the steps of the proof here.
 By the characterizations of paths over constant families and paths in $\Sigma$-types the Pathover
-is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x ≡ \texttt{doc})}$ p) ≡ refl}.
-
+is equivalent to
+\texttt{$\Sigma_\texttt{q:Patch}$~(transport~$^{x~\mapsto~(x~≡~\texttt{doc})}$~p)~≡~refl}.
 \begin{code}%
 \>[.][@{}l@{}]\<[988I]%
 \>[2]\AgdaSymbol{(}\AgdaPostulate{PathP}\AgdaSpace{}%
@@ -1734,7 +1717,7 @@ is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x 
 \end{code}
 Then we apply lemma 2.11.2 from the Book\footnote{For the category theorist: this is the functorial action of the contravariant hom-functor~\cite{hottbook}}
 to obtain the $\Sigma$-type of patches \texttt{q} and proofs that $q^{-1} \cdot p \equiv \texttt{refl}$.
-The proof of \texttt{path-transport-lemma} is by path induction.
+The proof \texttt{path-transport-lemma} is by path induction.
 It was written for this purpose and has been contributed to the Cubical library.
 \begin{code}[hide]%
 \>[2][@{}l@{\AgdaIndent{1}}]%
@@ -1831,7 +1814,7 @@ We reach the desired type by the groupoid properties of path composition.
 \AgdaBound{q}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∎}}\<%
 \end{code}
-In particular, \texttt{invLUnique} identifies $p^{-1} \cdot q \equiv \texttt{refl}$
+In particular, \texttt{invLUnique} identifies $p^{-1}~\cdot~q \equiv \texttt{refl}$
 with $q \equiv p$. The proof is by path induction and application of groupoid laws.
 \begin{code}[hide]%
 %
@@ -1969,10 +1952,8 @@ with $q \equiv p$. The proof is by path induction and application of groupoid la
 \AgdaFunction{refl}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∎}}\<%
 \end{code}
-
 Finally, \texttt{optimize} can be implemented as discussed -- by applying \texttt{opt} and
 transporting along \texttt{e}.
-
 \begin{code}%
 \>[0]\AgdaFunction{optimize}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%

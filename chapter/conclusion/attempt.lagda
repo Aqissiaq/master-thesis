@@ -39,10 +39,10 @@ In formal terms this is the introduction rule:
 \begin{equation}
   \label{eq:coequalizer-intro}
   \begin{array}[t]{l}
-    \Gamma \vdash A \; Type\\
-    \Gamma, a~b : A \vdash a \sim b \; Type\\
+    \Gamma \vdash A \; \Type\\
+    \Gamma, a~b : A \vdash a \sim b \; \Type\\
     \hline
-    \Gamma \vdash A \quot{\sim} \; Type\\
+    \Gamma \vdash A \quot{\sim} \; \Type\\
   \end{array}
 \end{equation}
 
@@ -68,7 +68,6 @@ As a concrete running example we will consider a very simple VCS in which a
 repository consists of a single value that can be either \texttt{Nothing} or
 \texttt{Just x} for some term x, and a patch that sets a \texttt{Nothing} to
 \texttt{Just} some value.
-
 \begin{code}[hide]
 {-# OPTIONS --cubical #-}
 
@@ -82,16 +81,15 @@ open import Cubical.Foundations.GroupoidLaws
 module attempt where
 \end{code}
 \begin{code}
-module repo (A : Type₀) where
-  data Maybe : Type₀ where
+module repo (A : Type) where
+  data Maybe : Type where
     Nothing : Maybe
     Just    : A → Maybe
 
-  data Simple : Type₀ where
+  data Simple : Type where
     [_] : Maybe → Simple
     sett    : ∀ a → [ Nothing ] ≡ [ Just a ]
 \end{code}
-
 \section{Merge}
 
 Kraus and von Raumer's characterization of the path spaces of such coequalizers
@@ -113,7 +111,6 @@ The solution is to instead require an equivalence $P~q \simeq P (q \cdot
 (glue~s))$ for each $q : [a_0] \equiv [ b ]$ and $s : b \sim c$.
 
 The complete induction rule is given by:
-[in Agda? (specialized to our repo type)]
 \begin{code}[hide]
   postulate
     ind :
@@ -142,17 +139,14 @@ The complete induction rule is given by:
 We will attempt to use this induction rule to define a merge function for our
 example VCS. For this purpose we introduce the types of spans and cospans
 indexed by their endpoints:
-
 \begin{code}
-  Span : Maybe → Maybe → Type₀
+  Span : Maybe → Maybe → Type
   Span x y = Σ[ a ∈ Maybe ] ( [ a ] ≡ [ x ] ) × ([ a ] ≡ [ y ])
 
-  CoSpan : Maybe → Maybe → Type₀
+  CoSpan : Maybe → Maybe → Type
   CoSpan x y = Σ[ b ∈ Maybe ] ([ x ] ≡ [ b ]) × ([ y ] ≡ [ b ])
 \end{code}
-
 and, since merging is a binary operation, a binary induction rule
-
 \begin{code}
   bin-path-ind : {ℓ : Level} → (a0 : Maybe) →
     (P  : {b c : Maybe} → [ a0 ] ≡ [ b ] → [ a0 ] ≡ [ c ] → Type ℓ) →
@@ -166,10 +160,8 @@ and, since merging is a binary operation, a binary induction rule
   bin-path-ind a0 P r e e' = ind (λ p → ({c : Maybe} → (q : [ a0 ] ≡ [ c ]) → P p q))
                                  (ind (λ p → P refl p) r e) e'
 \end{code}
-
 Armed with binary path induction we can define the trivial merge which simply
 maps every span to the cospan reversing both patches.
-
 \begin{code}
   mergeId : {x y : Maybe} → Span x y → CoSpan x y
   mergeId {x = x} {y = y} (base , p , q) =

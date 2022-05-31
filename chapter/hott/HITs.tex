@@ -68,7 +68,7 @@ $(a::as)$ to $p_{::}$ by the computation rules:
     \Gamma \vdash p_{[~]} : P~[~]\\
     \Gamma \vdash p_{::}: \Pi_{a:A} \Pi_{as:[A]} P~(a :: as)\\
     \hline
-    \Gamma, a:A, as:[A] \vdash ind_{[A]}~p_{[~]}~p_{::}~(a::as) \equiv p_{::}~a~as
+    \Gamma, a:A, as:[A] \vdash ind_{[A]}~p_{[~]}~p_{::}~(a::as) \equiv p_{::}(a,as)
   \end{array}
 \end{equation*}
 
@@ -76,12 +76,12 @@ $(a::as)$ to $p_{::}$ by the computation rules:
 
 When constructing ever more complicated types, it is useful to have some
 control over which terms are identified. For example we might want to construct
-a quotient $A/_\sim$ where related terms are identified.
+a quotient $A/_\sim$ where $\sim$-related terms are identified.
 
 One way to do this is \emph{Higher Inductive Types}. Like inductive types, HITs
 are constructed from generators, but while the generators of an inductive type
 may only generate terms, the generators of a HIT may also generate identity
-proofs. We will often use the language of Homotopy Theory and refer to the terms
+proofs. We will often use the language of spaces and refer to the terms
 and identity proofs in a HIT as ``points'' and ``paths'' respectively.
 
 There is no reason to stop there! We could apply the same idea to give
@@ -139,7 +139,7 @@ witnessing the result.
   \begin{array}[t]{c}
     \Gamma \vdash b : B \qquad \Gamma \vdash l : b =_B b\\
     \hline
-    \Gamma \vdash \operatorname{loopComp} : \operatorname{cong} (rec_{S^1}~b~l) \sloop = l
+    \Gamma \vdash \operatorname{loopComp} : \operatorname{cong}~(rec_{S^1}~b~l)~\sloop = l
   \end{array}
 \end{equation*}
 In homotopy type theory as presented in The Book, HITs are included by adding
@@ -153,7 +153,7 @@ An important use of HITs is synthetic homotopy theory~\cite{mortberg2020cubical,
   licata2015cubical}. By constructing representation of spaces as HITs it is
 possible to formalize results of homotopy theory very directly.
 
-Here we recount a proof that the fundamental group of the circle is $\mathbb{Z}$
+Here we recount parts of a proof that the fundamental group of the circle is $\mathbb{Z}$
 originally given by Licata and Shulman~\cite{licata2013circle}. This showcases the use of circle
 recursion and also proves useful in \autoref{sec/elementary-hpt}.
 

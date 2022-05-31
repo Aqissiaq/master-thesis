@@ -21,7 +21,6 @@ module _ where
   open import Cubical.Data.Int
   open import elementary-hpt
 \end{code}
-
 By the usual path operations we obtain some more patches: the "do nothing"-patch \texttt{noop},
 the inverse \texttt{sub1} and compositions like \texttt{add2}.
 \begin{code}
@@ -30,7 +29,6 @@ the inverse \texttt{sub1} and compositions like \texttt{add2}.
   sub1 = sym add1
   add2 = add1 ∙ add1
 \end{code}
-
 All of these suggestively named patches behave as one might expect:
 \begin{code}
   _ : apply noop 1 ≡ 1
@@ -48,7 +46,6 @@ All of these suggestively named patches behave as one might expect:
   _ : apply (add1 ∙ sub1) 1 ≡ 1
   _ = refl
 \end{code}
-
 We can generalize further and create patches to add or subtract any integer,
 and these also compute as expected.
 \begin{code}[hide]
@@ -66,7 +63,6 @@ and these also compute as expected.
   _ : apply (addN (- 22)) 42 ≡ 20
   _ = refl
 \end{code}
-
 Clearly, this patch theory is a fully functioning calculator (for integer addition and subtraction),
 but the detour through algebraic topology takes a computational toll.
 The following proof typechecks, but takes on the order of minutes.
@@ -92,7 +88,6 @@ The following proof typechecks, but takes on the order of minutes.
 Finally, we look at \texttt{merge}. The function \texttt{merger} neatly computes the two patches
 $p'$ and $q'$ resulting from merging patches $p$ and $q$ from the original repository $n$
 and returns a pair of integers obtained by applying them.
-
 \begin{code}
   merger : ℤ → Patch → Patch → ℤ × ℤ
   merger n p q = let x = apply p n
@@ -136,7 +131,6 @@ _∘_ : {A B C : Type} → (B → C) → (A → B) → A → C
 module _ where
   open import laws-hpt-noTrunc-noIndep
 \end{code}
-
 For concrete examples, consider the starting repository and patches:
 \begin{code}
   repo : repoType
@@ -148,7 +142,6 @@ For concrete examples, consider the starting repository and patches:
   swap' = "world" ↔ "earthlings" AT (# 1)
   comp = swap ∙ swap'
 \end{code}
-
 When applying these patches, we encounter the current limits of Cubical Agda.
 In particular, \texttt{Vec String size} is an inductive family so \texttt{transp} and
 \texttt{hcomp} do not compute on it. In the simple case of applying just one patch the issue
@@ -160,14 +153,12 @@ is resolved by \texttt{transportRefl~:~(x~:~A)~→~transport~refl~x~≡~x}, givi
   _ : apply swap repo ≡ "greetings" ∷ "world" ∷ []
   _ = transportRefl _
 \end{code}
-
 In the case of composition it gets more difficult. The following cannot be proven by
 \texttt{transportRefl}, since the computation gets stuck on the composition.
 \begin{code}
   _ : apply comp repo ≡ "greetings" ∷ "earthlings" ∷ []
   _ = {!!}
 \end{code}
-
 Of course it is possible to compute the result by hand. Here we have some more information
 about the patches being composed, and are able to eliminate the composition before applying the patch.
 \begin{code}
@@ -179,7 +170,6 @@ about the patches being composed, and are able to eliminate the composition befo
       apply swap repo
     ≡⟨ transportRefl _ ⟩ ("greetings" ∷ "world" ∷ []) ∎
 \end{code}
-
 Applying the patches one after the other also produces the expected result.
 \begin{code}
   _ : apply swap (apply swap' repo) ≡ "greetings" ∷ "earthlings" ∷ []
@@ -238,7 +228,6 @@ before considering merging. For the purpose of testing, define a few simple patc
 The first interpretation sends each \texttt{doc h} to a singleton type of the vector determined
 by replay. For the simplest patches this works as expected with \texttt{transportRefl}.
 (Here \texttt{S} is the inclusion into the singleton type.)
-
 \begin{code}
   _ : apply addPatch (S []) ≡ S ("hello" ∷ [])
   _ = transportRefl _
@@ -250,7 +239,6 @@ by replay. For the simplest patches this works as expected with \texttt{transpor
   _ = cong (apply rmPatch) (transportRefl ("hello" ∷ [] , refl))
       ∙ (transportRefl ([] , refl))
 \end{code}
-
 Again, direct composition of patches runs in to the current limits of Cubical Agda.
 Because \texttt{hcomp} does not reduce in singletons (which is a $\Sigma$-type),
 we get stuck trying to compute an enormous composition term.
@@ -267,7 +255,6 @@ The second interpretation eludes replaying the patches, instead sending \texttt{
 to the singleton history \texttt{h}. In a familiar turn of events the simple patches give
 expected results, but composition poses a problem. (Note that \texttt{[]} in these examples
 is the empty \emph{history} rather than the empty vector.)
-
 \begin{code}
   _ : applyH addPatch (S []) ≡ S (ADD "hello" AT zero :: [])
   _ = transportRefl _
@@ -288,7 +275,6 @@ is the empty \emph{history} rather than the empty vector.)
     undo-inverse : ∀ {n m} → (h : History n m)
                    → h +++ undo h ≡ []
 \end{code}
-
 In \autoref{sec:richer} we reduced the task of merging patches to merging histories.
 As a concrete example, consider a merger of histories which keeps one history if the other is empty,
 but simply undos the changes in both branches if there is a possibility of conflict.
@@ -301,7 +287,6 @@ but simply undos the changes in both branches if there is a possibility of confl
   undo-merge {_} {_} h1 h2 = 0 , [] , (undo h1 , undo-inverse h1) , (undo h2 , undo-inverse h2)
   open merging {undo-merge}
 \end{code}
-
 We further define some simple patches
 \begin{code}
   p1 : doc [] ≡ doc (ADD "hello" AT zero :: [])
@@ -311,7 +296,6 @@ We further define some simple patches
      ≡ doc (ADD "world" AT suc zero :: (ADD "hello" AT zero :: []))
   p2 = addP "world" (suc zero) (ADD "hello" AT zero :: [])
 \end{code}
-
 and observe that the merged histories (or at least their lengths) give the expected
 results by \texttt{transportRefl}. Merging \texttt{p1} with \texttt{refl} keeps \texttt{p1}:
 \begin{code}
@@ -322,7 +306,6 @@ results by \texttt{transportRefl}. Merging \texttt{p1} with \texttt{refl} keeps 
     ≡⟨ cong {y = ADD "hello" AT zero :: []} (λ x → fst (undo-merge [] x)) (transportRefl _) ⟩
       fst (undo-merge [] (ADD "hello" AT zero :: [])) ∎
 \end{code}
-
 Merging two non-empty patches results int he empty patch:
 \begin{code}
   _ : fst (merge p1 p1) ≡ 0
@@ -334,7 +317,6 @@ Merging two non-empty patches results int he empty patch:
             (λ x → fst (undo-merge  (ADD "hello" AT zero :: []) x)) (transportRefl _) ⟩
        fst (undo-merge (ADD "hello" AT zero :: []) (ADD "hello" AT zero :: [])) ∎
 \end{code}
-
 Finally we note that composition does not pose a problem here, since \texttt{undo-merge}
 extracts the history and does not need to compute the actual composition of patches.
 \begin{code}

@@ -48,7 +48,6 @@ Recall that this theory has one type of repositories -- the integers -- and one 
 \AgdaKeyword{import}\AgdaSpace{}%
 \AgdaModule{elementary-hpt}\<%
 \end{code}
-
 By the usual path operations we obtain some more patches: the "do nothing"-patch \texttt{noop},
 the inverse \texttt{sub1} and compositions like \texttt{add2}.
 \begin{code}%
@@ -77,7 +76,6 @@ the inverse \texttt{sub1} and compositions like \texttt{add2}.
 \AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
 \AgdaInductiveConstructor{add1}\<%
 \end{code}
-
 All of these suggestively named patches behave as one might expect:
 \begin{code}%
 %
@@ -160,7 +158,6 @@ All of these suggestively named patches behave as one might expect:
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaFunction{refl}\<%
 \end{code}
-
 We can generalize further and create patches to add or subtract any integer,
 and these also compute as expected.
 \begin{code}[hide]%
@@ -246,7 +243,6 @@ and these also compute as expected.
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaFunction{refl}\<%
 \end{code}
-
 Clearly, this patch theory is a fully functioning calculator (for integer addition and subtraction),
 but the detour through algebraic topology takes a computational toll.
 The following proof typechecks, but takes on the order of minutes.
@@ -284,7 +280,6 @@ The following proof typechecks, but takes on the order of minutes.
 Finally, we look at \texttt{merge}. The function \texttt{merger} neatly computes the two patches
 $p'$ and $q'$ resulting from merging patches $p$ and $q$ from the original repository $n$
 and returns a pair of integers obtained by applying them.
-
 \begin{code}%
 %
 \>[2]\AgdaFunction{merger}\AgdaSpace{}%
@@ -466,7 +461,6 @@ at a given index.
 \AgdaKeyword{import}\AgdaSpace{}%
 \AgdaModule{laws-hpt-noTrunc-noIndep}\<%
 \end{code}
-
 For concrete examples, consider the starting repository and patches:
 \begin{code}%
 %
@@ -530,7 +524,6 @@ For concrete examples, consider the starting repository and patches:
 \AgdaOperator{\AgdaFunction{∙}}\AgdaSpace{}%
 \AgdaFunction{swap'}\<%
 \end{code}
-
 When applying these patches, we encounter the current limits of Cubical Agda.
 In particular, \texttt{Vec String size} is an inductive family so \texttt{transp} and
 \texttt{hcomp} do not compute on it. In the simple case of applying just one patch the issue
@@ -572,7 +565,6 @@ is resolved by \texttt{transportRefl~:~(x~:~A)~→~transport~refl~x~≡~x}, givi
 \AgdaFunction{transportRefl}\AgdaSpace{}%
 \AgdaSymbol{\AgdaUnderscore{}}\<%
 \end{code}
-
 In the case of composition it gets more difficult. The following cannot be proven by
 \texttt{transportRefl}, since the computation gets stuck on the composition.
 \begin{code}%
@@ -594,7 +586,6 @@ In the case of composition it gets more difficult. The following cannot be prove
 \AgdaSymbol{=}\AgdaSpace{}%
 \AgdaHole{\{!!\}}\<%
 \end{code}
-
 Of course it is possible to compute the result by hand. Here we have some more information
 about the patches being composed, and are able to eliminate the composition before applying the patch.
 \begin{code}%
@@ -677,7 +668,6 @@ about the patches being composed, and are able to eliminate the composition befo
 \AgdaInductiveConstructor{[]}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∎}}\<%
 \end{code}
-
 Applying the patches one after the other also produces the expected result.
 \begin{code}%
 %
@@ -882,7 +872,6 @@ before considering merging. For the purpose of testing, define a few simple patc
 The first interpretation sends each \texttt{doc h} to a singleton type of the vector determined
 by replay. For the simplest patches this works as expected with \texttt{transportRefl}.
 (Here \texttt{S} is the inclusion into the singleton type.)
-
 \begin{code}%
 %
 \>[2]\AgdaFunction{\AgdaUnderscore{}}\AgdaSpace{}%
@@ -959,7 +948,6 @@ by replay. For the simplest patches this works as expected with \texttt{transpor
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaFunction{refl}\AgdaSymbol{))}\<%
 \end{code}
-
 Again, direct composition of patches runs in to the current limits of Cubical Agda.
 Because \texttt{hcomp} does not reduce in singletons (which is a $\Sigma$-type),
 we get stuck trying to compute an enormous composition term.
@@ -1019,7 +1007,6 @@ The second interpretation eludes replaying the patches, instead sending \texttt{
 to the singleton history \texttt{h}. In a familiar turn of events the simple patches give
 expected results, but composition poses a problem. (Note that \texttt{[]} in these examples
 is the empty \emph{history} rather than the empty vector.)
-
 \begin{code}%
 %
 \>[2]\AgdaFunction{\AgdaUnderscore{}}\AgdaSpace{}%
@@ -1162,7 +1149,6 @@ is the empty \emph{history} rather than the empty vector.)
 \AgdaOperator{\AgdaFunction{≡}}\AgdaSpace{}%
 \AgdaInductiveConstructor{[]}\<%
 \end{code}
-
 In \autoref{sec:richer} we reduced the task of merging patches to merging histories.
 As a concrete example, consider a merger of histories which keeps one history if the other is empty,
 but simply undos the changes in both branches if there is a possibility of conflict.
@@ -1278,7 +1264,6 @@ but simply undos the changes in both branches if there is a possibility of confl
 \AgdaModule{merging}\AgdaSpace{}%
 \AgdaSymbol{\{}\AgdaFunction{undo-merge}\AgdaSymbol{\}}\<%
 \end{code}
-
 We further define some simple patches
 \begin{code}%
 %
@@ -1346,7 +1331,6 @@ We further define some simple patches
 \AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
 \AgdaInductiveConstructor{[]}\AgdaSymbol{)}\<%
 \end{code}
-
 and observe that the merged histories (or at least their lengths) give the expected
 results by \texttt{transportRefl}. Merging \texttt{p1} with \texttt{refl} keeps \texttt{p1}:
 \begin{code}%
@@ -1445,7 +1429,6 @@ results by \texttt{transportRefl}. Merging \texttt{p1} with \texttt{refl} keeps 
 \AgdaInductiveConstructor{[]}\AgdaSymbol{))}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∎}}\<%
 \end{code}
-
 Merging two non-empty patches results int he empty patch:
 \begin{code}%
 %
@@ -1567,7 +1550,6 @@ Merging two non-empty patches results int he empty patch:
 \AgdaInductiveConstructor{[]}\AgdaSymbol{))}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∎}}\<%
 \end{code}
-
 Finally we note that composition does not pose a problem here, since \texttt{undo-merge}
 extracts the history and does not need to compute the actual composition of patches.
 \begin{code}%

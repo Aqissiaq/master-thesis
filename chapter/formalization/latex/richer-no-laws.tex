@@ -79,9 +79,8 @@ Clearly these patches are not always applicable. It does not make sense to remov
 with only 3 lines, nor to insert something on line 14 in the same context.
 To incorporate this more complicated patch language, the repository type must also be more complicated.
 This is accomplished by indexing \texttt{R} by a type
-of patch histories, where \texttt{History m n} is the type of sequences of patches which takes an \texttt{m}-
+of patch histories, where \texttt{History~m~n} is the type of sequences of patches which takes an \texttt{m}-
 line file to an \texttt{n}-line file.
-
 \begin{code}%
 \>[0]\AgdaKeyword{data}\AgdaSpace{}%
 \AgdaDatatype{History}\AgdaSpace{}%
@@ -155,7 +154,6 @@ line file to an \texttt{n}-line file.
 \AgdaBound{m}\AgdaSpace{}%
 \AgdaBound{n}\<%
 \end{code}
-
 It would also be possible to include higher constructers to specify patch laws,
 but we refrain in order to simplify other developments.
 \begin{code}%
@@ -242,7 +240,6 @@ but we refrain in order to simplify other developments.
 \AgdaOperator{\AgdaInductiveConstructor{::}}\AgdaSpace{}%
 \AgdaBound{h}\AgdaSymbol{)}\<%
 \end{code}
-
 \begin{code}[hide]%
 \>[0]\AgdaFunction{mapSingl}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -376,13 +373,12 @@ but we refrain in order to simplify other developments.
 \AgdaSymbol{(}\AgdaFunction{isContrSingl}\AgdaSpace{}%
 \AgdaBound{b}\AgdaSymbol{)}\<%
 \end{code}
-
 Another challenge with this richer theory is its interpretation. In the previous theories,
 the context was modelled by a single type, and patches by an equivalence on this type.
 In this setting we need a slightly different approach.
 
 While it is natural to model a file of \text{n} lines as an \texttt{n}-vector of strings,
-such a solution would lead to problems for patches. For example, \texttt{add s l []} would need
+such a solution would lead to problems for patches. For example, \texttt{add~"hello"~0~[]} would need
 to be an equivalence of \texttt{Vec String 0} and \texttt{Vec String 1} which is not possible
 since these types are not equivalent.
 
@@ -390,7 +386,6 @@ Instead we note that a history actually determines a particular vector (by \text
 type of this vector. Now, since any function between singletons determines a bijection (\texttt{singl-biject})
 and a function on elements determines a function on singletons (\texttt{mapSingl}), it suffices to
 define appropriate functions on vectors (\texttt{add} and \texttt{rm}) to obtain the needed equivalences.
-
 \begin{code}%
 \>[0]\AgdaFunction{replay}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -488,7 +483,6 @@ define appropriate functions on vectors (\texttt{add} and \texttt{rm}) to obtain
 \AgdaBound{l}\AgdaSymbol{)))}\AgdaSpace{}%
 \AgdaBound{i}\<%
 \end{code}
-
 \begin{code}[hide]%
 \>[0]\AgdaFunction{interp}\AgdaSpace{}%
 \AgdaSymbol{:}%
@@ -581,7 +575,6 @@ For this purpose we introduce an alternate interpreter which interprets reposito
 not as vectors, but just as their history.
 The purpose is to reduce the problem of defining the merge of patches to the problem
 of defining a merge of histories.
-
 \begin{code}%
 \>[0]\AgdaFunction{InterpreterH}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -710,7 +703,6 @@ of defining a merge of histories.
 \AgdaSymbol{(}\AgdaFunction{interpH}\AgdaSpace{}%
 \AgdaBound{p}\AgdaSymbol{)}\<%
 \end{code}
-
 \begin{code}[hide]%
 \>[0]\AgdaOperator{\AgdaFunction{\AgdaUnderscore{}+++\AgdaUnderscore{}}}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -918,7 +910,6 @@ of defining a merge of histories.
 \AgdaBound{h2}\AgdaSpace{}%
 \AgdaBound{h3}\AgdaSymbol{)}\<%
 \end{code}
-
 Another issue is the following: when is a merge a meaningful operation?
 To answer that question we introduce the concept of an extension. A history
 \texttt{h2} is an extension of \texttt{h1} if \texttt{h2} has \texttt{h1} as
@@ -1090,7 +1081,6 @@ itself, instead computing the patch going "via" the empty file.
 \AgdaModule{merging}\AgdaSpace{}%
 \AgdaSymbol{\{}\<%
 \end{code}
-
 This successfully reduces merging to a function on histories. Let us assume such a function:
 \begin{code}%
 \>[0][@{}l@{\AgdaIndent{1}}]%
@@ -1141,7 +1131,6 @@ This successfully reduces merging to a function on histories. Let us assume such
 \>[2]\AgdaSymbol{\}}\AgdaSpace{}%
 \AgdaKeyword{where}\<%
 \end{code}
-
 We can then obtain histories through \texttt{InterpreterH}, apply the history merger,
 and turn the resulting extensions back into paths.
 \begin{code}%

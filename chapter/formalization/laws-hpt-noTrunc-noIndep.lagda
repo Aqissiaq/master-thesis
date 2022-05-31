@@ -74,7 +74,6 @@ swapping a string for itself is the same as doing nothing.
 
 In the geometric interpretation of HITs this is a space with one point, loops for each choice of
 \texttt{(s1, s2, i)} and a cylinder between each loop where \texttt{s1 == s2} and the constant path.
-
 \begin{code}
 data R : Type where
   doc : R
@@ -101,25 +100,23 @@ We do not include this law as it would lead to problems later. See \autoref{subs
 In order to interpret this model in the universe of types (called \texttt{Type} in Cubical Agda)
 we will need three things:
 \begin{enumerate}
-  \item a \emph{type} of repository contexts \texttt{repoType},
+  \item a type of repository contexts \texttt{repoType},
   \item a path \texttt{swap} from \texttt{repoType} to itself for
         each choice of strings and index, and
   \item a path of paths between \texttt{swap s s i} and \texttt{refl}
 \end{enumerate}
 
-The type of repositories will be realized by vectors of strings of a fixed size.
+The type of repositories is vectors of strings of a fixed size.
 \begin{code}
 repoType : Type
 repoType = Vec String size
 \end{code}
-
 To create a path \texttt{swap s1 s2 i : repoType ≡ repoType} we will first construct an
 isomorphism and then use \texttt{ua} to make a path in the universe.
 
 Semantically, our patch should swap the line at index \texttt{j} if it is equal to either \texttt{s1}
 or \texttt{s2} and otherwise leave it alone. This behavior is encoded in \texttt{permute} and \texttt{permuteAt}
 applies it to the appropriate index.
-
 \begin{code}
 permute : (String × String) → String → String
 permute (s1 , s2) s with s =? s1 | s =? s2
@@ -130,13 +127,11 @@ permute (s1 , s2) s with s =? s1 | s =? s2
 permuteAt : String → String → Fin size → repoType → repoType
 permuteAt s t j = _[ j ]%= (permute (s , t))
 \end{code}
-
 To show that \texttt{permuteAt} is an isomorphism (and hence an equivalence) we need
 some additional results.
 
 First we show that updating at the same index twice is equal to updating once with the
 composition of the functions.
-
 \begin{code}
 []%=twice : ∀ {n} {A : Type₀} (f : A → A) (v : Vec A n) (i : Fin n)
             → (v [ i ]%= f [ i ]%= f) ≡ (v [ i ]%= f ∘ f)
@@ -153,9 +148,7 @@ Then we show that updating by the identity function does not change the vector.
 []%=id {n} {x ∷ xs} {zero}  = refl
 []%=id {n} {x ∷ _} {suc j} = cong (x ∷_) []%=id
 \end{code}
-
 Both are proven by induction on the index.
-
 \begin{code}[hide]
 permuteTwice' : {s1 s2 : String} → (s : String)
                 → permute (s1 , s2) (permute (s1 , s2) s) ≡ id s
@@ -175,17 +168,14 @@ permuteTwice' {s1} {s2} s | no s≠s1 | no s≠s2
 ...                         | no _        | yes s=s2 =  ⊥-elim (s≠s2 s=s2)
 ...                         | no _        | no _     = refl
 \end{code}
-
 Finally, permuting twice is equivalent to the identity function.
 The pointwise result \texttt{permuteTwice' : ∀ x → permute (s , t) (permute (s , t) x) ≡ id x}
 is straightforwardly (but laboriously) proven by case analysis, from which the full result follows
 by function extensionality.
-
 \begin{code}
 permuteTwice : ∀ {s t} → (permute (s , t) ∘ permute (s , t)) ≡ id
 permuteTwice = funExt permuteTwice'
 \end{code}
-
 With these facts it follows that permuting at an index is its own inverse, and
 an equivalence \texttt{swapat} can be constructed from this isomorphism.
 \begin{code}
@@ -201,12 +191,10 @@ swapat : (String × String) → Fin size → repoType ≃ repoType
 swapat (s , t) j = isoToEquiv
   (iso (permuteAt s t j) (permuteAt s t j) (permuteAtTwice s t j) (permuteAtTwice s t j))
 \end{code}
-
 For the \texttt{noop} law we need to show that \texttt{swapat} respects it.
 We proceed in two steps. First \texttt{swapssId} shows that the underlying function of the equivalence
 \texttt{swapat (s , s) j} is the identity function. Then, since two equivalences are equal if their
 underlying functions are equal we get an identification of \texttt{swapat (s , s) j} and the identity equivalence.
-
 \begin{code}[hide]
 permuteId' : {s : String} → (t : String) → permute (s , s) t ≡ id t
 permuteId' {s} t with t =? s | t =? s
@@ -230,7 +218,6 @@ swapssId {s} {j} = funExt pointwise
 swapatIsId : {s : String} {j : Fin size} → swapat (s , s) j ≡ idEquiv repoType
 swapatIsId = equivEq swapssId
 \end{code}
-
 With these pieces we are ready to interpret the repository HIT.
 \texttt{I} sends \texttt{doc} to the type of string vectors, each patch to \texttt{ua} of the
 \texttt{swapat} equivalence and each \texttt{noop} square to \texttt{swapatIsId} composed with
@@ -302,7 +289,6 @@ is the dependent version of \texttt{isSet}. We can then provide the sides
 \texttt{cong opt (s ↔ s AT j)} and \texttt{refl} (or really \texttt{cong opt refl}). Since we are
 constructing a \emph{dependent} square we also need a family of types \texttt{I → I → Type}, but this
 is exactly what \texttt{noop s j} is!
-
 \begin{code}
 opt (noop s j i k) = isOfHLevel→isOfHLevelDep 2
   (isProp→isSet ∘ isContr→isProp ∘ result-contractible)
@@ -311,14 +297,12 @@ opt (noop s j i k) = isOfHLevel→isOfHLevelDep 2
 \begin{code}[hide]
   where
 \end{code}
-
 Contractibility of the result type is immediate from the characterization of paths
 in $\Sigma$-types and the inverse of the provided path.
 \begin{code}
   result-contractible : {X : Type} → (x : X) → isContr (Σ[ y ∈ X ] y ≡ x)
   result-contractible x = (x , refl) , (λ (_ , p) → ΣPathP (sym p , λ i j → p (~ i ∨ j)))
 \end{code}
-
 This trick is the reason \texttt{indep} was left out. Because we need to apply \texttt{opt} to
 the paths to compute the sides of the square it would not terminate, instead constructing squares
 back and forth between \texttt{(s ↔ t AT i) ∙ (u ↔ v AT j)} and \texttt{(u ↔ v AT j) ∙ (s ↔ t AT i)}
@@ -327,7 +311,6 @@ for eternity.
 There is one additional complication: The result of \texttt{cong opt p} for some patch \texttt{p}
 is actually of type \texttt{Pathover (λ x → $\Sigma_\texttt{(y : R)}$ y ≡ x) p (doc,refl) (doc,refl)}.
 Luckily this type is equivalent to our desired target type by:
-
 \begin{code}
 e : {p : Patch} →
     (PathP (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl) (doc , refl))
@@ -338,8 +321,8 @@ e {p} =
 \end{code}
 We present the steps of the proof here.
 By the characterizations of paths over constant families and paths in $\Sigma$-types the Pathover
-is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x ≡ \texttt{doc})}$ p) ≡ refl}.
-
+is equivalent to
+\texttt{$\Sigma_\texttt{q:Patch}$~(transport~$^{x~\mapsto~(x~≡~\texttt{doc})}$~p)~≡~refl}.
 \begin{code}
   (PathP (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl) (doc , refl))
     ≡⟨ PathP≡Path (λ i → Σ[ y ∈ R ] y ≡ p i) (doc , refl) (doc , refl) ⟩
@@ -353,7 +336,7 @@ is equivalent to \texttt{$\Sigma_\texttt{q : Patch}$ (transport $^{x \mapsto (x 
 \end{code}
 Then we apply lemma 2.11.2 from the Book\footnote{For the category theorist: this is the functorial action of the contravariant hom-functor~\cite{hottbook}}
 to obtain the $\Sigma$-type of patches \texttt{q} and proofs that $q^{-1} \cdot p \equiv \texttt{refl}$.
-The proof of \texttt{path-transport-lemma} is by path induction.
+The proof \texttt{path-transport-lemma} is by path induction.
 It was written for this purpose and has been contributed to the Cubical library.
 \begin{code}[hide]
     ≡⟨ refl ⟩
@@ -372,7 +355,7 @@ We reach the desired type by the groupoid properties of path composition.
     ≡⟨ Σ-cong-snd (λ q → invLUnique q p) ⟩
   (Σ[ q ∈ Patch ] p ≡ q) ∎
 \end{code}
-In particular, \texttt{invLUnique} identifies $p^{-1} \cdot q \equiv \texttt{refl}$
+In particular, \texttt{invLUnique} identifies $p^{-1}~\cdot~q \equiv \texttt{refl}$
 with $q \equiv p$. The proof is by path induction and application of groupoid laws.
 \begin{code}[hide]
   where
@@ -388,10 +371,8 @@ with $q \equiv p$. The proof is by path induction and application of groupoid la
       ≡⟨ cong (λ p → p ∙ q' ≡ refl) symRefl ⟩ refl ∙ q' ≡ refl
       ≡⟨ sym (cong (_≡ refl) (lUnit q')) ⟩ (q' ≡ refl) ∎
 \end{code}
-
 Finally, \texttt{optimize} can be implemented as discussed -- by applying \texttt{opt} and
 transporting along \texttt{e}.
-
 \begin{code}
 optimize : (p : Patch) → Σ[ q ∈ Patch ] p ≡ q
 optimize p = transport e (cong opt p)

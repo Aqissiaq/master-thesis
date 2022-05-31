@@ -108,7 +108,6 @@ which contains many of the ingredients we will need. Specifically the loop space
 of patches, and \texttt{helix : S¹ → Type} is precisely the interpretation of points in \texttt{R} as
 types of repositories. Concretely \texttt{helix} maps \texttt{base} to the integers, and \texttt{loop}
 to \texttt{ua} of the equivalence \texttt{ℤ ≃ ℤ} induced by the successor function.
-
 \begin{code}%
 \>[0]\AgdaKeyword{open}\AgdaSpace{}%
 \AgdaKeyword{import}\AgdaSpace{}%
@@ -147,7 +146,6 @@ to \texttt{ua} of the equivalence \texttt{ℤ ≃ ℤ} induced by the successor 
 \AgdaSymbol{to}\AgdaSpace{}%
 \AgdaFunction{I}\AgdaSymbol{)}\<%
 \end{code}
-
 With this machinery we can easily define an interpretation of patches as bijections on \texttt{ℤ}
 by applying \texttt{I} along the patch and weakening the resulting path. For convenience we also
 define a function to apply a patch to a given integer.
@@ -192,7 +190,6 @@ define a function to apply a patch to a given integer.
 
 Knowing that addition on the integers is commutative, merging two patches simply swaps
 the order.
-
 \begin{code}%
 \>[0]\AgdaFunction{merge}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
@@ -213,10 +210,8 @@ the order.
 \AgdaOperator{\AgdaInductiveConstructor{,}}\AgdaSpace{}%
 \AgdaBound{p}\AgdaSymbol{)}\<%
 \end{code}
-
 We now prove some properties of merge. Symmetry is essentially trivial, since swapping
 the order twice gets us back to where we started.
-
 \begin{code}%
 \>[0]\AgdaFunction{symmetric}\AgdaSpace{}%
 \AgdaSymbol{:}%
@@ -264,7 +259,6 @@ the order twice gets us back to where we started.
 \AgdaFunction{merge}\AgdaSpace{}%
 \AgdaBound{p}\<%
 \end{code}
-
 Reconcile turns out to be more involved, but luckily some work is done for us.
 It boils down to showing that composition of patches commutes, which relies on two facts:
 \begin{enumerate}
@@ -412,9 +406,7 @@ but in order to prove its properties we require a "detour" into the integers.
 \AgdaBound{p}\AgdaSpace{}%
 \AgdaOperator{\AgdaFunction{∎}}\<%
 \end{code}
-
 With the commutativity of patches established, reconcile follows easily:
-
 \begin{code}%
 \>[0]\AgdaFunction{reconcile}%
 \>[226I]\AgdaSymbol{:}\AgdaSpace{}%

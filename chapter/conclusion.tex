@@ -17,7 +17,7 @@ The former means that it is computationally expensive (and time consuming) to
 verify the behavior of the implementation, while the latter makes it impossible
 to compute results for the more complicated models. In particular for
 compositions of patches (using \texttt{hcomp}) when modeling the repository as a
-vector of strings (and indexed family of types).
+vector of strings since it is an inductive family of types.
 
 This chapter discusses the implementation and results of
 \autoref{ch/formalization} and outlines directions for future work on homotopical
@@ -50,7 +50,8 @@ pass Cubical Agda's typechecking because the sides must \emph{definitionally}
 agree with the mapping of points and patches.
 
 The computational results are promising, but also reveal the current limits of
-HoTT. There are two distinct issues: firstly the issue of \texttt{transp} and
+the Cubical Agda implementation.
+There are two distinct issues: firstly the issue of \texttt{transp} and
 \texttt{hcomp} over inductive families which simply does not reduce, and
 secondly an issue of performance.
 
@@ -67,7 +68,8 @@ resulting patch is equal to the original, but the resource use is interesting
 nevertheless.
 
 Possible causes include the trick used to define \texttt{opt} of the \texttt{noop}
-constructor and the transport along the long sequence of paths constituting \texttt{e}.
+constructor and the transport along the long sequence of paths constituting
+\texttt{e}.
 
 \section{Future Work}
 
@@ -100,19 +102,19 @@ time of writing.
 
 Additionally, it might be possible to obtain more results by writing a more
 direct implementation. In May of 2022 M\"ortberg and Ljungstr\"om succeeded in
-computing the Brunerie number in Cubical Agda in a matter of seconds [cite
-axel's blog post when it shows up?] - where previous attempts had resulted in
+computing the Brunerie number in Cubical Agda in a matter of
+seconds~\cite{ljungstrom2022} -- where previous attempts had resulted in
 programs that ran for over 90 hours without a result~\cite{mortberg2018}. The
-new proof achieves this by providing a more direct construction [citation
-needed] and avoiding computationally expensive equivalences (in particular $S^3
-\simeq S^1 \ast S^1$). Their development suggests that more results may be
-achieved by identifying the computationally expensive aspects of the current
-construction, and avoiding these with more direct alternatives.
+new proof achieves this by providing a more direct construction and avoiding
+computationally expensive equivalences (in particular $S^3 \simeq S^1 \ast
+S^1$). Their development suggests that more results may be achieved by
+identifying the computationally expensive aspects of the current construction,
+and avoiding these with more direct alternatives.
 
 Other type theoretic approaches could also be investigated. While HPT provides
 an elegant encapsulation of groupoid properties and separation of theories from
 models, it does not provide tools to reason about the semantics of patches and
-operations on them. In particular, a formal theory could incorporate merging and
+operations on them. In particular, a different model could incorporate merging and
 its properties. Another direction for expansion would be a more modular theory
 in which different patch theories (e.g for text files and integers) could be
 combined in a principled way to form something like a directory.

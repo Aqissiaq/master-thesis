@@ -10,6 +10,8 @@ for function types). In general, terms will appear as \texttt{term : Type} follo
 \texttt{term = ...} where the first line provides the type and the second defines the
 specific term.
 
+\subsection{Programming Language}
+
 As an example, we consider the type of vectors and operations on them.
 This is a dependent type that provides a good look at the syntax and features of
 Agda as a programming language.
@@ -38,7 +40,6 @@ data Vec (A : Set) : ℕ → Set where
   [] : Vec A zero
   _::_ : {n : ℕ} → A → Vec A n → Vec A (suc n)
 \end{code}
-
 Note that the data declaration has \texttt{A} before the colon, but \texttt{ℕ} after.
 This is because \texttt{A} stays constant over the two constructors, while the natural number varies.
 
@@ -48,17 +49,17 @@ and are denoted by underscores.
 Each underscore in the name represents a position in which we may place the corresponding argument.
 
 Currying means that a function like \texttt{\_::\_} that takes two arguments of types
-\texttt{A} and \texttt{Vec A n} and produces a \texttt{Vec A (suc n)} can be written as
-\texttt{\_::\_ : A → Vec A n → Vec A (suc n)} (with → associating to the right).
-~\footnote{This is possible because of the product~$\dashv$~exponentiation
+\texttt{A} and \texttt{Vec~A~n} and produces a \texttt{Vec~A~(suc~n)} can be written as
+\texttt{\_::\_~:~A →~Vec~A~n~→~Vec~A~(suc~n)} (with → associating to the right)
+\footnote{This is possible because of the product~$\dashv$~exponentiation
 adjunction in cartesian closed categories which gives a bijection
 between $(A \times B) \rightarrow C$ and $A \rightarrow (B \rightarrow C)$ for all objects A, B and C
 See IV.6: Cartesian Closed Categories in~\cite{maclane1998}}.
 
-This style allows for partial application of functions where \texttt{\_::\_ x} results
-in a unary function \texttt{Vec A n → Vec A (suc n)}.
-Mixfix operators and currying interact wonderfully with partial application. \texttt{x ::\_} is the
-function that takes a vector and conses x onto it.
+This style allows for partial application of functions where \texttt{\_::\_~x} results
+in a unary function \texttt{Vec~A~n~→~Vec~A~(suc~n)}.
+Mixfix operators and currying interact wonderfully with partial application. For example
+\texttt{x~::\_} is the function that takes a vector and conses x onto it.
 
 Now we can construct terms of this new type.
 For example, here is the 3-vector of natural numbers [1,2,3]:
@@ -82,7 +83,6 @@ map : {A B : Set}{n : ℕ} → (A → B) → Vec A n → Vec B n
 map _ [] = []
 map f (x :: v) = (f x) :: (map f v)
 \end{code}
-
 Of course, map would work equally well for the non-dependent type of lists.
 To make use of the additional power of dependent types we can define \texttt{map-pointwise}
 which safely applies a different function to each element of a vector.
@@ -92,9 +92,8 @@ map-pointwise : {A B : Set}{n : ℕ} →
 map-pointwise [] [] = []
 map-pointwise (f :: fs) (x :: xs) = f x :: map-pointwise fs xs
 \end{code}
-
 Concatenation is the binary operation that adjoins one vector to the end of another.
-This has the effect of adding their lengths, evidenced by the resulting type \texttt{Vec A (n + m)}.
+This has the effect of adding their lengths, evidenced by the resulting type \texttt{Vec~A(n~+~m)}.
 Note that we only pattern match on the left vector. This is actually important, since \texttt{\_+\_} is defined
 by pattern matching on its left argument, allowing this definition to type-check.
 \begin{code}
@@ -102,6 +101,7 @@ _++_ : {A : Set} {n m : ℕ} → Vec A n → Vec A m → Vec A (n + m)
 [] ++ ys = ys
 (x :: xs) ++ ys = x :: (xs ++ ys)
 \end{code}
+\subsection{Proof Assistant}
 
 In addition to being a dependently typed functional programming language
 (or perhaps more accurately, \emph{by} being a dependently typed programming language)
@@ -123,7 +123,6 @@ _ = refl
 \end{code}
 Of course, not all proofs are so simple. In fact, proving that zero is also the \emph{right} unit takes some work.
 This is because addition is defined by induction on the left argument, so \texttt{+-lunit} is simply the base case.
-
 \begin{code}
 +-runit : ∀ {n} → n + zero ≡ n
 +-runit {zero} = refl

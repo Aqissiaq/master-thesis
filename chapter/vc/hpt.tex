@@ -13,9 +13,9 @@ inverses (\texttt{sym}) and composition (\texttt{$\cdot$}),
 and by the groupoid laws this composition is associative, unital, and respects
 inverses.
 
-Patch laws can be given by paths between paths (squares). For example we may
+Patch laws can be given by paths between paths. For example we may
 want the application of two independent patches $P$ and $Q$ to commute -- this is done with
-a square whose left- and right-sides are $P \cdot Q$ and $Q \cdot P$.
+a such a higher path between $P \cdot Q$ and $Q \cdot P$.
 
 \emph{Models} of a patch theory are given by a function \texttt{I : R
   $\rightarrow$ Type} from the HIT to the universe of types. Each repository
@@ -42,6 +42,9 @@ stopping us from giving a different interpretation. For example we may interpret
 \texttt{num} as the type of booleans and \texttt{add1} as negation to obtain a
 theory of a binary repository and an on/off button.
 
+The intended interpretation is realized by mapping \texttt{num} to the type of
+integers and \texttt{add1} to ua of the equivalence induced by the successor function.
+
 This example illustrates two important points. Firstly, that paths can carry
 computational content (in this case the successor function and its inverse)
 revealed by mapping into the universe of types; and secondly that a
@@ -51,7 +54,7 @@ patch theory may permit multiple models.
 
 In \emph{a patch theory with laws} we see an example of patch laws -- squares
 in the higher inductive type. Again the theory has one point and one constructor
-path, but the path \texttt{s $\leftrightarrow$ t @ i} depends on two
+path, but the path \texttt{s~$\leftrightarrow$~t~@~i} depends on two
 strings \texttt{s,t} and an index \texttt{i}.
 
 The theory also includes two patch laws. \texttt{indep} asserts that two patches
@@ -59,14 +62,14 @@ with different indexes commute, while \texttt{noop} asserts that a patch where
 $s = t$ is the same as \texttt{refl} - doing nothing.
 
 The intended model for this theory is a fixed-length vector of strings where the
-patch \texttt{s $\leftrightarrow$ t @ i} swaps the strings \texttt{s} and
+patch \texttt{s~$\leftrightarrow$~t~@~i} swaps the strings \texttt{s} and
 \texttt{t} at index \texttt{i}. In order to define this interpretation it is
 also necessary to give squares showing that it respects the patch laws.
 
 The use of patch laws is illustrated by a \emph{patch optimizer}. This is a
 function that takes a patch and produces a smaller patch with the same effect.
 The key idea is to take advantage of \texttt{noop} to replace instances of
-\texttt{s $\leftrightarrow$ t @ i} with \texttt{refl} when \texttt{s} and
+\texttt{s~$\leftrightarrow$~t~@~i} with \texttt{refl} when \texttt{s} and
 \texttt{t} are equal.
 
 Angiuli et al. give two ways to write the optimizer. In the \emph{program then
@@ -75,8 +78,9 @@ and then prove \texttt{$\forall$ x $\rightarrow$ x $\equiv$ opt1 x}. This
 requires set-truncation of \texttt{R}.
 
 The \emph{program and prove} approach avoids truncation by instead
-constructing a function \texttt{opt : (x : R) $\rightarrow$ $\Sigma_\texttt{(y :
-    R)}$ y $\equiv$ x} which produces both a new point \emph{and} and proof that
+constructing a function
+\texttt{opt~:~(x~:~R)~$\rightarrow$~$\Sigma_\texttt{(y:R)}$~y~$\equiv$~x}
+which produces both a new point \emph{and} and proof that
 it is equal to the original. Since the resulting type is contractible, the
 squares witnessing the patch laws become trivial.
 

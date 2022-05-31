@@ -39,10 +39,10 @@ In formal terms this is the introduction rule:
 \begin{equation}
   \label{eq:coequalizer-intro}
   \begin{array}[t]{l}
-    \Gamma \vdash A \; Type\\
-    \Gamma, a~b : A \vdash a \sim b \; Type\\
+    \Gamma \vdash A \; \Type\\
+    \Gamma, a~b : A \vdash a \sim b \; \Type\\
     \hline
-    \Gamma \vdash A \quot{\sim} \; Type\\
+    \Gamma \vdash A \quot{\sim} \; \Type\\
   \end{array}
 \end{equation}
 
@@ -68,7 +68,6 @@ As a concrete running example we will consider a very simple VCS in which a
 repository consists of a single value that can be either \texttt{Nothing} or
 \texttt{Just x} for some term x, and a patch that sets a \texttt{Nothing} to
 \texttt{Just} some value.
-
 \begin{code}[hide]%
 \>[0]\AgdaSymbol{\{-\#}\AgdaSpace{}%
 \AgdaKeyword{OPTIONS}\AgdaSpace{}%
@@ -114,14 +113,14 @@ repository consists of a single value that can be either \texttt{Nothing} or
 \AgdaModule{repo}\AgdaSpace{}%
 \AgdaSymbol{(}\AgdaBound{A}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
-\AgdaPrimitive{Type₀}\AgdaSymbol{)}\AgdaSpace{}%
+\AgdaPrimitive{Type}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaKeyword{where}\<%
 \\
 \>[0][@{}l@{\AgdaIndent{0}}]%
 \>[2]\AgdaKeyword{data}\AgdaSpace{}%
 \AgdaDatatype{Maybe}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
-\AgdaPrimitive{Type₀}\AgdaSpace{}%
+\AgdaPrimitive{Type}\AgdaSpace{}%
 \AgdaKeyword{where}\<%
 \\
 \>[2][@{}l@{\AgdaIndent{0}}]%
@@ -142,7 +141,7 @@ repository consists of a single value that can be either \texttt{Nothing} or
 \>[2]\AgdaKeyword{data}\AgdaSpace{}%
 \AgdaDatatype{Simple}\AgdaSpace{}%
 \AgdaSymbol{:}\AgdaSpace{}%
-\AgdaPrimitive{Type₀}\AgdaSpace{}%
+\AgdaPrimitive{Type}\AgdaSpace{}%
 \AgdaKeyword{where}\<%
 \\
 \>[2][@{}l@{\AgdaIndent{0}}]%
@@ -167,7 +166,6 @@ repository consists of a single value that can be either \texttt{Nothing} or
 \AgdaBound{a}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{]}}\<%
 \end{code}
-
 \section{Merge}
 
 Kraus and von Raumer's characterization of the path spaces of such coequalizers
@@ -189,7 +187,6 @@ The solution is to instead require an equivalence $P~q \simeq P (q \cdot
 (glue~s))$ for each $q : [a_0] \equiv [ b ]$ and $s : b \sim c$.
 
 The complete induction rule is given by:
-[in Agda? (specialized to our repo type)]
 \begin{code}[hide]%
 %
 \>[2]\AgdaKeyword{postulate}\<%
@@ -295,7 +292,6 @@ The complete induction rule is given by:
 We will attempt to use this induction rule to define a merge function for our
 example VCS. For this purpose we introduce the types of spans and cospans
 indexed by their endpoints:
-
 \begin{code}%
 %
 \>[2]\AgdaFunction{Span}\AgdaSpace{}%
@@ -304,7 +300,7 @@ indexed by their endpoints:
 \AgdaSymbol{→}\AgdaSpace{}%
 \AgdaDatatype{Maybe}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
-\AgdaPrimitive{Type₀}\<%
+\AgdaPrimitive{Type}\<%
 \\
 %
 \>[2]\AgdaFunction{Span}\AgdaSpace{}%
@@ -343,7 +339,7 @@ indexed by their endpoints:
 \AgdaSymbol{→}\AgdaSpace{}%
 \AgdaDatatype{Maybe}\AgdaSpace{}%
 \AgdaSymbol{→}\AgdaSpace{}%
-\AgdaPrimitive{Type₀}\<%
+\AgdaPrimitive{Type}\<%
 \\
 %
 \>[2]\AgdaFunction{CoSpan}\AgdaSpace{}%
@@ -371,9 +367,7 @@ indexed by their endpoints:
 \AgdaBound{b}\AgdaSpace{}%
 \AgdaOperator{\AgdaInductiveConstructor{]}}\AgdaSymbol{)}\<%
 \end{code}
-
 and, since merging is a binary operation, a binary induction rule
-
 \begin{code}%
 %
 \>[2]\AgdaFunction{bin-path-ind}\AgdaSpace{}%
@@ -582,10 +576,8 @@ and, since merging is a binary operation, a binary induction rule
 \AgdaBound{e}\AgdaSymbol{)}\AgdaSpace{}%
 \AgdaBound{e'}\<%
 \end{code}
-
 Armed with binary path induction we can define the trivial merge which simply
 maps every span to the cospan reversing both patches.
-
 \begin{code}%
 %
 \>[2]\AgdaFunction{mergeId}\AgdaSpace{}%
