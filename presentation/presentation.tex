@@ -1,0 +1,196 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\usepackage{agda}
+\usepackage{newunicodechar}
+
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
+\newunicodechar{Σ}{\ensuremath{\Sigma}}
+\newunicodechar{Π}{\ensuremath{\Pi}}
+\newunicodechar{π}{\ensuremath{\pi}}
+\newunicodechar{₀}{\ensuremath{_{0}}}
+\newunicodechar{₁}{\ensuremath{_{1}}}
+\newunicodechar{₂}{\ensuremath{_{2}}}
+\newunicodechar{∀}{\ensuremath{\forall}}
+\newunicodechar{∃}{\ensuremath{\exists}}
+\newunicodechar{⊥}{\ensuremath{\bot}}
+\newunicodechar{∨}{\ensuremath{\lor}}
+\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{≡}{\ensuremath{\equiv}}
+\newunicodechar{≢}{\ensuremath{\not\equiv}}
+\newunicodechar{≠}{\ensuremath{\not=}}
+\newunicodechar{⁻}{\ensuremath{^-}}
+\newunicodechar{∎}{\ensuremath{\blacksquare}}
+\newunicodechar{≃}{\ensuremath{\simeq}}
+\newunicodechar{∙}{\ensuremath{\cdot}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}}
+\newunicodechar{∘}{\ensuremath{\circ}}
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∷}{\ensuremath{::}}
+\newunicodechar{ℓ}{\ensuremath{\ell}}
+
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{cd}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{subfig} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage[backend=biber, sorting=none]{biblatex}
+\addbibresource{sources.bib}
+
+\AtBeginSection[]
+{
+    \begin{frame}
+        \tableofcontents[currentsection]
+    \end{frame}
+}
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[A Cubical Implementation of Homotopical Patch Theory]{A Cubical Implementation of Homotopical Patch Theory} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Åsmund Aqissiaq Arild Kløvstad} % Your name
+\institute[UiB] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Universitetet i Bergen \\ % Your institution for the title page
+}
+\date{June 23rd, 2022} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+% do all this in Agda syntax, we don't need translation
+\section{Homotopy Type Theory}
+\include{latex/hott}
+  
+\section{Version Control Systems}
+\begin{frame}
+  \frametitle{Setup}
+  % contexts, patches, laws?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Groupoid Structure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\textbf{A} Patch Theory}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Homotopical Patch Theory}
+\end{frame}
+
+
+% make clear: ideas are 100% angiuli et al, implementation is ''mine''
+\section{Three Homotopical Patch Theories}
+
+\subsection{1. An Elementary Patch Theory}
+\begin{frame}
+\end{frame}
+
+\subsection{2. A Patch Theory with laws}
+\begin{frame}
+\end{frame}
+
+\subsection{3. A Patch Theory with Richer Contexts}
+\begin{frame}
+\end{frame}
+
+
+% Results and conclusion-y stuff?
+% a demo?
+
+\end{document} 
