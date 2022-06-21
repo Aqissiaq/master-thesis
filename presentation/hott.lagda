@@ -24,7 +24,7 @@ double : ℕ → ℕ
 double zero = zero
 double (suc n) = suc (suc (double n))
 \end{code}
-\item Type families
+\item (Inductive) type families
 \begin{code}
 data List (A : Type) : Type where
    []l  : List A
@@ -42,7 +42,6 @@ data Vec (A : Type) : ℕ → Type where
   [] : Vec A 0
   _∷_ : ∀ {n} → A → Vec A n → Vec A (suc n)
 \end{code}
-
 \item Dependent elimination
 \begin{code}
 Vec-induction :
@@ -50,6 +49,7 @@ Vec-induction :
   (P []) →
   (∀ {n} → (a : A) → (as : Vec A n) → P (a ∷ as)) →
   {n : ℕ} → (v : Vec A n) → P v
+-------------------------------------------------
 Vec-induction empty _ [] = empty
 Vec-induction _ cons (a ∷ v) = cons a v
 \end{code}
@@ -110,12 +110,14 @@ J P base y refl = base
 \begin{frame}
 \frametitle{Groupoids}
 \begin{itemize}
-\item Identity types form an equivalence relation (symmetric)
+\item Identity types form an equivalence relation
 \item $\neg$UIP
-\item Groupoids! [cite]
+\item Groupoids (Hofman \& Streicher '98)
+  \begin{itemize}
+    \item identity (\texttt{refl})
+    \item composition (transitivity)
+    \item inverses (symmetry)
+  \end{itemize}
+\item functions $\leftrightarrow$ functors
 \end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Higher Inductive Types}
 \end{frame}

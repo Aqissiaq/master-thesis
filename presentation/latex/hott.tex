@@ -69,7 +69,7 @@
 \AgdaSymbol{(}\AgdaFunction{double}\AgdaSpace{}%
 \AgdaBound{n}\AgdaSymbol{))}\<%
 \end{code}
-\item Type families
+\item (Inductive) type families
 \begin{code}%
 \>[0]\AgdaKeyword{data}\AgdaSpace{}%
 \AgdaDatatype{List}\AgdaSpace{}%
@@ -140,7 +140,6 @@
 \AgdaSymbol{(}\AgdaInductiveConstructor{suc}\AgdaSpace{}%
 \AgdaBound{n}\AgdaSymbol{)}\<%
 \end{code}
-
 \item Dependent elimination
 \begin{code}%
 \>[0]\AgdaFunction{Vec-induction}\AgdaSpace{}%
@@ -201,6 +200,8 @@
 \AgdaSymbol{→}\AgdaSpace{}%
 \AgdaBound{P}\AgdaSpace{}%
 \AgdaBound{v}\<%
+\\
+\>[0]\AgdaComment{-------------------------------------------------}\<%
 \\
 \>[0]\AgdaFunction{Vec-induction}\AgdaSpace{}%
 \AgdaBound{empty}\AgdaSpace{}%
@@ -442,12 +443,14 @@
 \begin{frame}
 \frametitle{Groupoids}
 \begin{itemize}
-\item Identity types form an equivalence relation (symmetric)
+\item Identity types form an equivalence relation
 \item $\neg$UIP
-\item Groupoids! [cite]
+\item Groupoids (Hofman \& Streicher '98)
+  \begin{itemize}
+    \item identity (\texttt{refl})
+    \item composition (transitivity)
+    \item inverses (symmetry)
+  \end{itemize}
+\item functions $\leftrightarrow$ functors
 \end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Higher Inductive Types}
 \end{frame}

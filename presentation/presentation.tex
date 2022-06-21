@@ -20,7 +20,9 @@
 \usepackage{agda}
 \usepackage{newunicodechar}
 
+\newunicodechar{∼}{\ensuremath{\sim}}
 \newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{¹}{\ensuremath{^{1}}}
 \newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
 \newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}}
 \newunicodechar{Σ}{\ensuremath{\Sigma}}
@@ -154,23 +156,56 @@ Universitetet i Bergen \\ % Your institution for the title page
 % do all this in Agda syntax, we don't need translation
 \section{Homotopy Type Theory}
 \include{latex/hott}
+\include{latex/HITs}
   
 \section{Version Control Systems}
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Setup}
   % contexts, patches, laws?
+  \begin{columns}
+  \begin{column}{.5\textwidth}
+  \begin{itemize}
+    \item Contexts
+    \item Patches
+    \item Patch operations
+    \item Patch laws
+    \item Patch \emph{theories}
+  \end{itemize}
+  \end{column}
+  \begin{column}{.5\textwidth}
+\begin{tikzcd}
+                                                                              &    &                                                                               & C \\
+A \arrow[rr, "^A P ^B"] \arrow[rrrd, "^A (P \cdot R)^D"', dashed, bend right] &
+& B \arrow[ru, "^B Q ^C"] \arrow[rd, "^B R ^D"] \arrow[ld, shorten <=7pt,
+shorten >=7pt, Rightarrow, no head, "comp"] &   \\
+                                                                              & {} &                                                                               & D
+\end{tikzcd}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}
   \frametitle{Groupoid Structure}
+  \begin{itemize}
+  \item Identity
+  \item Composition
+  \item Inverses
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{\textbf{A} Patch Theory}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Homotopical Patch Theory}
+  \frametitle{Homotopical Patch Theory (Angiuli, Morehouse, Licata, Harper 2014)}
+  Take advantage of types' groupoid structure
+  \vfill{}
+  \begin{tabular}{l | l | l}
+    VCS & HoTT &\\
+    \hline
+    patch theory & HIT & \texttt{R} \\
+    context & term & \texttt{doc : R} \\
+    patch & path & \texttt{swap : doc ≡ doc} \\
+    patch law & higher-order path & \texttt{twice : swap ∙ swap ≡ refl} \\
+    model & function & \texttt{Interp : R → Type}
+  \end{tabular}
 \end{frame}
 
 
@@ -178,19 +213,52 @@ Universitetet i Bergen \\ % Your institution for the title page
 \section{Three Homotopical Patch Theories}
 
 \subsection{1. An Elementary Patch Theory}
-\begin{frame}
-\end{frame}
+\include{latex/elementary}
 
 \subsection{2. A Patch Theory with laws}
-\begin{frame}
-\end{frame}
+\include{latex/laws}
 
 \subsection{3. A Patch Theory with Richer Contexts}
+\include{latex/richer}
+
+\section{Computations}
+
 \begin{frame}
+  \frametitle{Setup}
+  \begin{itemize}
+  \item with laws
+    
+    \includegraphics[width=.6\textwidth]{figures/laws-setup}
+  \item with richer contexts
+    \includegraphics[width=\textwidth]{figures/richer-setup}
+  \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{transp}
+  \begin{itemize}
+  \item with laws
+    
+    \includegraphics[width=.7\textwidth]{figures/laws-transportRefl}
+  \item with richer contexts
+    \includegraphics[width=.7\textwidth]{figures/richer-transportRefl}
+  \end{itemize}
+\end{frame}
 
-% Results and conclusion-y stuff?
-% a demo?
+\begin{frame}
+  \frametitle{hcomp}
+  \begin{itemize}
+  \item with laws
+    
+    \includegraphics[width=.8\textwidth]{figures/laws-hcomp}
+  \item with richer contexts
+    \includegraphics[width=.8\textwidth]{figures/richer-hcomp}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The Curious Case of \texttt{opt}}
+  \includegraphics[width=\textwidth]{figures/optimizer}
+\end{frame}
 
 \end{document} 
