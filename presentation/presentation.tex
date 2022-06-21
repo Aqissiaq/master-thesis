@@ -221,7 +221,7 @@ shorten >=7pt, Rightarrow, no head, "comp"] &   \\
 \subsection{3. A Patch Theory with Richer Contexts}
 \include{latex/richer}
 
-\section{Computations}
+\section{Computations and Challenges}
 
 \begin{frame}
   \frametitle{Setup}
@@ -259,6 +259,67 @@ shorten >=7pt, Rightarrow, no head, "comp"] &   \\
 \begin{frame}
   \frametitle{The Curious Case of \texttt{opt}}
   \includegraphics[width=\textwidth]{figures/optimizer}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The \texttt{indep} Patch Law}
+  \begin{columns}
+    \begin{column}{.4\textwidth}
+      \begin{itemize}
+      \item The program and prove approach relies on contractibility
+      \item \texttt{noop}-``trick'' (from set-truncation elimination rule)
+      \item Non-terminating on \texttt{indep}
+      \end{itemize}
+    \end{column}
+    \begin{column}{.6\textwidth}
+      \includegraphics[width=\textwidth]{figures/laws}
+
+      \vfill{}
+
+      \includegraphics[width=\textwidth]{figures/opt-trick}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile, allowframebreaks]
+  \frametitle{Another Approach}
+  \begin{itemize}
+  \item Coequalizers
+  \item Binary path induction
+  \end{itemize}
+  \begin{array}[t]{l}
+      ... \\
+      \{x : A\} \rightarrow (p : [ a0 ] ≡ [ \ast ]) \rightarrow\\
+      \{c : Maybe\} \rightarrow (q : [ a0 ] ≡ [ c ]) → P~p~q\\
+        \simeq (\{c : Maybe\} (q : [ a0 ] ≡ [ c ]) \rightarrow P~(p \cdot \operatorname{sett}~x)~q))\\
+      \hline
+      (p : [ a0 ] ≡ [ b ]) \rightarrow (q : [ a0 ] ≡ [ c ]) → P~p~q
+  \end{array}
+  \newpage
+  \centering{}
+  \begin{tikzcd}
+  && z \arrow[ld, "p"'] \arrow[rd, "q"] &&\\
+  & {[*]} \arrow[rd, dashed] \arrow[ld, "\operatorname{sett}~x"'] && y \arrow[ld, dashed] \arrow[rd, dashed] &\\
+  {[x]} \arrow[rrdd, dashed] && n && {y} \arrow[lldd, dashed] \\
+  &&  \rotatebox[origin=c]{270}{$\simeq$} &&\\
+  && n'&&                       
+  \end{tikzcd}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Closing Thoughts}
+  \begin{itemize}
+  \item Formalization with HITs and ua in Cubical Agda is fairly
+    straight-forward
+  \item transp/hcomp over inductive families is a hurdle
+  \item Future work
+    \begin{itemize}
+    \item More laws
+    \item Program \emph{then} prove?
+    \item Investigate \texttt{optimize}
+    \item Directed paths?
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \end{document} 
