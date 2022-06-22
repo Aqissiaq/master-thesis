@@ -10,6 +10,7 @@ open import Cubical.Data.Empty
 open import Data.String
 open import laws-hpt-noTrunc-noIndep
   hiding(R ; opt ; optimize)
+  renaming(GOAL1 to swapatNoop)
 \end{code}
 
 \begin{frame}[fragile]
@@ -29,15 +30,21 @@ data R : Type where
 \end{code}
 \end{frame}
 
+\begin{code}[hide]
+postulate
+  swapatIndep : (s t u v : String) → (i j : Fin size) → i ≢ j
+        → swapatPath (s , t) i ∙ swapatPath (u , v) j ≡ swapatPath (u , v) j ∙ swapatPath (s , t) i
+\end{code}
+
 \begin{frame}[fragile]
 \frametitle{Model}
 \begin{code}
 Interp : R → Type
 Interp doc = Vec String size
 Interp ((s ↔ t AT idx) i) = ua (swapat (s , t) idx) i
-Interp (noop s i i₁ i₂) = {!!} -- swapat respects noop
-Interp (indep s t u v i j x i₁ i₂) =
-  {!!} -- swapat respects indep
+Interp (noop s idx i j) = swapatNoop s idx i j
+Interp (indep s t u v n m n≠m i j) =
+  swapatIndep s t u v n m n≠m i j
 \end{code}
 \end{frame}
 

@@ -16,7 +16,7 @@ naturals : Type
 naturals = ℕ
 
 aNumber : naturals
-aNumber = 0
+aNumber = 3
 \end{code}
 \item Elimination
 \begin{code}
@@ -44,6 +44,11 @@ data Vec (A : Type) : ℕ → Type where
 \end{code}
 \item Dependent elimination
 \begin{code}
+map : ∀ {A B n} → (A → B) → Vec A n → Vec B n
+map _ [] = []
+map f (x ∷ xs) = f x ∷ map f xs
+\end{code}
+\begin{code}[hide]
 Vec-induction :
   {A : Type} → {P : ∀ {n} → Vec A n → Type} →
   (P []) →
@@ -65,12 +70,13 @@ countDown (suc x) = x ∷ (countDown x)
 \item $\Sigma$-types
 \begin{code}
 record Σ (X : Type) (P : X → Type) : Type where
+  constructor _,_
   field
     fst : X
     snd : P fst
 
 _ : Σ ℕ (Vec ℕ)
-_ = record { fst = 2 ; snd = 0 ∷ (1 ∷ []) }
+_ = 2 , (0 ∷ (1 ∷ []))
 \end{code}
 \end{itemize}
 \end{frame}
@@ -94,7 +100,18 @@ J : {X : Type} {x : X} →
     (base : P x refl) →
     -------------------------------------
     (y : X) → (p : Id x y) → P y p
+\end{code}
+\begin{code}[hide]
 J P base y refl = base
+module _ (X : Type) (x y z : X) where
+\end{code}
+\item Some properties
+\begin{code}
+  sym : Id x y → Id y x
+  sym = J (λ y' p → Id y' x) refl y
+
+  _∙_ : Id x y → Id y z → Id x z
+  _∙_ p = J (λ z' q → Id x z') p z
 \end{code}
 \end{itemize}
 \end{frame}
@@ -107,17 +124,3 @@ J P base y refl = base
 %\frametitle{Interpretations (props, spaces)}
 %\end{frame}
 
-\begin{frame}
-\frametitle{Groupoids}
-\begin{itemize}
-\item Identity types form an equivalence relation
-\item $\neg$UIP
-\item Groupoids (Hofman \& Streicher '98)
-  \begin{itemize}
-    \item identity (\texttt{refl})
-    \item composition (transitivity)
-    \item inverses (symmetry)
-  \end{itemize}
-\item functions $\leftrightarrow$ functors
-\end{itemize}
-\end{frame}

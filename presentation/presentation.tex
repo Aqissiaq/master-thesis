@@ -119,12 +119,7 @@
 \usepackage[backend=biber, sorting=none]{biblatex}
 \addbibresource{sources.bib}
 
-\AtBeginSection[]
-{
-    \begin{frame}
-        \tableofcontents[currentsection]
-    \end{frame}
-}
+
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
@@ -156,8 +151,32 @@ Universitetet i Bergen \\ % Your institution for the title page
 % do all this in Agda syntax, we don't need translation
 \section{Homotopy Type Theory}
 \include{latex/hott}
+\include{latex/cubical}
+
+\begin{frame}
+\frametitle{Groupoids}
+\begin{itemize}
+\item $\neg$UIP
+\item Groupoids (Hofman \& Streicher '98)
+  \begin{itemize}
+    \item identity (\texttt{refl})
+    \item composition (transitivity)
+    \item inverses (symmetry)
+  \end{itemize}
+\item Functions $\leftrightarrow$ functors
+\end{itemize}
+\end{frame}
+
 \include{latex/HITs}
-  
+
+% putting this here to avoid a double ToC before HoTT
+\AtBeginSection[]
+{
+    \begin{frame}
+        \tableofcontents[currentsection]
+    \end{frame}
+} 
+
 \section{Version Control Systems}
 \begin{frame}[fragile]
   \frametitle{Setup}
